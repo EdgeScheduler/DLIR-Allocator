@@ -4,6 +4,7 @@
 #include <list>
 #include <mutex>
 #include <condition_variable>
+#include <atomic>
 #include "TaskDigest.h"
 #include "TokenManager.h"
 
@@ -25,7 +26,7 @@ public:
 private:
     /// @brief the end of the tasks is next task to be deal.
     std::list<TaskDigest> tasks;
-    float queueLength; // how long the queue last.(ms)
+    std::atomic<float> queueLength; // how long the queue last.(ms)
     TokenManager *tokenManager;
 
     std::mutex mutex;

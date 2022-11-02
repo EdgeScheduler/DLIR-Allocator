@@ -1,46 +1,36 @@
 #include "../../include/GPUAllocator/TokenManager.h"
 
-TokenManager::TokenManager() : flag(0)
+TokenManager::TokenManager() : flag(0.0F)
 {
 }
 
 void TokenManager::Release()
 {
-    std::unique_lock<std::mutex> lock(mutex);
-    this->flag = 0;
-    lock.unlock();
+    // std::unique_lock<std::mutex> lock(mutex);
+    this->flag = 0.0F;
+    // lock.unlock();
     needNewToken.notify_all();
 }
 
-bool TokenManager::Grant(int token, bool block)
+bool TokenManager::Grant(float token, bool enableSegmentation)
 {
 #ifndef ALLOW_GPU_PARALLEL
     std::unique_lock<std::mutex> lock(mutex);
-    if (this->flag > 0)
+    needNewToken.wait(lock, [this]() -> bool
+                           { return this->flag < 1.0F; });
+    if(enableSegmentation)
     {
-        if (block)
-        {
-            needNewToken.wait(lock, [this]() -> bool
-                           { return this->flag < 1; });
-            this->flag = token;
-            lock.unlock();
-            return true;
-        }
-        else
-        {
-            lock.unlock();
-            return false;
-        }
+        this->flag = token;
     }
     else
     {
-        this->flag = token;
-        lock.unlock();
-        return true;
+        this->flag = token+0.5F;
     }
+    
+    lock.unlock();
+    return true;
 #else
     return true;
-
 #endif
 }
 
@@ -49,7 +39,7 @@ TokenManager::operator int()
     return this->flag;
 }
 
-int TokenManager::GetFlag()
+float TokenManager::GetFlag()
 {
     return this->flag;
 }
@@ -63,5 +53,7 @@ void TokenManager::WaitFree()
 {
     std::unique_lock<std::mutex> lock(mutex);
     needNewToken.wait(lock, [this]() -> bool
-                           { return this->flag < 1; });
+                           { return this->flag < 1.0F; });
+    lock.unlock();
+    // needNewToken.notify_all();
 }

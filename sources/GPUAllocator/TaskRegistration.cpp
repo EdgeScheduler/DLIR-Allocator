@@ -1,5 +1,6 @@
 #include "../../include/GPUAllocator/TaskRegistration.h"
 #include <iostream>
+#include <algorithm>
 
 TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr)
 {
@@ -37,8 +38,9 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
             float new_task_front = task.Evaluate(total_wait);
             float iter_front = iter->Evaluate(total_wait);
             float iter_back = iter->Evaluate(total_wait + task.LeftRunTime());
-
-            if (new_task_back + iter_front > new_task_front + iter_back)
+            
+            // if (new_task_back * iter_front > new_task_front * iter_back)
+            if((new_task_back * iter_front > new_task_front * iter_back && (iter_front>0||new_task_front * iter_back>0)) ||(new_task_back * iter_front<0 && ((new_task_front<0 && iter_back<0)||(new_task_front *iter_back <0 && (std::min(new_task_front,iter_back)>std::min(new_task_back,iter_front))))))
             {
                 tasks.insert(iter, std::move(task));
                 goto SCHEDULE;
@@ -47,7 +49,7 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
         tasks.insert(tasks.end(), std::move(task));
 
         // update current_task (queue head)
-        currentTask=&tasks.back();
+        this->currentTask=&tasks.back();
 
         goto SCHEDULE;
     }
@@ -55,7 +57,7 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
 SCHEDULE:
 #endif // ALLOW_GPU_PARALLEL
     // to release lock;
-    this->queueLength += task.LeftRunTime();
+    this->queueLength = this->queueLength + task.LeftRunTime();
     //std::cout<<"add: "<<task.LeftRunTime()<<std::endl;
     lock.unlock();
     m_notEmpty.notify_all();
@@ -92,11 +94,15 @@ void TaskRegistration::TokenDispense()
             }
             lock.unlock();
         }
-
+        
+        // std::cout<<"wait free here."<<std::endl;
         tokenManager->WaitFree();
-        queueLength -= reduce_time;
+
+        //std::cout<<"end wait free here."<<std::endl;
+        queueLength = queueLength- reduce_time;
 
         next_token = this->currentTask->GetToken(reduce_time);          // currentTask is allowed to be update by TaskRegistration::RegisteTask
+        //std::cout<<"to give token:"<<next_token<<std::endl;
 
         if (tokenManager)
         {
@@ -106,6 +112,7 @@ void TaskRegistration::TokenDispense()
             {
                 queueLength = 0.0F;
             }
+            //std::cout<<"give token done:"<<next_token<<std::endl;
 
             this->dealTask->notify_all();
         }

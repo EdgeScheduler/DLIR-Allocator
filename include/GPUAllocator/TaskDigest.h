@@ -15,7 +15,7 @@ public:
     /// @param requiredTokenCount how many child-models there is   
     /// @param modelExecuteTime 
     /// @param penaltyValue 
-    TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime,float penaltyValue=-0.3);
+    TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime,float penaltyValue=-1.0);
 
 public:
     /// @brief calculate SLO-time(ms)

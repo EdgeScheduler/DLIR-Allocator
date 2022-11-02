@@ -33,7 +33,7 @@ float TaskDigest::Evaluate(float waitTime)
 
     if (waitTime > slo)
     {
-        value += penaltyValue;
+        value = 1.0/(value+penaltyValue);
     }
 
     return value;

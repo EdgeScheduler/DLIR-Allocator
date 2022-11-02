@@ -68,6 +68,7 @@ private:
     TokenManager tokenManager;        // must define before taskRegistration
     int executorCount;
     std::mutex gpuMutex;
+    std::mutex taskMutex;
 
     TaskRegistration taskRegistration; // must define after tokenManager and dealTask
 

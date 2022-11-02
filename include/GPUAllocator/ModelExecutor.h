@@ -54,6 +54,7 @@ public:
 private:
     int modelCount = 0;
     Ort::Env *onnxruntimeEnv;
+    std::shared_ptr<Ort::Session> rawSession;
     Ort::SessionOptions *sessionOption;
     std::vector<Ort::Session> sessions;
     std::vector<ModelInfo> modelInfos;

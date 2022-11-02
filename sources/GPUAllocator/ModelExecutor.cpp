@@ -6,12 +6,12 @@
 #include <iostream>
 #include <ctime>
 
-ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *session_opt, Ort::Env *env, int token_id, TokenManager *token_manager, std::mutex *gpu_mutex, std::condition_variable *deal_task) : modelName(model_name), sessionOption(session_opt), onnxruntimeEnv(env), todo(0), modelCount(0), tokenID(token_id), tokenManager(token_manager), gpuMutex(gpu_mutex), dealTask(deal_task)
+ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *session_opt, Ort::Env *env, int token_id, TokenManager *token_manager, std::mutex *gpu_mutex, std::condition_variable *deal_task) : modelName(model_name), sessionOption(session_opt), onnxruntimeEnv(env), todo(0), modelCount(0), tokenID(token_id), tokenManager(token_manager), gpuMutex(gpu_mutex), dealTask(deal_task),rawSession(nullptr)
 {
     std::filesystem::path rawModelPath = OnnxPathManager::GetModelSavePath(modelName);
     this->executeTime = std::make_shared<std::vector<float>>();
-    Ort::Session rawSession(*onnxruntimeEnv, rawModelPath.c_str(), *sessionOption);
-    this->rawModelInfo = std::make_shared<ModelInfo>(rawSession, rawModelPath);
+    this->rawSession=std::make_shared<Ort::Session>(*onnxruntimeEnv, rawModelPath.c_str(), *sessionOption);
+    this->rawModelInfo = std::make_shared<ModelInfo>(*rawSession, rawModelPath);
 
     std::filesystem::path modelSumParamsPath = OnnxPathManager::GetChildModelSumParamsSavePath(modelName);
     nlohmann::json json = JsonSerializer::LoadJson(modelSumParamsPath);
@@ -96,14 +96,14 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
             // skip cold-run
             for (int k = 0; k < 3; k++)
             {
-                rawSession.Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
+                this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
             }
 
             // evaluate the time-cost
             clock_t start_raw = clock();
             for (int k = 0; k < 3; k++)
             {
-                rawSession.Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
+                this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
             }
             this->modelExecuteTime = (clock() - start_raw) / 3.0 / CLOCKS_PER_SEC * 1000.0;
 
@@ -173,23 +173,35 @@ bool ModelExecutor::RunOnce()
 #ifndef ALLOW_GPU_PARALLEL
     std::unique_lock<std::mutex> lock(*gpuMutex);
     dealTask->wait(lock, [this]() -> bool
-                   { return this->tokenManager->GetFlag() == tokenID; });
+                   { return (int)(this->tokenManager->GetFlag()) == tokenID; });
+
+    //std::cout<<"recv token: "<<this->tokenManager->GetFlag()<<std::endl;
+
+    Ort::Session* runSession=nullptr;
+    if(this->tokenManager->GetFlag() > tokenID)
+    {
+        runSession=this->rawSession.get();
+    }
+    else
+    {
+        runSession=current_task->_session;
+    }
     // use token already
     // this->tokenManager->Release();
-
+#else
+    Ort::Session* runSession=this->rawSession;
 #endif // !ALLOW_GPU_PARALLEL
+
     clock_t start = clock();
-    current_task->_input_datas = current_task->_session->Run(Ort::RunOptions{nullptr}, current_task->_input_labels->data(), current_task->_input_datas.data(), current_task->_input_labels->size(), current_task->_output_labels->data(), current_task->_output_labels->size());
+    current_task->_input_datas = runSession->Run(Ort::RunOptions{nullptr}, current_task->_input_labels->data(), current_task->_input_datas.data(), current_task->_input_labels->size(), current_task->_output_labels->data(), current_task->_output_labels->size());
     current_task->RecordTimeCosts(start, clock());
 
-    // use token already
-    this->tokenManager->Release();
-
 #ifndef ALLOW_GPU_PARALLEL
-
+    // use token already
+    //std::cout<<"release token to 0 from "<<this->tokenManager->GetFlag()<<std::endl;
+    
     lock.unlock();
-    dealTask->notify_all();
-
+    this->tokenManager->Release();
 #endif // !ALLOW_GPU_PARALLEL
 
     this->ToNext();

@@ -15,10 +15,10 @@ public:
 
     /// @brief give token to xx
     /// @param token ID, 0 means free
-    /// @param block if token is still there, block or not.
+    /// @param enableSegmentation if false, will run total model.
     /// @return
-    bool Grant(int token, bool block = true);
-    int GetFlag();
+    bool Grant(float token, bool enableSegmentation = true);
+    float GetFlag();
 
     /// @brief block until flag<=0
     void WaitFree();
@@ -28,7 +28,7 @@ public:
     operator int();
 
 private:
-    int flag; // 0: free 1~n: token_id
+    float flag; // 0: free 1~n: token_id
     std::mutex mutex;  
     std::condition_variable needNewToken;
 };
