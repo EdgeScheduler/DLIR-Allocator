@@ -1,6 +1,7 @@
 #include "../../include/GPUAllocator/TokenManager.h"
-
-TokenManager::TokenManager() : flag(0.0F)
+#include "../../include/Common/DILException.h"
+#include <iostream>
+TokenManager::TokenManager() : flag(0), runningLock(nullptr),closeTokenManager(false)
 {
 }
 
@@ -9,24 +10,47 @@ void TokenManager::Release()
     // std::unique_lock<std::mutex> lock(mutex);
     this->flag = 0.0F;
     // lock.unlock();
+
+#ifndef ALLOW_GPU_PARALLEL
+    if (runningLock)
+    {
+        runningLock->unlock();
+        runningLock = nullptr;
+    }
+
     needNewToken.notify_all();
+#endif
 }
 
-bool TokenManager::Grant(float token, bool enableSegmentation)
+bool TokenManager::Grant(int token, bool enableSegmentation)
 {
+    if(token<1)
+    {
+        std::cout<<"warning: send token "<<token<<std::endl;
+        return true;
+    }
+
 #ifndef ALLOW_GPU_PARALLEL
     std::unique_lock<std::mutex> lock(mutex);
     needNewToken.wait(lock, [this]() -> bool
-                           { return this->flag < 1.0F; });
-    if(enableSegmentation)
+                      { return this->flag < 1.0F || closeTokenManager; });
+
+    if(closeTokenManager)
     {
-        this->flag = token;
+        lock.unlock();
+        throw DILException::SYSTEM_CLOSE;
+    }
+
+    this->runningLock = std::make_shared<std::unique_lock<std::mutex>>(runningMutex);
+    if (enableSegmentation)
+    {
+        this->flag = token<<1;
     }
     else
     {
-        this->flag = token+0.5F;
+        this->flag = (token<<1)+1;
     }
-    
+
     lock.unlock();
     return true;
 #else
@@ -39,21 +63,32 @@ TokenManager::operator int()
     return this->flag;
 }
 
-float TokenManager::GetFlag()
+int TokenManager::GetFlag()
 {
     return this->flag;
 }
 
-std::condition_variable& TokenManager::NeedNewToken()
+std::condition_variable &TokenManager::NeedNewToken()
 {
     return this->needNewToken;
 }
 
 void TokenManager::WaitFree()
 {
-    std::unique_lock<std::mutex> lock(mutex);
-    needNewToken.wait(lock, [this]() -> bool
-                           { return this->flag < 1.0F; });
+#ifndef ALLOW_GPU_PARALLEL
+    std::unique_lock<std::mutex> lock(runningMutex);
     lock.unlock();
-    // needNewToken.notify_all();
+    needNewToken.notify_all();
+#endif
+}
+
+void TokenManager::CloseTokenManager()
+{
+    this->closeTokenManager=true;
+    this->needNewToken.notify_all();
+    if (runningLock)
+    {
+        runningLock->unlock();
+        runningLock = nullptr;
+    }
 }

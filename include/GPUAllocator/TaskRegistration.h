@@ -22,6 +22,7 @@ public:
 
     /// @brief dispense tokens to model-executors, need to run with sync.
     void TokenDispense();
+    void CloseRegistration();
 
 private:
     /// @brief the end of the tasks is next task to be deal.
@@ -33,6 +34,8 @@ private:
     /// @brief add restrictions on consumer-threads
     std::condition_variable m_notEmpty;
     std::condition_variable* dealTask;
+
+    bool closeRegistration;
 
     TaskDigest* currentTask;
 };

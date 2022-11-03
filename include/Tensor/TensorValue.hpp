@@ -103,6 +103,7 @@ void TensorValue<T>::RecordOrtValue(Ort::Value &value)
 {
     std::memcpy(this->data.data(), value.GetTensorMutableData<T>(), sizeof(T) * this->valueInfo.GetDataCount());
     // value.release();
+    Ort::OrtRelease(value.release());
 }
 
 template <class T>

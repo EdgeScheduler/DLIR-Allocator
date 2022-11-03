@@ -2,15 +2,16 @@
 #include "../../include/Common/JsonSerializer.h"
 #include "../../include/Common/PathManager.h"
 #include "../../include/Tensor/ModelInputCreator.h"
+#include "../../include/Common/DILException.h"
 #include <vector>
 #include <iostream>
 #include <ctime>
 
-ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *session_opt, Ort::Env *env, int token_id, TokenManager *token_manager, std::mutex *gpu_mutex, std::condition_variable *deal_task) : modelName(model_name), sessionOption(session_opt), onnxruntimeEnv(env), todo(0), modelCount(0), tokenID(token_id), tokenManager(token_manager), gpuMutex(gpu_mutex), dealTask(deal_task),rawSession(nullptr)
+ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *session_opt, Ort::Env *env, int token_id, TokenManager *token_manager, std::mutex *gpu_mutex, std::condition_variable *deal_task) : modelName(model_name), sessionOption(session_opt), onnxruntimeEnv(env), todo(0), modelCount(0), tokenID(token_id), tokenManager(token_manager), gpuMutex(gpu_mutex), dealTask(deal_task), rawSession(nullptr), closeExecutor(false)
 {
     std::filesystem::path rawModelPath = OnnxPathManager::GetModelSavePath(modelName);
     this->executeTime = std::make_shared<std::vector<float>>();
-    this->rawSession=std::make_shared<Ort::Session>(*onnxruntimeEnv, rawModelPath.c_str(), *sessionOption);
+    this->rawSession = std::make_shared<Ort::Session>(*onnxruntimeEnv, rawModelPath.c_str(), *sessionOption);
     this->rawModelInfo = std::make_shared<ModelInfo>(*rawSession, rawModelPath);
 
     std::filesystem::path modelSumParamsPath = OnnxPathManager::GetChildModelSumParamsSavePath(modelName);
@@ -137,28 +138,65 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
     std::cout << "run " << modelName << " test to end." << std::endl;
 }
 
+ModelExecutor::~ModelExecutor()
+{
+    Ort::OrtRelease(this->rawSession->release());
+    for(auto& session: this->sessions)
+    {
+        Ort::OrtRelease(session.release());
+    }
+}
+
 void ModelExecutor::ToNext()
 {
-    this->todo = (this->todo + 1) % this->modelCount;
-    if (this->todo == 0)
+    try
     {
-        this->current_task->SetOutputs(this->current_task->_input_datas);
-        this->finish_queue.Emplace(std::move(this->task_queue.Pop()));
-        this->current_task = nullptr;
+        this->todo = (this->todo + 1) % this->modelCount;
+        if (this->todo == 0)
+        {
+            this->current_task->SetOutputs(this->current_task->_input_datas);
+            this->finish_queue.Emplace(std::move(this->task_queue.Pop()));
+            this->current_task = nullptr;
+        }
+    }
+    catch (DILException ex)
+    {
+        if (ex == DILException::SYSTEM_CLOSE)
+        {
+            throw ex;
+        }
+        else
+        {
+            std::cout << ex << std::endl;
+        }
     }
 }
 
 void ModelExecutor::LoadTask()
 {
-    if (this->todo == 0)
+    try
     {
-        // how to block
-        this->current_task = this->task_queue.front();
-    }
+        if (this->todo == 0)
+        {
+            // block while empty
+            this->current_task = this->task_queue.front();
+        }
 
-    current_task->_session = &this->sessions[this->todo];
-    current_task->_input_labels = &this->inputLabels[this->todo];
-    current_task->_output_labels = &this->outputLabels[this->todo];
+        current_task->_session = &this->sessions[this->todo];
+        current_task->_input_labels = &this->inputLabels[this->todo];
+        current_task->_output_labels = &this->outputLabels[this->todo];
+    }
+    catch (DILException ex)
+    {
+        if (ex == DILException::SYSTEM_CLOSE)
+        {
+            throw ex;
+        }
+        else
+        {
+            std::cout << ex << std::endl;
+        }
+    }
 }
 
 bool ModelExecutor::RunOnce()
@@ -173,23 +211,33 @@ bool ModelExecutor::RunOnce()
 #ifndef ALLOW_GPU_PARALLEL
     std::unique_lock<std::mutex> lock(*gpuMutex);
     dealTask->wait(lock, [this]() -> bool
-                   { return (int)(this->tokenManager->GetFlag()) == tokenID; });
+                   { return (this->tokenManager->GetFlag()>>1) == tokenID || closeExecutor; });
 
-    //std::cout<<"recv token: "<<this->tokenManager->GetFlag()<<std::endl;
-
-    Ort::Session* runSession=nullptr;
-    if(this->tokenManager->GetFlag() > tokenID)
+    if(closeExecutor)
     {
-        runSession=this->rawSession.get();
+        if((this->tokenManager->GetFlag()>>1) == tokenID)
+        {
+            this->tokenManager->Release();
+        }
+        lock.unlock();
+        throw DILException::SYSTEM_CLOSE;
     }
+
+    // std::cout<<"recv token: "<<this->tokenManager->GetFlag()<<std::endl;
+
+    Ort::Session *runSession = nullptr;
+    if ((this->tokenManager->GetFlag() & 0x1) ==1)
+    {
+        runSession = this->rawSession.get();
+    } 
     else
     {
-        runSession=current_task->_session;
+        runSession = current_task->_session;
     }
     // use token already
     // this->tokenManager->Release();
 #else
-    Ort::Session* runSession=this->rawSession;
+    Ort::Session *runSession = this->rawSession;
 #endif // !ALLOW_GPU_PARALLEL
 
     clock_t start = clock();
@@ -198,8 +246,8 @@ bool ModelExecutor::RunOnce()
 
 #ifndef ALLOW_GPU_PARALLEL
     // use token already
-    //std::cout<<"release token to 0 from "<<this->tokenManager->GetFlag()<<std::endl;
-    
+    // std::cout<<"release token to 0 from "<<this->tokenManager->GetFlag()<<std::endl;
+
     lock.unlock();
     this->tokenManager->Release();
 #endif // !ALLOW_GPU_PARALLEL
@@ -210,23 +258,52 @@ bool ModelExecutor::RunOnce()
 
 void ModelExecutor::AddTask(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag)
 {
-    std::shared_ptr<Task> new_task = std::make_shared<Task>(this->modelName,this->modelExecuteTime, this->rawModelInfo, tag);
-    new_task->SetInputs(datas);
-    this->task_queue.Push(new_task);
+    try
+    {
+        std::shared_ptr<Task> new_task = std::make_shared<Task>(this->modelName, this->modelExecuteTime, this->rawModelInfo, tag);
+        new_task->SetInputs(datas);
+        this->task_queue.Push(new_task);
+    }
+    catch (DILException ex)
+    {
+        if (ex == DILException::SYSTEM_CLOSE)
+        {
+            return;
+        }
+        else
+        {
+            std::cout << ex << std::endl;
+        }
+    }
 }
 
 void ModelExecutor::RunCycle()
 {
-    if (gpuMutex == nullptr || tokenManager == nullptr)
+    try
     {
-        std::cout << "you give no device-mutex and token-manager info, system exit. This mode is only only allow while compiler with \"-DALLOW_GPU_PARALLEL\"" << std::endl;
-        return;
-    }
-    while (true)
-    {
-        if(this->RunOnce())
+        if (gpuMutex == nullptr || tokenManager == nullptr)
         {
-            break;
+            std::cout << "you give no device-mutex and token-manager info, system exit. This mode is only only allow while compiler with \"-DALLOW_GPU_PARALLEL\"" << std::endl;
+            return;
+        }
+        while (true)
+        {
+            if (this->RunOnce())
+            {
+                break;
+            }
+        }
+    }
+    catch (DILException ex)
+    {
+        if (ex == DILException::SYSTEM_CLOSE)
+        {
+            std::cout<<this->modelName<<" executor end sync."<<std::endl;
+            return;
+        }
+        else
+        {
+            std::cout << ex << std::endl;
         }
     }
 }
@@ -259,4 +336,12 @@ float &ModelExecutor::GetModelExecuteTime()
 int ModelExecutor::GetChildModelCount()
 {
     return this->modelCount;
+}
+
+void ModelExecutor::CloseExecutor()
+{
+    this->closeExecutor = true;
+    this->dealTask->notify_all();
+    this->task_queue.Close();
+    this->finish_queue.Close();
 }

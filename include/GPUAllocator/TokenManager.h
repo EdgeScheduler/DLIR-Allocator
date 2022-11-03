@@ -17,20 +17,25 @@ public:
     /// @param token ID, 0 means free
     /// @param enableSegmentation if false, will run total model.
     /// @return
-    bool Grant(float token, bool enableSegmentation = true);
-    float GetFlag();
+    bool Grant(int token, bool enableSegmentation = true);
+    int GetFlag();
 
     /// @brief block until flag<=0
     void WaitFree();
 
     std::condition_variable& NeedNewToken();
 
+    void CloseTokenManager();
+
     operator int();
 
 private:
-    float flag; // 0: free 1~n: token_id
+    int flag; // 0: free 1~n: token_id
     std::mutex mutex;  
+    std::mutex runningMutex;
+    std::shared_ptr<std::unique_lock<std::mutex>> runningLock;
     std::condition_variable needNewToken;
+    bool closeTokenManager;
 };
 
 #endif // __TOKENMANAGER_H__

@@ -49,11 +49,12 @@ int main(int argc, char *argv[])
     std::thread reqestGenerateThread(ReqestGenerate, &executorManager, &inputCreators, dataCount, lambda);
     ReplyGather(&executorManager, dataCount);
 
-    // std::cout<<"process to end."<<std::endl;
-    // exit(0);
+    executorManager.Close();
+    
     reqestGenerateThread.join();
     executorManager.Join();
 
+    std::cout<<"end ok."<<std::endl;
     return 0;
 }
 

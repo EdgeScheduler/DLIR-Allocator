@@ -13,6 +13,18 @@ ExecutorManager::ExecutorManager() : environment(ORT_LOGGING_LEVEL_WARNING, "tes
 
 ExecutorManager::~ExecutorManager()
 {
+    Ort::OrtRelease(sessionOption.release());
+    Ort::OrtRelease(environment.release());
+}
+
+void ExecutorManager::Close()
+{
+    this->taskRegistration.CloseRegistration();
+
+    for(auto& iter: this->executorMap)
+    {
+        iter.second->executor->CloseExecutor();
+    }
 }
 
 void ExecutorManager::RunExecutor(std::string model_name)
@@ -29,26 +41,54 @@ void ExecutorManager::RunExecutor(std::string model_name)
 
 void ExecutorManager::GatherTask(SafeQueue<std::shared_ptr<Task>>* taskQueue)
 {
-    while(true)
+    try
     {
-        this->applyQueue.Emplace(taskQueue->Pop());
+        while(true)
+        {
+            this->applyQueue.Emplace(taskQueue->Pop());
+        }
+    }
+    catch (DILException ex)
+    {
+        if (ex == DILException::SYSTEM_CLOSE)
+        {
+            return;
+        }
+        else
+        {
+            std::cout << ex << std::endl;
+        }
     }
 }
 
 void ExecutorManager::AddTask(std::string model_name, std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag)
 {
-    auto iter = this->executorMap.find(model_name);
-    if (iter == this->executorMap.end())
+    try
     {
-        std::cout << "no such model-executor run here." << std::endl;
-        return;
-    }
+        auto iter = this->executorMap.find(model_name);
+        if (iter == this->executorMap.end())
+        {
+            std::cout << "no such model-executor run here." << std::endl;
+            return;
+        }
 
-    // add lock to ensure task in executor and 
-    // std::unique_lock<std::mutex> lock(taskMutex);
-    this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime());
-    iter->second->executor->AddTask(datas, tag);
-    // lock.unlock();
+        // add lock to ensure task in executor and 
+        // std::unique_lock<std::mutex> lock(taskMutex);
+        this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime());
+        iter->second->executor->AddTask(datas, tag);
+        // lock.unlock();
+    }
+    catch (DILException ex)
+    {
+        if (ex == DILException::SYSTEM_CLOSE)
+        {
+            return;
+        }
+        else
+        {
+            std::cout << ex << std::endl;
+        }
+    }
 }
 
 std::map<std::string, std::shared_ptr<ExecutorDescribe>> &ExecutorManager::GetExecutorInformation()
@@ -79,9 +119,24 @@ void ExecutorManager::Join()
 
 bool ExecutorManager::Grant(int token, bool block)
 {
-    bool flag = this->tokenManager.Grant(token, block);
-    this->dealTask.notify_all();
-    return flag;
+    try
+    {
+        bool flag = this->tokenManager.Grant(token, block);
+        this->dealTask.notify_all();
+        return flag;
+    }
+    catch (DILException ex)
+    {
+        if (ex == DILException::SYSTEM_CLOSE)
+        {
+            return true;
+        }
+        else
+        {
+            std::cout << ex << std::endl;
+            return false;
+        }
+    }
 }
 
 SafeQueue<std::shared_ptr<Task>>& ExecutorManager::GetApplyQueue()
