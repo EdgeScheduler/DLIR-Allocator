@@ -1,15 +1,13 @@
 #include "../../include/GPUAllocator/TokenManager.h"
 #include "../../include/Common/DILException.h"
 #include <iostream>
-TokenManager::TokenManager() : flag(0), runningLock(nullptr),closeTokenManager(false)
+TokenManager::TokenManager() : flag(-1), runningLock(nullptr),closeTokenManager(false)
 {
 }
 
 void TokenManager::Release()
 {
-    // std::unique_lock<std::mutex> lock(mutex);
-    this->flag = 0.0F;
-    // lock.unlock();
+    this->flag = -1;
 
 #ifndef ALLOW_GPU_PARALLEL
     if (runningLock)
@@ -20,6 +18,11 @@ void TokenManager::Release()
 
     needNewToken.notify_all();
 #endif
+}
+
+void TokenManager::Expire()
+{
+    this->flag = 0;
 }
 
 bool TokenManager::Grant(int token, bool enableSegmentation)
@@ -33,7 +36,7 @@ bool TokenManager::Grant(int token, bool enableSegmentation)
 #ifndef ALLOW_GPU_PARALLEL
     std::unique_lock<std::mutex> lock(mutex);
     needNewToken.wait(lock, [this]() -> bool
-                      { return this->flag < 1.0F || closeTokenManager; });
+                      { return this->flag < 0|| closeTokenManager; });
 
     if(closeTokenManager)
     {

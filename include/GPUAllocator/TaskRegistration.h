@@ -3,8 +3,8 @@
 
 #include <list>
 #include <mutex>
-#include <condition_variable>
 #include <atomic>
+#include <condition_variable>
 #include "TaskDigest.h"
 #include "TokenManager.h"
 
@@ -27,8 +27,9 @@ public:
 private:
     /// @brief the end of the tasks is next task to be deal.
     std::list<TaskDigest> tasks;
-    std::atomic<float> queueLength; // how long the queue last.(ms)
+    float queueLength; // how long the queue last.(ms)
     TokenManager *tokenManager;
+    float reduceTime;
 
     std::mutex mutex;
     /// @brief add restrictions on consumer-threads
@@ -36,8 +37,9 @@ private:
     std::condition_variable* dealTask;
 
     bool closeRegistration;
+    //int debug[5];
 
-    TaskDigest* currentTask;
+    std::atomic<TaskDigest*> currentTask;
 };
 
 #endif // __TASKREGISTRATION_H__

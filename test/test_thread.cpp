@@ -12,10 +12,10 @@ bool close = false;
 std::condition_variable cond;
 
 typedef void Func();
+int count=1000;
 
 void Run0()
 {
-
     while (true)
     {
 
@@ -27,7 +27,7 @@ void Run0()
             throw -1;
         }
 
-        cout << "0" << endl;
+        cout << "0"<< endl;
         flag = -1;
         if(l)
         {
@@ -124,7 +124,7 @@ int main()
     thread t2(Run,Run2);
     thread t3(Run,Run3);
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 100000; i++)
     {
         l = std::make_shared<std::unique_lock<std::mutex>>(k);
         flag = i % 4;

@@ -31,7 +31,7 @@ public:
 
     /// @brief Get new Token
     /// @param reduceTime used to return how long this task reduce
-    /// @return -1 if there is no need.
+    /// @return 0 if there is no need.
     int GetToken(float& reduceTime);
 
     

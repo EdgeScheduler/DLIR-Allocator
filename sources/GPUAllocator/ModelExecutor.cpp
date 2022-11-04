@@ -213,13 +213,15 @@ bool ModelExecutor::RunOnce()
     dealTask->wait(lock, [this]() -> bool
                    { return (this->tokenManager->GetFlag()>>1) == tokenID || closeExecutor; });
 
+    this->tokenManager->Expire();
+    lock.unlock();      // release lock here to satisfy notify_all broadcast. Token can still ensure gpu-mutex
+    
     if(closeExecutor)
     {
         if((this->tokenManager->GetFlag()>>1) == tokenID)
         {
             this->tokenManager->Release();
         }
-        lock.unlock();
         throw DILException::SYSTEM_CLOSE;
     }
 
@@ -248,7 +250,7 @@ bool ModelExecutor::RunOnce()
     // use token already
     // std::cout<<"release token to 0 from "<<this->tokenManager->GetFlag()<<std::endl;
 
-    lock.unlock();
+    
     this->tokenManager->Release();
 #endif // !ALLOW_GPU_PARALLEL
 

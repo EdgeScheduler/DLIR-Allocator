@@ -13,6 +13,9 @@ public:
     /// @brief set to free
     void Release();
 
+    /// @brief set token expire
+    void Expire();
+
     /// @brief give token to xx
     /// @param token ID, 0 means free
     /// @param enableSegmentation if false, will run total model.

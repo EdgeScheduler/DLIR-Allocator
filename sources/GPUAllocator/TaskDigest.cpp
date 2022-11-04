@@ -23,7 +23,7 @@ float TaskDigest::Evaluate(float waitTime)
 {
     if (this->requiredTokenCount <= 0)
     {
-        return 2.0F;
+        return 1.0F;
     }
 
     waitTime += (clock() - startTime) / CLOCKS_PER_SEC * 1000.0F + leftRuntime;
@@ -44,7 +44,7 @@ int TaskDigest::GetToken(float& reduceTime)
     if (this->requiredTokenCount < 1)
     {
         reduceTime=0.0F;
-        return -1;
+        return 0;
     }
     else
     {

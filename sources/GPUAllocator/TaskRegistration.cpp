@@ -1,10 +1,16 @@
 #include "../../include/GPUAllocator/TaskRegistration.h"
 #include <iostream>
 #include <algorithm>
+#include <thread>
 #include "../../include/Common/DILException.h"
 
-TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr), closeRegistration(false)
+TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr), closeRegistration(false),reduceTime(0.0F)
 {
+    // debug[0]=0;
+    // debug[1]=0;
+    // debug[2]=0;
+    // debug[3]=0;
+    // debug[4]=0;
 }
 
 void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime)
@@ -12,20 +18,32 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
     TaskDigest task(name, executeTime, requiredToken, requiredTokenCount, modelExecuteTime);
     std::unique_lock<std::mutex> lock(mutex);
 
+    if(reduceTime>0)
+    {
+        queueLength-=reduceTime;
+        reduceTime=0.0F;
+    }
+
 #ifdef ALLOW_GPU_PARALLEL
     tasks.push_front(task);
     this->queueLength += task.LeftRunTime();
 #else
     if (tasks.size() < 1)
     {
+        queueLength = 0.0F;
         tasks.push_front(task);
         goto SCHEDULE;
     }
     else
     {
         float total_wait = queueLength;
-        for (auto iter = tasks.begin(); iter != tasks.end(); iter++)
+        for (auto iter = tasks.begin(); iter != tasks.end(); )
         {
+            if(iter->requiredTokenCount<1)
+            {
+                iter=tasks.erase(iter);
+                continue;
+            }
             // it is not possible to insert before same type of task.
             if (iter->requiredToken == requiredToken)
             {
@@ -46,11 +64,13 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
                 tasks.insert(iter, std::move(task));
                 goto SCHEDULE;
             }
+
+            iter++;
         }
         tasks.insert(tasks.end(), std::move(task));
 
         // update current_task (queue head)
-        this->currentTask = &tasks.back();
+        this->currentTask.store(&tasks.back());
 
         goto SCHEDULE;
     }
@@ -69,15 +89,21 @@ void TaskRegistration::TokenDispense()
 {
     try
     {
-        float reduce_time = 0.0F;
         int next_token = 0;
-        // TaskDigest* currentTaskPtr=nullptr;
+
+        if(reduceTime>0)
+        {
+            std::unique_lock<std::mutex> lock(mutex);
+            queueLength-=reduceTime;
+            reduceTime=0.0F;
+            lock.unlock();
+        }
+
         while (true)
         {
             // std::unique_lock<std::mutex> lock(mutex);
-            // std::string discribe;
-
-            if (this->currentTask == nullptr or this->currentTask->requiredTokenCount < 1)
+            auto m=this->currentTask.load();
+            if (m == nullptr || m->requiredTokenCount < 1)
             {
                 // to read valid task
                 std::unique_lock<std::mutex> lock(mutex);
@@ -91,40 +117,41 @@ void TaskRegistration::TokenDispense()
                         throw DILException::SYSTEM_CLOSE;
                     }
 
-                    currentTask = &tasks.back();
-                    if (currentTask->requiredTokenCount < 1)
+                    m=&tasks.back();
+                    if (m->requiredTokenCount < 1)
                     {
                         tasks.pop_back();
                         continue;
                     }
                     else
                     {
+                        currentTask.store(m);
                         break;
                     }
                 }
                 lock.unlock();
             }
 
-            // std::cout<<"wait free here."<<std::endl;
             tokenManager->WaitFree();
+            m=this->currentTask.load();
+            // if(m->requiredTokenCount<1)
+            // {
+            //     std::cout<<"bad-----------------"<<std::endl;
+            // }
 
-            // std::cout<<"end wait free here."<<std::endl;
-            queueLength = queueLength - reduce_time;
+            next_token = m->GetToken(reduceTime); // currentTask is allowed to be update by TaskRegistration::RegisteTask
+            // debug[next_token]+=1;
 
-            next_token = this->currentTask->GetToken(reduce_time); // currentTask is allowed to be update by TaskRegistration::RegisteTask
-            // std::cout<<"to give token:"<<next_token<<std::endl;
+            tokenManager->Grant(next_token, true);
 
-            if (tokenManager)
+            while(true)
             {
-                // std::cout << next_token << ": " << discribe << std::endl;
-                tokenManager->Grant(next_token, true);
-                if (tasks.size() < 1)
-                {
-                    queueLength = 0.0F;
-                }
-                // std::cout<<"give token done:"<<next_token<<std::endl;
-
                 this->dealTask->notify_all();
+                std::this_thread::sleep_for(std::chrono::microseconds(5));
+                if(tokenManager->GetFlag()<1)
+                {
+                    break;
+                }
             }
         }
     }
