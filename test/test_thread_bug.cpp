@@ -9,7 +9,7 @@ using namespace std;
 
 std::mutex m;
 std::mutex k;
-std::shared_ptr<std::unique_lock<std::mutex>> l=nullptr;
+std::unique_lock<std::mutex> l;
 volatile int flag = -1;
 bool close = false;
 std::condition_variable cond;
@@ -34,8 +34,9 @@ void Run()
         times++;
         cout <<times<<endl;
     
-        l->unlock();
+        
         flag = -1;
+        l.unlock();
 
 
         if(count==times)
@@ -48,21 +49,17 @@ void Run()
 int main()
 {
     thread t(Run);
-    l = std::make_shared<std::unique_lock<std::mutex>>(k);
-    l->unlock();
 
     for (int i = 0; i < count; i++)
     {
         try
         {
-            while(flag>=0)
+            while(l.owns_lock())
             {
                 cond.notify_all();
-                //std::this_thread::sleep_for(std::chrono::microseconds(1));
             }
-            
-            //m->lock();
-            l->lock();
+
+            l=std::move(std::unique_lock<std::mutex>(k));
 
         }
         catch(...)
@@ -70,8 +67,6 @@ int main()
             std::cerr << "...................???.................???????????" << '\n';
         }
 
-        std::cout<<flag<<"->";
-        std::cout<<l->owns_lock()<<" : ";
         flag = 0;
         std::cout<<i+1<<": ";
         // cout<<flag<<"("<<i<<")";

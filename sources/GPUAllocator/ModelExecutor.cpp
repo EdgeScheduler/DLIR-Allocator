@@ -141,17 +141,24 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
 ModelExecutor::~ModelExecutor()
 {
     Ort::OrtRelease(this->rawSession->release());
-    for(auto& session: this->sessions)
+    for (auto &session : this->sessions)
     {
         Ort::OrtRelease(session.release());
     }
 }
 
-void ModelExecutor::ToNext()
+void ModelExecutor::ToNext(bool toEnd)
 {
     try
     {
-        this->todo = (this->todo + 1) % this->modelCount;
+        if (toEnd)
+        {
+            this->todo = 0;
+        }
+        else
+        {
+            this->todo = (this->todo + 1) % this->modelCount;
+        }
         if (this->todo == 0)
         {
             this->current_task->SetOutputs(this->current_task->_input_datas);
@@ -211,14 +218,15 @@ bool ModelExecutor::RunOnce()
 #ifndef ALLOW_GPU_PARALLEL
     std::unique_lock<std::mutex> lock(*gpuMutex);
     dealTask->wait(lock, [this]() -> bool
-                   { return (this->tokenManager->GetFlag()>>1) == tokenID || closeExecutor; });
+                   { return (this->tokenManager->GetFlag() >> 1) == tokenID || closeExecutor; });
+    bool rawRun = ((this->tokenManager->GetFlag() & 0x1) == 1);
 
     this->tokenManager->Expire();
-    lock.unlock();      // release lock here to satisfy notify_all broadcast. Token can still ensure gpu-mutex
-    
-    if(closeExecutor)
+    lock.unlock(); // release lock here to satisfy notify_all broadcast. Token can still ensure gpu-mutex
+
+    if (closeExecutor)
     {
-        if((this->tokenManager->GetFlag()>>1) == tokenID)
+        if ((this->tokenManager->GetFlag() >> 1) == tokenID)
         {
             this->tokenManager->Release();
         }
@@ -228,10 +236,11 @@ bool ModelExecutor::RunOnce()
     // std::cout<<"recv token: "<<this->tokenManager->GetFlag()<<std::endl;
 
     Ort::Session *runSession = nullptr;
-    if ((this->tokenManager->GetFlag() & 0x1) ==1)
+    if (rawRun)
     {
         runSession = this->rawSession.get();
-    } 
+        current_task->_output_labels = &this->outputLabels[this->modelCount - 1];
+    }
     else
     {
         runSession = current_task->_session;
@@ -239,22 +248,28 @@ bool ModelExecutor::RunOnce()
     // use token already
     // this->tokenManager->Release();
 #else
-    Ort::Session *runSession = this->rawSession;
+    Ort::Session *runSession = this->rawSession.get();
+    current_task->_output_labels = &this->outputLabels[this->modelCount - 1];
 #endif // !ALLOW_GPU_PARALLEL
 
     clock_t start = clock();
+    // here may need to consider release old current_task->_input_datas if this->todo>0
     current_task->_input_datas = runSession->Run(Ort::RunOptions{nullptr}, current_task->_input_labels->data(), current_task->_input_datas.data(), current_task->_input_labels->size(), current_task->_output_labels->data(), current_task->_output_labels->size());
     current_task->RecordTimeCosts(start, clock());
 
 #ifndef ALLOW_GPU_PARALLEL
-    // use token already
-    // std::cout<<"release token to 0 from "<<this->tokenManager->GetFlag()<<std::endl;
-
-    
     this->tokenManager->Release();
-#endif // !ALLOW_GPU_PARALLEL
-
-    this->ToNext();
+    if (rawRun)
+    {
+        this->ToNext(true);
+    }
+    else
+    {
+        this->ToNext(false);
+    }
+#else
+    this->ToNext(true);
+#endif
     return false;
 }
 
@@ -300,7 +315,7 @@ void ModelExecutor::RunCycle()
     {
         if (ex == DILException::SYSTEM_CLOSE)
         {
-            std::cout<<this->modelName<<" executor end sync."<<std::endl;
+            std::cout << this->modelName << " executor end sync." << std::endl;
             return;
         }
         else

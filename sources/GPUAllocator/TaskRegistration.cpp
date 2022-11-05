@@ -139,10 +139,11 @@ void TaskRegistration::TokenDispense()
             //     std::cout<<"bad-----------------"<<std::endl;
             // }
 
-            next_token = m->GetToken(reduceTime); // currentTask is allowed to be update by TaskRegistration::RegisteTask
+            bool enableSegmentation=false;
+            next_token = m->GetToken(reduceTime,enableSegmentation); // currentTask is allowed to be update by TaskRegistration::RegisteTask
             // debug[next_token]+=1;
 
-            tokenManager->Grant(next_token, true);
+            tokenManager->Grant(next_token, enableSegmentation);
 
             while(true)
             {

@@ -37,7 +37,6 @@ private:
     std::condition_variable* dealTask;
 
     bool closeRegistration;
-    //int debug[5];
 
     std::atomic<TaskDigest*> currentTask;
 };

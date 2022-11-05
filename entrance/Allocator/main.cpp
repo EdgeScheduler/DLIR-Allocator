@@ -84,11 +84,13 @@ void AddRequestInThread(std::mutex *mutex, std::condition_variable *condition, i
     {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)possionRandom.Random(lambda)));
         std::unique_lock<std::mutex> lock(*mutex);
+
         if (*current_count >= count)
         {
             // to be end.
             break;
         }
+
         tmp = *current_count;
         (*current_count)++;
         lock.unlock();
