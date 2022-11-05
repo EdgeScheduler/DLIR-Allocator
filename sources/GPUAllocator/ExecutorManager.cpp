@@ -74,7 +74,7 @@ void ExecutorManager::AddTask(std::string model_name, std::shared_ptr<std::map<s
 
         // add lock to ensure task in executor and 
         // std::unique_lock<std::mutex> lock(taskMutex);
-        this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime());
+        this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime(),iter->second->executor->GetTaskQueue().Size());
         iter->second->executor->AddTask(datas, tag);
         // lock.unlock();
     }

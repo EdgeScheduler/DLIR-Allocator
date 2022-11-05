@@ -39,6 +39,10 @@ public:
     /// @brief close queue, and pop will throw exception: SYSTEM_CLOSE
     void Close();
 
+    /// @brief get reference of cout
+    /// @return 
+    const int& Size() const;
+
 private:
     /// @brief current item count of queue.
     int size;
@@ -59,6 +63,12 @@ private:
     /// @brief add restrictions on consumer-threads
     std::condition_variable m_notEmpty;
 };
+
+template<class T>
+const int& SafeQueue<T>::Size() const
+{
+    return this->size;
+}
 
 template <class T>
 void SafeQueue<T>::Push(T &x)

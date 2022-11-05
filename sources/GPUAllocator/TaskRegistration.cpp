@@ -13,9 +13,9 @@ TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_va
     // debug[4]=0;
 }
 
-void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime)
+void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int& taskCount)
 {
-    TaskDigest task(name, executeTime, requiredToken, requiredTokenCount, modelExecuteTime);
+    TaskDigest task(name, executeTime, requiredToken, requiredTokenCount, modelExecuteTime, taskCount);
     std::unique_lock<std::mutex> lock(mutex);
 
     if(reduceTime>0)
@@ -134,12 +134,8 @@ void TaskRegistration::TokenDispense()
 
             tokenManager->WaitFree();
             m=this->currentTask.load();
-            // if(m->requiredTokenCount<1)
-            // {
-            //     std::cout<<"bad-----------------"<<std::endl;
-            // }
 
-            bool enableSegmentation=false;
+            bool enableSegmentation=m->taskCount<2;
             next_token = m->GetToken(reduceTime,enableSegmentation); // currentTask is allowed to be update by TaskRegistration::RegisteTask
             // debug[next_token]+=1;
 
