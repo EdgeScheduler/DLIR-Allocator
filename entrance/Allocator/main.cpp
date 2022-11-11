@@ -19,11 +19,6 @@
 
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
-// g++ -DPARALLER_MODE for parallel
-
-// cd /home/onceas/yutian/DLIR-Allocator &&  mkdir -p /home/onceas/yutian/DLIR-Allocator/bin/release/ && g++ -std=c++17 "/home/onceas/yutian/DLIR-Allocator/entrance/Allocator/"main.cpp /home/onceas/yutian/DLIR-Allocator/*/Common/* /home/onceas/yutian/DLIR-Allocator/*/GPUAllocator/* /home/onceas/yutian/DLIR-Allocator/*/Random/* /home/onceas/yutian/DLIR-Allocator/*/Tensor/* /home/onceas/yutian/DLIR-Allocator/*/ThreadSafe/*    -o /home/onceas/yutian/DLIR-Allocator/bin/release/allocator-min -lstdc++fs -lonnxruntime -lpthread
-// cd /home/onceas/yutian/DLIR-Allocator &&  mkdir -p /home/onceas/yutian/DLIR-Allocator/bin/release/ && g++ -DPARALLER_MODE -std=c++17 "/home/onceas/yutian/DLIR-Allocator/entrance/Allocator/"main.cpp /home/onceas/yutian/DLIR-Allocator/*/Common/* /home/onceas/yutian/DLIR-Allocator/*/GPUAllocator/* /home/onceas/yutian/DLIR-Allocator/*/Random/* /home/onceas/yutian/DLIR-Allocator/*/Tensor/* /home/onceas/yutian/DLIR-Allocator/*/ThreadSafe/*  -o /home/onceas/yutian/DLIR-Allocator/bin/release/paraller-min -lstdc++fs -lonnxruntime -lpthread
-
 int main(int argc, char *argv[])
 {
     std::string mode_name;
