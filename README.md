@@ -20,6 +20,40 @@ We find that many types of computing-resources (such as CUDA-GPU and FPGA) have 
   * add `-DPARALLER_MODE` if you only want to mask our allocator mechanism.
 * [nlohmann::json](https://github.com/nlohmann/json) library installed.
 
+## Compile
+
+you can get muti-version by give compiler-flag, `DLIR_MODE` (default), `BNST_MODE`, `FIFO_MODE`, `OYST_MODE` and `PARALLER_MODE` are available.
+
+* `DLIR_MODE`: DLIR mode, to allow auto-split and sort
+* `BNST_MODE`: similar to `DLIR_MODE`, but split is not allowed.
+* `OYST_MODE`: similar to `DLIR_MODE`, but split is forced.
+* `PARALLER_MODE`: run all kinds of task in muti-process.
+* `FIFO_MODE`: run task with FIFO.
+
+1. compile `BNST_MODE` as an example:
+
+  ```shell
+  git clone git@github.com:EdgeScheduler/DLIR-Allocator.git
+
+  cd DLIR-Allocator
+  mkdir -p build && cd build
+  cmake ../ -DCOMPILE_MODE="BNST_MODE"
+  make
+
+  # you can get binary in DLIR-Allocator/bin/release/BNST-Allocator
+  ```
+
+2. Also, you can compile to all version by run script directly:
+
+  ```shell
+  git clone git@github.com:EdgeScheduler/DLIR-Allocator.git
+
+  cd DLIR-Allocator
+  ./scripts/build.sh
+
+  # you can get all binary in DLIR-Allocator/bin/release/*-Allocator
+  ```
+
 ## Surrported
 
 * Operation System
