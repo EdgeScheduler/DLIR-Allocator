@@ -16,6 +16,7 @@ class ModelExecutor
 {
 public:
     ModelExecutor(std::string model_name, Ort::SessionOptions *session_opt, Ort::Env *env, int token_id, TokenManager *token_manager, std::mutex *gpu_mutex, std::condition_variable *deal_task);
+    ~ModelExecutor();
 
     /// @brief add new task to executor by share_ptr
     /// @param datas model inputs
@@ -23,7 +24,7 @@ public:
     void AddTask(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag = "");
 
     /// @brief record current task to the end.
-    void ToNext();
+    void ToNext(bool toEnd=false);
 
     /// @brief Load task args, if not exist, it will come to block.
     void LoadTask();
@@ -47,6 +48,9 @@ public:
     /// @return
     int GetChildModelCount();
 
+    /// @brief close exectutor safely.
+    void CloseExecutor();
+
     SafeQueue<std::shared_ptr<Task>> &GetResultQueue();
     SafeQueue<std::shared_ptr<Task>> &GetTaskQueue();
     std::shared_ptr<std::vector<float>> GetExecuteTime();
@@ -54,6 +58,7 @@ public:
 private:
     int modelCount = 0;
     Ort::Env *onnxruntimeEnv;
+    std::shared_ptr<Ort::Session> rawSession;
     Ort::SessionOptions *sessionOption;
     std::vector<Ort::Session> sessions;
     std::vector<ModelInfo> modelInfos;
@@ -63,6 +68,8 @@ private:
 
     SafeQueue<std::shared_ptr<Task>> task_queue;
     SafeQueue<std::shared_ptr<Task>> finish_queue;
+
+    bool closeExecutor;
 
     int todo;
     std::string modelName;

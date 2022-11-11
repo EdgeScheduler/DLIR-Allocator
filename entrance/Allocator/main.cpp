@@ -1,6 +1,9 @@
 #include <iostream>
 #include <cstdlib>
 #include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <atomic>
 #include <ctime>
 #include <filesystem>
 #include <nlohmann/json.hpp>
@@ -15,97 +18,134 @@
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
 // g++ -DALLOW_GPU_PARALLEL for parallel
-void ReqestGenerate(ExecutorManager* executorManager, std::vector<std::pair<std::string, ModelInputCreator>>* inputCreators,int count,float lambda=30);
-void ReplyGather(ExecutorManager *executorManager,int count);
+
+// cd /home/onceas/yutian/DLIR-Allocator &&  mkdir -p /home/onceas/yutian/DLIR-Allocator/bin/release/ && g++ -std=c++17 "/home/onceas/yutian/DLIR-Allocator/entrance/Allocator/"main.cpp /home/onceas/yutian/DLIR-Allocator/*/Common/* /home/onceas/yutian/DLIR-Allocator/*/GPUAllocator/* /home/onceas/yutian/DLIR-Allocator/*/Random/* /home/onceas/yutian/DLIR-Allocator/*/Tensor/* /home/onceas/yutian/DLIR-Allocator/*/ThreadSafe/*    -o /home/onceas/yutian/DLIR-Allocator/bin/release/allocator-min -lstdc++fs -lonnxruntime -lpthread
+// cd /home/onceas/yutian/DLIR-Allocator &&  mkdir -p /home/onceas/yutian/DLIR-Allocator/bin/release/ && g++ -DALLOW_GPU_PARALLEL -std=c++17 "/home/onceas/yutian/DLIR-Allocator/entrance/Allocator/"main.cpp /home/onceas/yutian/DLIR-Allocator/*/Common/* /home/onceas/yutian/DLIR-Allocator/*/GPUAllocator/* /home/onceas/yutian/DLIR-Allocator/*/Random/* /home/onceas/yutian/DLIR-Allocator/*/Tensor/* /home/onceas/yutian/DLIR-Allocator/*/ThreadSafe/*  -o /home/onceas/yutian/DLIR-Allocator/bin/release/paraller-min -lstdc++fs -lonnxruntime -lpthread
+
+
+void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda = 30);
+void ReplyGather(ExecutorManager *executorManager, int count);
 
 int main(int argc, char *argv[])
 {
-    int dataCount=1000;
-    float lambda=40;
+    int dataCount = 1000;
+    float lambda = 60;
     if (argc >= 2)
     {
-        dataCount=atoi(argv[1]);
+        dataCount = atoi(argv[1]);
     }
     if (argc >= 3)
     {
-        lambda=atoi(argv[2]);
+        lambda = atoi(argv[2]);
     }
 
     ExecutorManager executorManager;
     std::vector<std::pair<std::string, ModelInputCreator>> inputCreators;
 
-    for(auto model_name: {"vgg19","resnet50","googlenet"})
+    for (auto model_name : {"vgg19", "resnet50", "googlenet", "squeezenetv1"})
     {
         nlohmann::json json = JsonSerializer::LoadJson(OnnxPathManager::GetModelParamsSavePath(model_name));
         ModelInfo info(json);
         ModelInputCreator creator(info.GetInput());
         executorManager.RunExecutor(model_name);
-        inputCreators.push_back(std::pair<std::string, ModelInputCreator>(model_name,creator));
+        inputCreators.push_back(std::pair<std::string, ModelInputCreator>(model_name, creator));
     }
+
+    std::thread reqestGenerateThread(ReqestGenerate, &executorManager, &inputCreators, dataCount, lambda);
+    ReplyGather(&executorManager, dataCount);
+
+    executorManager.Close();
     
-    std::thread reqestGenerateThread(ReqestGenerate, &executorManager, &inputCreators,dataCount,lambda);
-    ReplyGather(&executorManager,dataCount);
-    
-    // std::cout<<"process to end."<<std::endl;
-    // exit(0);
     reqestGenerateThread.join();
     executorManager.Join();
-    
+
+    std::cout<<"end ok."<<std::endl;
     return 0;
 }
 
-void ReqestGenerate(ExecutorManager* executorManager, std::vector<std::pair<std::string, ModelInputCreator>>* inputCreators, int count,float lambda)
+void AddRequestInThread(std::mutex *mutex, std::condition_variable *condition, int index, ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda, int *current_count)
 {
-    PossionRandom possionRandom;
-    UniformRandom uniformRandom;
-    std::pair<std::string, ModelInputCreator>* creator=nullptr;
-    std::cout<<"run request generate with possion, and start to prepare random input."<<std::endl;
-    
-    std::vector<std::pair<std::string, DatasType>> datas(count);
-    for(int i=0;i<count;i++)
+    static std::atomic<int> flag=0;
+    PossionRandom possionRandom(index * 100+100);
+    UniformRandom uniformRandom(index * 10+10);
+    std::pair<std::string, ModelInputCreator> *creator = &(*inputCreators)[index];
+    std::vector<std::pair<std::string, DatasType>> datas(20);
+    for (int i = 0; i < 20; i++)
     {
-        float u=uniformRandom.Random();
-        if(u<1.0/3)
-        {
-            creator=&(*inputCreators)[0];
-        }
-        else if(u<2.0/3)
-        {
-            creator=&(*inputCreators)[1];
-        }
-        else
-        {
-            creator=&(*inputCreators)[2];
-        }
-        datas[i]=std::pair<std::string, DatasType>(creator->first,creator->second.CreateInput());
+        datas[i] = std::pair<std::string, DatasType>(creator->first, creator->second.CreateInput());
     }
 
-    std::cout<<"generate request ok, wait system to init..."<<std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(3));
+    flag++;
 
-    std::cout<<"start to send request("<<count<<")."<<std::endl;
-    for(int i=0;i<count;i++)
+    while(flag<inputCreators->size())
     {
-        executorManager->AddTask(datas[i].first, datas[i].second,std::to_string(i));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+    std::cout<<"start to send request for "<<creator->first<<"."<<std::endl;
+
+    int i = 0;
+    int tmp=0;
+    while (true)
+    {
         std::this_thread::sleep_for(std::chrono::milliseconds((int)possionRandom.Random(lambda)));
+        std::unique_lock<std::mutex> lock(*mutex);
+
+        if (*current_count >= count)
+        {
+            // to be end.
+            break;
+        }
+
+        tmp = *current_count;
+        (*current_count)++;
+        lock.unlock();
+        condition->notify_all();
+            executorManager->AddTask(datas[i%20].first, datas[i%20].second, std::to_string(tmp+1));
+        i++;
     }
-    std::cout<<"end send request."<<std::endl;
+    std::cout<<"end send "<<creator->first<<", total: "<<i<<std::endl;
 }
 
-void ReplyGather(ExecutorManager* executorManager,int count)
+void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda)
 {
-    std::cout<<"run reply gather."<<std::endl;
-#ifdef ALLOW_GPU_PARALLEL
-    auto saveFold=RootPathManager::GetRunRootFold() / "data"/"raw";
-#else
-    std::filesystem::path saveFold=RootPathManager::GetRunRootFold() / "data"/"allocator";
-#endif
-    std::filesystem::create_directories(saveFold);
-    auto &applyQueue=executorManager->GetApplyQueue();
-    for(int i=0;i<count;i++)
+    std::cout << "wait system to init..." << std::endl;
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+
+    std::cout << "run request generate with possion, and start to prepare random input." << std::endl;
+    
+    std::condition_variable condition;
+    std::vector<std::shared_ptr<std::thread>> threads;
+    int current_count=0;
+    std::mutex mutex;
+    for(int i=0;i<inputCreators->size();i++)
     {
-        auto task=applyQueue.Pop();
-        JsonSerializer::StoreJson(task->GetDescribe(),saveFold/(std::to_string(i)+".json"));
+        threads.push_back(std::make_shared<std::thread>(AddRequestInThread,&mutex,&condition,i,executorManager,inputCreators,count,lambda,&current_count));
     }
-    std::cout<<"all apply for "<<count<<" task received."<<std::endl;
+
+    for(auto thread: threads)
+    {
+        thread->join();
+    }
+
+    std::cout << "end send request." << std::endl;
+}
+
+void ReplyGather(ExecutorManager *executorManager, int count)
+{
+    std::cout << "run reply gather." << std::endl;
+#ifdef ALLOW_GPU_PARALLEL
+    auto saveFold = RootPathManager::GetRunRootFold() / "data" / "raw";
+#else
+    std::filesystem::path saveFold = RootPathManager::GetRunRootFold() / "data" / "allocator";
+#endif
+
+    std::filesystem::remove_all(saveFold);
+    std::filesystem::create_directories(saveFold);
+    auto &applyQueue = executorManager->GetApplyQueue();
+    for (int i = 0; i < count; i++)
+    {
+        auto task = applyQueue.Pop();
+        JsonSerializer::StoreJson(task->GetDescribe(), saveFold / (std::to_string(i) + ".json"));
+    }
+    std::cout << "all apply for " << count << " task received." << std::endl;
 }

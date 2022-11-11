@@ -5,12 +5,12 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-
+#include "../Common/DILException.h"
 template <class T>
 class SafeQueue
 {
 public:
-    SafeQueue(int capacity = -1) : capacity(capacity), size(0)  {}
+    SafeQueue(int capacity = -1) : capacity(capacity), size(0),closeQueue(false)  {}
     ~SafeQueue() {}
 
     /// @brief returns a read/write reference to the data at the front-element of the qeque.
@@ -36,12 +36,22 @@ public:
     /// @return
     bool Full() const;
 
+    /// @brief close queue, and pop will throw exception: SYSTEM_CLOSE
+    void Close();
+
+    /// @brief get reference of cout
+    /// @return 
+    const int& Size() const;
+
 private:
     /// @brief current item count of queue.
     int size;
 
     /// @brief the capacity of queue, -1 means no limit.
     int capacity;
+
+    /// @brief end pop
+    int closeQueue;
 
     /// @brief used to save items.
     std::deque<T> dequeDatas;
@@ -54,12 +64,25 @@ private:
     std::condition_variable m_notEmpty;
 };
 
+template<class T>
+const int& SafeQueue<T>::Size() const
+{
+    return this->size;
+}
+
 template <class T>
 void SafeQueue<T>::Push(T &x)
 {
     std::unique_lock<std::mutex> lock(mutex);
     m_notFull.wait(lock, [this]() -> bool
-                   { return capacity < 0 || size < capacity; });
+                   { return capacity < 0 || size < capacity || closeQueue; });
+    
+    if(closeQueue)
+    {
+        lock.unlock();
+        throw DILException::SYSTEM_CLOSE;
+    }
+
     dequeDatas.push_back(x);
     size++;
 
@@ -74,7 +97,14 @@ void SafeQueue<T>::Emplace(T &&x)
 {
     std::unique_lock<std::mutex> lock(mutex);
     m_notFull.wait(lock, [this]() -> bool
-                   { return capacity < 0 || size < capacity; });
+                   { return capacity < 0 || size < capacity || closeQueue; });
+                   
+    if(closeQueue)
+    {
+        lock.unlock();
+        throw DILException::SYSTEM_CLOSE;
+    }
+
     dequeDatas.emplace_back(std::move(x));
     size++;
 
@@ -85,11 +115,18 @@ void SafeQueue<T>::Emplace(T &&x)
 }
 
 template <class T>
-T SafeQueue<T>::Pop()
+T SafeQueue<T>::Pop() noexcept(false)
 {
     std::unique_lock<std::mutex> lock(mutex);
     m_notEmpty.wait(lock, [this]() -> bool
-                    { return size > 0; });
+                    { return size > 0 || closeQueue; });
+                    
+    if(closeQueue)
+    {
+        lock.unlock();
+        throw DILException::SYSTEM_CLOSE;
+    }
+
     T front = std::move(dequeDatas.front());
     dequeDatas.pop_front();
     size--;
@@ -107,7 +144,14 @@ T &SafeQueue<T>::front()
 {
     std::unique_lock<std::mutex> lock(mutex);
     m_notEmpty.wait(lock, [this]() -> bool
-                    { return size > 0; });
+                    { return size > 0 || closeQueue; });
+                    
+    if(closeQueue)
+    {
+        lock.unlock();
+        throw DILException::SYSTEM_CLOSE;
+    }
+
     lock.unlock();
 
     return dequeDatas.front();
@@ -124,6 +168,14 @@ bool SafeQueue<T>::Full() const
 {
     // if capacity==-1, always return false.
     return size >= capacity;
+}
+
+template <class T>
+void SafeQueue<T>::Close()
+{
+    this->closeQueue=true;
+    m_notFull.notify_all();
+    m_notEmpty.notify_all();
 }
 
 #endif // __SAFEQUEUE_H__

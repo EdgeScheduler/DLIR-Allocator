@@ -23,6 +23,7 @@ struct ExecutorDescribe
     std::shared_ptr<std::thread> resultGatherThread;
 };
 
+/// @brief 
 class ExecutorManager
 {
 public:
@@ -61,6 +62,9 @@ public:
     /// @brief returns a read/write reference Queue to the apply of all the request that have been finished.
     SafeQueue<std::shared_ptr<Task>>& GetApplyQueue();
 
+    /// @brief close executor-manager safely
+    void Close();
+
 private:
     Ort::SessionOptions sessionOption;
     Ort::Env environment;
@@ -68,6 +72,7 @@ private:
     TokenManager tokenManager;        // must define before taskRegistration
     int executorCount;
     std::mutex gpuMutex;
+    std::mutex taskMutex;
 
     TaskRegistration taskRegistration; // must define after tokenManager and dealTask
 

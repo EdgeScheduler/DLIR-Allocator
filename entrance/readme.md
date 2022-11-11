@@ -1,1 +1,1 @@
-The component starts from here.
+The component starts from here

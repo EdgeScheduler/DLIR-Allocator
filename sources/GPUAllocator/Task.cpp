@@ -101,7 +101,7 @@ nlohmann::json Task::GetDescribe()
     obj["tag"] = tag;
     obj["model_name"] = modelName;
     obj["recv_time"] = startTime;
-    obj["finish_time"] = startTime;
+    obj["finish_time"] = endTime;
     obj["total_cost_by_ms"] = this->TimeCost();
     obj["child_model_execute_cost_by_ms"] = this->GetTimeCostsByMs();
     obj["child_model_run_time"] = this->GetTimeCosts();

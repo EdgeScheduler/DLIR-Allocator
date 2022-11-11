@@ -1,6 +1,6 @@
 #include "../../include/GPUAllocator/TaskDigest.h"
 
-TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, float penaltyValue) : executeTime(executeTime), requiredToken(requiredToken), requiredTokenCount(requiredTokenCount), limitRuntime(modelExecuteTime), leftRuntime(0.0F), name(name)
+TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, float penaltyValue) : executeTime(executeTime), requiredToken(requiredToken), requiredTokenCount(requiredTokenCount), limitRuntime(modelExecuteTime), leftRuntime(0.0F), name(name), childsRuntime(0.0F), childsCount(requiredTokenCount),taskCount(taskCount)
 {
     this->startTime = clock();
     this->penaltyValue = penaltyValue;
@@ -9,6 +9,8 @@ TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> exe
     {
         this->leftRuntime+=cost;
     }
+
+    this->childsRuntime=this->leftRuntime;
 }
 
 float TaskDigest::GetSLO()
@@ -23,7 +25,7 @@ float TaskDigest::Evaluate(float waitTime)
 {
     if (this->requiredTokenCount <= 0)
     {
-        return 2.0F;
+        return 1.0F;
     }
 
     waitTime += (clock() - startTime) / CLOCKS_PER_SEC * 1000.0F + leftRuntime;
@@ -33,28 +35,40 @@ float TaskDigest::Evaluate(float waitTime)
 
     if (waitTime > slo)
     {
-        value += penaltyValue;
+        value = 1.0/(value+penaltyValue);
     }
 
     return value;
 }
 
-int TaskDigest::GetToken(float& reduceTime)
+int TaskDigest::GetToken(float& reduceTime,bool &enableSegmentation)
 {
     if (this->requiredTokenCount < 1)
     {
         reduceTime=0.0F;
-        return -1;
+        return 0;
     }
     else
     {
-        reduceTime=(*executeTime)[requiredTokenCount-1];
-        this->leftRuntime-=reduceTime;
-        this->requiredTokenCount -= 1;
-        if(this->requiredTokenCount<1)
+        if(enableSegmentation || this->requiredTokenCount<this->childsCount)
         {
-            this->leftRuntime=0.0F;
+            enableSegmentation=true;
+            reduceTime=(*executeTime)[requiredTokenCount-1];
+            this->leftRuntime-=reduceTime;
+            this->requiredTokenCount -= 1;
+            if(this->requiredTokenCount<1)
+            {
+                this->leftRuntime=0.0F;
+            }
         }
+        else
+        {
+            // disable segment
+            reduceTime=this->childsRuntime;
+            this->leftRuntime=0;
+            this->requiredTokenCount=0;
+        }
+        
         return this->requiredToken;
     }
 }

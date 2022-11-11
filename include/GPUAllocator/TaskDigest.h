@@ -9,20 +9,20 @@
 class TaskDigest
 {
 public:
-    /// @brief 
+    /// @brief
     /// @param executeTime each child-model execute-time(ms).
-    /// @param requiredToken 
-    /// @param requiredTokenCount how many child-models there is   
-    /// @param modelExecuteTime 
-    /// @param penaltyValue 
-    TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime,float penaltyValue=-0.3);
+    /// @param requiredToken
+    /// @param requiredTokenCount how many child-models there is
+    /// @param modelExecuteTime
+    /// @param penaltyValue
+    TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, float penaltyValue = -1.0);
 
 public:
     /// @brief calculate SLO-time(ms)
-    /// @return 
+    /// @return
     float GetSLO();
 
-    /// @brief evaluate the score to the current wait-time, better choice face to higher score. 
+    /// @brief evaluate the score to the current wait-time, better choice face to higher score.
     /// @param waitTime how long the task still need to in-queue. (ms)
     /// @return score<=1.0. If score>1, it means this task had been finished before.
     float Evaluate(float waitTime);
@@ -31,26 +31,29 @@ public:
 
     /// @brief Get new Token
     /// @param reduceTime used to return how long this task reduce
-    /// @return -1 if there is no need.
-    int GetToken(float& reduceTime);
+    /// @param enableSegmentation if false, will try to disable model-segment. set value to true if fail.
+    /// @return 0 if there is no need.
+    int GetToken(float &reduceTime, bool &enableSegmentation);
 
-    
     /// @brief get sequence info.
-    /// @return 
-    std::string GetInfo(int offset=0);
+    /// @return
+    std::string GetInfo(int offset = 0);
 
 public:
     int requiredToken;
     int requiredTokenCount;
+    int childsCount;
+    const int& taskCount;
 
 private:
     std::string name;
     clock_t startTime;
-    std::shared_ptr<std::vector<float>> executeTime; // executeTime[0] is the last child-model run-time cost
-    
+    std::shared_ptr<std::vector<float>> executeTime;
+
     float leftRuntime;
     float &limitRuntime;
     float penaltyValue;
+    float childsRuntime;
 };
 
 #endif // __TASKDIGEST_H__
