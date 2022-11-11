@@ -7,7 +7,6 @@
 #include <ctime>
 #include <filesystem>
 #include <nlohmann/json.hpp>
-#include "GPUAllocator/ExecutorManager.h"
 #include "Tensor/TensorValue.hpp"
 #include "Common/JsonSerializer.h"
 #include "Tensor/ModelInputCreator.h"
@@ -16,6 +15,7 @@
 #include "Random/PossionRandom.h"
 #include "GPUAllocator/ModeCheck.h"
 #include "TaskGenerate.h"
+#include "GPUAllocator/ExecutorManager.h"
 
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 

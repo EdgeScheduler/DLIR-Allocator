@@ -1,6 +1,6 @@
 #include <nlohmann/json.hpp>
 #include <iostream>
-#include "../include/Tensor/ModelTensorsInfo.h"
+#include "Tensor/ModelTensorsInfo.h"
 using namespace std;
 
 int main()

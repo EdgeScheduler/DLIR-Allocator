@@ -1,11 +1,11 @@
 #include <iostream>
 #include <cstdlib>
 #include <nlohmann/json.hpp>
-#include "../include/GPUAllocator/ExecutorManager.h"
-#include "../include/Tensor/TensorValue.hpp"
-#include "../include/Common/JsonSerializer.h"
-#include "../include/Tensor/ModelInputCreator.h"
-#include "../include/Common/PathManager.h"
+#include "GPUAllocator/ExecutorManager.h"
+#include "Tensor/TensorValue.hpp"
+#include "Common/JsonSerializer.h"
+#include "Tensor/ModelInputCreator.h"
+#include "Common/PathManager.h"
 using namespace std;
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 

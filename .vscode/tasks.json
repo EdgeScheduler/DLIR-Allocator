@@ -32,15 +32,18 @@
                 "-fdiagnostics-color=always",
                 "-g",
                 "${file}",
-                "${workspaceFolder}/include/*/*",
-                "${workspaceFolder}/sources/*/*",
-                "${workspaceFolder}/entrance/test/*",
+                "-I",
+                "${workspaceFolder}/include",
+                "-I",
+                "${workspaceFolder}/testlib",
+                "${workspaceFolder}/sources/*/*.cpp",
+                "${workspaceFolder}/testlib/*.cpp",
                 "-o",
                 "${workspaceRoot}/bin/debug/${fileBasenameNoExtension}",
                 "-lstdc++fs",
                 "-lonnxruntime",
                 "-lpthread",
-            ],
+            ],//g++ -std=c++17  /home/onceas/yutian/DLIR-Allocator/entrance/Allocator/main.cpp -I /home/onceas/yutian/DLIR-Allocator/include -I /home/onceas/yutian/DLIR-Allocator/testlib /home/onceas/yutian/DLIR-Allocator/sources/*/*.cpp /home/onceas/yutian/DLIR-Allocator/testlib/*.cpp  -o /home/onceas/yutian/DLIR-Allocator/bin/debug/main -lstdc++fs -lonnxruntime -lpthread
             "options": {
                 "cwd": "${fileDirname}"
             },

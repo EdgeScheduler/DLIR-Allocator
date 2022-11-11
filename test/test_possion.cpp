@@ -1,4 +1,4 @@
-#include "../include/Random/PossionRandom.h"
+#include "Random/PossionRandom.h"
 
 #include <iostream>
 using namespace std;

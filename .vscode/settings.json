@@ -90,15 +90,25 @@
   ],
   "C_Cpp_Runner.enableWarnings": true,
   "C_Cpp_Runner.warningsAsError": false,
-  "C_Cpp_Runner.compilerArgs": [],
-  "C_Cpp_Runner.linkerArgs": [],
+  "C_Cpp_Runner.compilerArgs": [
+    "-std=c++17"
+  ],
+  "C_Cpp_Runner.linkerArgs": [
+    "-lstdc++fs",
+    "-lonnxruntime",
+    "-lpthread"
+  ],
   "C_Cpp_Runner.includePaths": [
-    "${workspaceFolder}/include/*/*",
-    "${workspaceFolder}/sources/*/*"
+    "${workspaceFolder}/include/**",
+    "${workspaceFolder}/sources/**",
+    "${workspaceFolder}/testlib/**"
   ],
   "C_Cpp_Runner.includeSearch": [
     "*",
-    "**/*"
+    "**/*",
+    "${workspaceFolder}/include/**",
+    "${workspaceFolder}/sources/**",
+    "${workspaceFolder}/testlib/**"
   ],
   "C_Cpp_Runner.excludeSearch": [
     "**/build",

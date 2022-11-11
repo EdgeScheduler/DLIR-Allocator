@@ -1,8 +1,8 @@
 #include <iostream>
-#include "../include/Common/Drivers.h"
-#include "../include/Common/PathManager.h"
-#include "../include/Common/JsonSerializer.h"
-#include "../include/Tensor/TensorValue.hpp"
+#include "Common/Drivers.h"
+#include "Common/PathManager.h"
+#include "Common/JsonSerializer.h"
+#include "Tensor/TensorValue.hpp"
 
 using namespace std;
 
