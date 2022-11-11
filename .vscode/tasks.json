@@ -34,7 +34,7 @@
                 "${file}",
                 "${workspaceFolder}/include/*/*",
                 "${workspaceFolder}/sources/*/*",
-                "${workspaceFolder}/library/*",
+                "${workspaceFolder}/entrance/test/*",
                 "-o",
                 "${workspaceRoot}/bin/debug/${fileBasenameNoExtension}",
                 "-lpython3.6m",
