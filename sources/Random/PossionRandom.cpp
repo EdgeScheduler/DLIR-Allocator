@@ -1,4 +1,4 @@
-#include "../../include/Random/PossionRandom.h"
+#include "Random/PossionRandom.h"
 
 PossionRandom::PossionRandom(unsigned int seed): engin(seed),uniform_creator(0,1)
 {

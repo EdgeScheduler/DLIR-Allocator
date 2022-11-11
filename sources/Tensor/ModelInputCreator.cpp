@@ -1,4 +1,4 @@
-#include "../../include/Tensor/ModelInputCreator.h"
+#include "Tensor/ModelInputCreator.h"
 
 ModelInputCreator::ModelInputCreator(const TensorsInfo &tensorsInfo) : tensorsInfo(tensorsInfo)
 {

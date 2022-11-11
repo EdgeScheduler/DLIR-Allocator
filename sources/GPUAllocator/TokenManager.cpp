@@ -1,5 +1,5 @@
-#include "../../include/GPUAllocator/TokenManager.h"
-#include "../../include/Common/DILException.h"
+#include "GPUAllocator/TokenManager.h"
+#include "Common/DILException.h"
 #include <iostream>
 TokenManager::TokenManager() : flag(-1), runningLock(nullptr),closeTokenManager(false)
 {

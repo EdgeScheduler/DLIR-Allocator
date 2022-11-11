@@ -1,5 +1,5 @@
-#include "../../include/Common/Serializability.h"
-#include "../../include/Common/JsonSerializer.h"
+#include "Common/Serializability.h"
+#include "Common/JsonSerializer.h"
 
 void Serializability::LoadFromJsonFile(const std::filesystem::path &path)
 {

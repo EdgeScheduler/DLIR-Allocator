@@ -1,6 +1,6 @@
 #include <cassert>
 
-#include "../../include/GPUAllocator/Task.h"
+#include "GPUAllocator/Task.h"
 
 Task::Task(std::string modelName,float limitCost, std::shared_ptr<ModelInfo> modelInfo, std::string tag) : limitCost(limitCost),modelName(modelName), tag(tag), modelInfo(modelInfo) {}
 

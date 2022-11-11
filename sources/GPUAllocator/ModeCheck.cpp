@@ -1,4 +1,4 @@
-#include "../../include/GPUAllocator/ModeCheck.h"
+#include "GPUAllocator/ModeCheck.h"
 
 bool ModelCheck(std::string &mode)
 {

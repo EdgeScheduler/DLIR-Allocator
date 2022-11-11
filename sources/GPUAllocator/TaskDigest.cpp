@@ -1,4 +1,4 @@
-#include "../../include/GPUAllocator/TaskDigest.h"
+#include "GPUAllocator/TaskDigest.h"
 
 TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, float penaltyValue) : executeTime(executeTime), requiredToken(requiredToken), requiredTokenCount(requiredTokenCount), limitRuntime(modelExecuteTime), leftRuntime(0.0F), name(name), childsRuntime(0.0F), childsCount(requiredTokenCount),taskCount(taskCount)
 {

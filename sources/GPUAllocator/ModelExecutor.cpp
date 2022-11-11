@@ -1,8 +1,8 @@
-#include "../../include/GPUAllocator/ModelExecutor.h"
-#include "../../include/Common/JsonSerializer.h"
-#include "../../include/Common/PathManager.h"
-#include "../../include/Tensor/ModelInputCreator.h"
-#include "../../include/Common/DILException.h"
+#include "GPUAllocator/ModelExecutor.h"
+#include "Common/JsonSerializer.h"
+#include "Common/PathManager.h"
+#include "Tensor/ModelInputCreator.h"
+#include "Common/DILException.h"
 #include <vector>
 #include <iostream>
 #include <ctime>

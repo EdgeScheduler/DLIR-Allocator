@@ -1,4 +1,4 @@
-#include "../../include/Tensor/ModelTensorsInfo.h"
+#include "Tensor/ModelTensorsInfo.h"
 #include <iostream>
 #include <string>
 // TensorsInfo

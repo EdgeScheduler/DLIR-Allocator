@@ -1,4 +1,4 @@
-#include "../../include/Common/PathManager.h"
+#include "Common/PathManager.h"
 
 #include <cstdio>
 #include <unistd.h>

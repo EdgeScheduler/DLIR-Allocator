@@ -1,8 +1,8 @@
-#include "../../include/GPUAllocator/TaskRegistration.h"
+#include "GPUAllocator/TaskRegistration.h"
 #include <iostream>
 #include <algorithm>
 #include <thread>
-#include "../../include/Common/DILException.h"
+#include "Common/DILException.h"
 
 TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr), closeRegistration(false), reduceTime(0.0F)
 {
