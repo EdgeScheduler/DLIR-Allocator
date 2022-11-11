@@ -6,7 +6,7 @@
 #include <ostream>
 #include <onnxruntime_cxx_api.h>
 #include <nlohmann/json.hpp>
-#include "../Common/Serializability.h"
+#include "Common/Serializability.h"
 
 namespace OnnxValueType
 {

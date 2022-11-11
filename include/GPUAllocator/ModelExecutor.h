@@ -7,8 +7,8 @@
 #include <memory>
 #include <condition_variable>
 #include <map>
-#include "../ThreadSafe/SafeQueue.hpp"
-#include "../Tensor/ModelTensorsInfo.h"
+#include "ThreadSafe/SafeQueue.hpp"
+#include "Tensor/ModelTensorsInfo.h"
 #include "TokenManager.h"
 #include "Task.h"
 

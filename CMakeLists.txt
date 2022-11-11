@@ -14,7 +14,7 @@ elseif(CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
     SET(EXECUTABLE_OUTPUT_PATH "${DLIR_ALLOCATOR_SOURCE_DIR}/bin/release")
 endif()
 
-include_directories("include")
+include_directories("include" "testlib")
 
 SET(DLIR_Allocator_BIN "DLIR-Allocator")
 set(OYST_MODE_BIN "OYST-Allocator")
@@ -26,15 +26,9 @@ add_subdirectory("sources/Common" "Libs/Common")
 add_subdirectory("sources/GPUAllocator" "Libs/Allocator")
 add_subdirectory("sources/Random" "Libs/Random")
 add_subdirectory("sources/Tensor" "Libs/Tensor")
-add_subdirectory("entrance/test" "Libs/test")
+add_subdirectory("testlib" "Libs/TestLib")
 
 aux_source_directory("entrance/Allocator" DLIR_SRCS)
 
-link_libraries(
-    stdc++fs
-    onnxruntime
-    pthread
-)
-
 add_executable(${DLIR_Allocator_BIN} ${DLIR_SRCS})
-target_link_libraries(${DLIR_Allocator_BIN} test allocator tensor common random)
+target_link_libraries(${DLIR_Allocator_BIN} test allocator tensor common random stdc++fs onnxruntime pthread)

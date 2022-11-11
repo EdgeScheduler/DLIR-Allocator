@@ -12,7 +12,7 @@
 #include "TokenManager.h"
 #include "ModelExecutor.h"
 #include "TaskRegistration.h"
-#include "../ThreadSafe/SafeQueue.hpp"
+#include "ThreadSafe/SafeQueue.hpp"
 
 struct ExecutorDescribe
 {

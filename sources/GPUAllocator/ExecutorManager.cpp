@@ -1,5 +1,5 @@
-#include "../../include/GPUAllocator/ExecutorManager.h"
-#include "../../include/Common/Drivers.h"
+#include "GPUAllocator/ExecutorManager.h"
+#include "Common/Drivers.h"
 #include <iostream>
 
 ExecutorManager::ExecutorManager() : environment(ORT_LOGGING_LEVEL_WARNING, "test"), executorCount(0), tokenManager(), taskRegistration(&tokenManager, &dealTask)

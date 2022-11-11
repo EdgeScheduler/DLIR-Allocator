@@ -37,12 +37,9 @@
                 "${workspaceFolder}/entrance/test/*",
                 "-o",
                 "${workspaceRoot}/bin/debug/${fileBasenameNoExtension}",
-                "-lpython3.6m",
                 "-lstdc++fs",
                 "-lonnxruntime",
-                "-lprotobuf",
                 "-lpthread",
-                "-lpython3.6m"
             ],
             "options": {
                 "cwd": "${fileDirname}"

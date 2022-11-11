@@ -3,9 +3,8 @@
     {
       "name": "linux-gcc-x64",
       "includePath": [
-        "${workspaceFolder}/**",
-        "${workspaceFolder}/include/*/*",
-        "${workspaceFolder}/entrance/test/*"
+        "${workspaceFolder}/include",
+        "${workspaceFolder}/entrance"
       ],
       "defines": [],
       "compilerPath": "/usr/bin/gcc",
