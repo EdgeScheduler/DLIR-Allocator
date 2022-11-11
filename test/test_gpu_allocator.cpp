@@ -9,7 +9,7 @@
 using namespace std;
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
-// g++ -DALLOW_GPU_PARALLEL for parallel
+// g++ -DPARALLER_MODE for parallel
 int main(int argc, char *argv[])
 {
     int tokens[] = {3, 3, 2, 2, 2, 1, 1, 2, 1, 1, 1, 1};
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
         executorManager.AddTask("googlenet", googlenetDatas[i], std::to_string(i));
     }
 
-#ifndef ALLOW_GPU_PARALLEL
+#ifndef PARALLER_MODE
     // cout << "use token:";
     // for (int token : tokens)
     // {

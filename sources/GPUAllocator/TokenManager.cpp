@@ -9,7 +9,7 @@ void TokenManager::Release()
 {
     this->flag = -1;
 
-#ifndef ALLOW_GPU_PARALLEL
+#ifndef PARALLER_MODE
     if (runningLock)
     {
         runningLock->unlock();
@@ -33,7 +33,7 @@ bool TokenManager::Grant(int token, bool enableSegmentation)
         return true;
     }
 
-#ifndef ALLOW_GPU_PARALLEL
+#ifndef PARALLER_MODE
     std::unique_lock<std::mutex> lock(mutex);
     needNewToken.wait(lock, [this]() -> bool
                       { return this->flag < 0|| closeTokenManager; });
@@ -78,7 +78,7 @@ std::condition_variable &TokenManager::NeedNewToken()
 
 void TokenManager::WaitFree()
 {
-#ifndef ALLOW_GPU_PARALLEL
+#ifndef PARALLER_MODE
     std::unique_lock<std::mutex> lock(runningMutex);
     lock.unlock();
     needNewToken.notify_all();

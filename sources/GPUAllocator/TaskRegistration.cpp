@@ -4,7 +4,7 @@
 #include <thread>
 #include "../../include/Common/DILException.h"
 
-TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr), closeRegistration(false),reduceTime(0.0F)
+TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr), closeRegistration(false), reduceTime(0.0F)
 {
     // debug[0]=0;
     // debug[1]=0;
@@ -13,18 +13,18 @@ TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_va
     // debug[4]=0;
 }
 
-void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int& taskCount)
+void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount)
 {
     TaskDigest task(name, executeTime, requiredToken, requiredTokenCount, modelExecuteTime, taskCount);
     std::unique_lock<std::mutex> lock(mutex);
 
-    if(reduceTime>0)
+    if (reduceTime > 0)
     {
-        queueLength-=reduceTime;
-        reduceTime=0.0F;
+        queueLength -= reduceTime;
+        reduceTime = 0.0F;
     }
 
-#ifdef ALLOW_GPU_PARALLEL
+#ifdef PARALLER_MODE
     tasks.push_front(task);
     this->queueLength += task.LeftRunTime();
 #else
@@ -37,13 +37,20 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
     else
     {
         float total_wait = queueLength;
-        for (auto iter = tasks.begin(); iter != tasks.end(); )
+        for (auto iter = tasks.begin(); iter != tasks.end();)
         {
-            if(iter->requiredTokenCount<1)
+            if (iter->requiredTokenCount < 1)
             {
-                iter=tasks.erase(iter);
+                iter = tasks.erase(iter);
                 continue;
             }
+
+#ifdef FIFO_MODE
+            tasks.insert(iter, std::move(task));
+            goto SCHEDULE;
+
+#endif // DEBUG
+
             // it is not possible to insert before same type of task.
             if (iter->requiredToken == requiredToken)
             {
@@ -76,7 +83,7 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
     }
 
 SCHEDULE:
-#endif // ALLOW_GPU_PARALLEL
+#endif // PARALLER_MODE
     // to release lock;
     this->queueLength = this->queueLength + task.LeftRunTime();
     // std::cout<<"add: "<<task.LeftRunTime()<<std::endl;
@@ -91,18 +98,18 @@ void TaskRegistration::TokenDispense()
     {
         int next_token = 0;
 
-        if(reduceTime>0)
+        if (reduceTime > 0)
         {
             std::unique_lock<std::mutex> lock(mutex);
-            queueLength-=reduceTime;
-            reduceTime=0.0F;
+            queueLength -= reduceTime;
+            reduceTime = 0.0F;
             lock.unlock();
         }
 
         while (true)
         {
             // std::unique_lock<std::mutex> lock(mutex);
-            auto m=this->currentTask.load();
+            auto m = this->currentTask.load();
             if (m == nullptr || m->requiredTokenCount < 1)
             {
                 // to read valid task
@@ -117,7 +124,7 @@ void TaskRegistration::TokenDispense()
                         throw DILException::SYSTEM_CLOSE;
                     }
 
-                    m=&tasks.back();
+                    m = &tasks.back();
                     if (m->requiredTokenCount < 1)
                     {
                         tasks.pop_back();
@@ -133,19 +140,28 @@ void TaskRegistration::TokenDispense()
             }
 
             tokenManager->WaitFree();
-            m=this->currentTask.load();
+            m = this->currentTask.load();
 
-            bool enableSegmentation=m->taskCount<2;
-            next_token = m->GetToken(reduceTime,enableSegmentation); // currentTask is allowed to be update by TaskRegistration::RegisteTask
+            bool enableSegmentation = m->taskCount < 2;
+
+#if (defined(FIFO_MODE) || defined(BNST_MODE))
+            enableSegmentation = false;
+#endif
+
+#ifdef OYST_MODE
+            enableSegmentation = true;
+#endif
+
+            next_token = m->GetToken(reduceTime, enableSegmentation); // currentTask is allowed to be update by TaskRegistration::RegisteTask
             // debug[next_token]+=1;
 
             tokenManager->Grant(next_token, enableSegmentation);
 
-            while(true)
+            while (true)
             {
                 this->dealTask->notify_all();
                 std::this_thread::sleep_for(std::chrono::microseconds(5));
-                if(tokenManager->GetFlag()<1)
+                if (tokenManager->GetFlag() < 1)
                 {
                     break;
                 }
@@ -168,6 +184,6 @@ void TaskRegistration::TokenDispense()
 
 void TaskRegistration::CloseRegistration()
 {
-    this->closeRegistration=true;
+    this->closeRegistration = true;
     this->m_notEmpty.notify_all();
 }

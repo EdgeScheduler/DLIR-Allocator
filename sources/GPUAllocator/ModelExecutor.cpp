@@ -215,7 +215,7 @@ bool ModelExecutor::RunOnce()
         return true;
     }
 
-#ifndef ALLOW_GPU_PARALLEL
+#ifndef PARALLER_MODE
     std::unique_lock<std::mutex> lock(*gpuMutex);
     dealTask->wait(lock, [this]() -> bool
                    { return (this->tokenManager->GetFlag() >> 1) == tokenID || closeExecutor; });
@@ -250,14 +250,14 @@ bool ModelExecutor::RunOnce()
 #else
     Ort::Session *runSession = this->rawSession.get();
     current_task->_output_labels = &this->outputLabels[this->modelCount - 1];
-#endif // !ALLOW_GPU_PARALLEL
+#endif // !PARALLER_MODE
 
     clock_t start = clock();
     // here may need to consider release old current_task->_input_datas if this->todo>0
     current_task->_input_datas = runSession->Run(Ort::RunOptions{nullptr}, current_task->_input_labels->data(), current_task->_input_datas.data(), current_task->_input_labels->size(), current_task->_output_labels->data(), current_task->_output_labels->size());
     current_task->RecordTimeCosts(start, clock());
 
-#ifndef ALLOW_GPU_PARALLEL
+#ifndef PARALLER_MODE
     this->tokenManager->Release();
     if (rawRun)
     {
@@ -300,7 +300,7 @@ void ModelExecutor::RunCycle()
     {
         if (gpuMutex == nullptr || tokenManager == nullptr)
         {
-            std::cout << "you give no device-mutex and token-manager info, system exit. This mode is only only allow while compiler with \"-DALLOW_GPU_PARALLEL\"" << std::endl;
+            std::cout << "you give no device-mutex and token-manager info, system exit. This mode is only only allow while compiler with \"-DPARALLER_MODE\"" << std::endl;
             return;
         }
         while (true)

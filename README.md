@@ -17,7 +17,7 @@ We find that many types of computing-resources (such as CUDA-GPU and FPGA) have 
   * `-lonnxruntime`
   * `-lprotobuf`
   * `-lpthread`
-  * add `-DALLOW_GPU_PARALLEL` if you only want to mask our allocator mechanism.
+  * add `-DPARALLER_MODE` if you only want to mask our allocator mechanism.
 * [nlohmann::json](https://github.com/nlohmann/json) library installed.
 
 ## Surrported

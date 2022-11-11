@@ -14,22 +14,30 @@
 #include "../../include/Common/PathManager.h"
 #include "../../include/Random/UniformRandom.h"
 #include "../../include/Random/PossionRandom.h"
+#include "../../include/GPUAllocator/ModeCheck.h"
+#include "../test/TaskGenerate.h"
 
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
-// g++ -DALLOW_GPU_PARALLEL for parallel
+// g++ -DPARALLER_MODE for parallel
 
 // cd /home/onceas/yutian/DLIR-Allocator &&  mkdir -p /home/onceas/yutian/DLIR-Allocator/bin/release/ && g++ -std=c++17 "/home/onceas/yutian/DLIR-Allocator/entrance/Allocator/"main.cpp /home/onceas/yutian/DLIR-Allocator/*/Common/* /home/onceas/yutian/DLIR-Allocator/*/GPUAllocator/* /home/onceas/yutian/DLIR-Allocator/*/Random/* /home/onceas/yutian/DLIR-Allocator/*/Tensor/* /home/onceas/yutian/DLIR-Allocator/*/ThreadSafe/*    -o /home/onceas/yutian/DLIR-Allocator/bin/release/allocator-min -lstdc++fs -lonnxruntime -lpthread
-// cd /home/onceas/yutian/DLIR-Allocator &&  mkdir -p /home/onceas/yutian/DLIR-Allocator/bin/release/ && g++ -DALLOW_GPU_PARALLEL -std=c++17 "/home/onceas/yutian/DLIR-Allocator/entrance/Allocator/"main.cpp /home/onceas/yutian/DLIR-Allocator/*/Common/* /home/onceas/yutian/DLIR-Allocator/*/GPUAllocator/* /home/onceas/yutian/DLIR-Allocator/*/Random/* /home/onceas/yutian/DLIR-Allocator/*/Tensor/* /home/onceas/yutian/DLIR-Allocator/*/ThreadSafe/*  -o /home/onceas/yutian/DLIR-Allocator/bin/release/paraller-min -lstdc++fs -lonnxruntime -lpthread
-
-
-void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda = 30);
-void ReplyGather(ExecutorManager *executorManager, int count);
+// cd /home/onceas/yutian/DLIR-Allocator &&  mkdir -p /home/onceas/yutian/DLIR-Allocator/bin/release/ && g++ -DPARALLER_MODE -std=c++17 "/home/onceas/yutian/DLIR-Allocator/entrance/Allocator/"main.cpp /home/onceas/yutian/DLIR-Allocator/*/Common/* /home/onceas/yutian/DLIR-Allocator/*/GPUAllocator/* /home/onceas/yutian/DLIR-Allocator/*/Random/* /home/onceas/yutian/DLIR-Allocator/*/Tensor/* /home/onceas/yutian/DLIR-Allocator/*/ThreadSafe/*  -o /home/onceas/yutian/DLIR-Allocator/bin/release/paraller-min -lstdc++fs -lonnxruntime -lpthread
 
 int main(int argc, char *argv[])
 {
+    std::string mode_name;
+    if(ModelCheck(mode_name))
+    {
+        std::cout<<"Run mode:"<<mode_name<<std::endl;
+    }
+    else
+    {
+        std::cout<<"error mode, please compile your binary with correct args."<<std::endl;
+        return 0;
+    }
     int dataCount = 1000;
-    float lambda = 60;
+    float lambda = 200;
     if (argc >= 2)
     {
         dataCount = atoi(argv[1]);
@@ -38,6 +46,7 @@ int main(int argc, char *argv[])
     {
         lambda = atoi(argv[2]);
     }
+    std::cout<<"cout="<<dataCount<<", λ="<<lambda<<"ms"<<std::endl;
 
     ExecutorManager executorManager;
     std::vector<std::pair<std::string, ModelInputCreator>> inputCreators;
@@ -61,91 +70,4 @@ int main(int argc, char *argv[])
 
     std::cout<<"end ok."<<std::endl;
     return 0;
-}
-
-void AddRequestInThread(std::mutex *mutex, std::condition_variable *condition, int index, ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda, int *current_count)
-{
-    static std::atomic<int> flag=0;
-    PossionRandom possionRandom(index * 100+100);
-    UniformRandom uniformRandom(index * 10+10);
-    std::pair<std::string, ModelInputCreator> *creator = &(*inputCreators)[index];
-    std::vector<std::pair<std::string, DatasType>> datas(20);
-    for (int i = 0; i < 20; i++)
-    {
-        datas[i] = std::pair<std::string, DatasType>(creator->first, creator->second.CreateInput());
-    }
-
-    flag++;
-
-    while(flag<inputCreators->size())
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(1));
-    }
-    std::cout<<"start to send request for "<<creator->first<<"."<<std::endl;
-
-    int i = 0;
-    int tmp=0;
-    while (true)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)possionRandom.Random(lambda)));
-        std::unique_lock<std::mutex> lock(*mutex);
-
-        if (*current_count >= count)
-        {
-            // to be end.
-            break;
-        }
-
-        tmp = *current_count;
-        (*current_count)++;
-        lock.unlock();
-        condition->notify_all();
-            executorManager->AddTask(datas[i%20].first, datas[i%20].second, std::to_string(tmp+1));
-        i++;
-    }
-    std::cout<<"end send "<<creator->first<<", total: "<<i<<std::endl;
-}
-
-void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda)
-{
-    std::cout << "wait system to init..." << std::endl;
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-
-    std::cout << "run request generate with possion, and start to prepare random input." << std::endl;
-    
-    std::condition_variable condition;
-    std::vector<std::shared_ptr<std::thread>> threads;
-    int current_count=0;
-    std::mutex mutex;
-    for(int i=0;i<inputCreators->size();i++)
-    {
-        threads.push_back(std::make_shared<std::thread>(AddRequestInThread,&mutex,&condition,i,executorManager,inputCreators,count,lambda,&current_count));
-    }
-
-    for(auto thread: threads)
-    {
-        thread->join();
-    }
-
-    std::cout << "end send request." << std::endl;
-}
-
-void ReplyGather(ExecutorManager *executorManager, int count)
-{
-    std::cout << "run reply gather." << std::endl;
-#ifdef ALLOW_GPU_PARALLEL
-    auto saveFold = RootPathManager::GetRunRootFold() / "data" / "raw";
-#else
-    std::filesystem::path saveFold = RootPathManager::GetRunRootFold() / "data" / "allocator";
-#endif
-
-    std::filesystem::remove_all(saveFold);
-    std::filesystem::create_directories(saveFold);
-    auto &applyQueue = executorManager->GetApplyQueue();
-    for (int i = 0; i < count; i++)
-    {
-        auto task = applyQueue.Pop();
-        JsonSerializer::StoreJson(task->GetDescribe(), saveFold / (std::to_string(i) + ".json"));
-    }
-    std::cout << "all apply for " << count << " task received." << std::endl;
 }
