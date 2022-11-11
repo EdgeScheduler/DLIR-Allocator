@@ -99,16 +99,14 @@
     "-lpthread"
   ],
   "C_Cpp_Runner.includePaths": [
-    "${workspaceFolder}/include/**",
-    "${workspaceFolder}/sources/**",
-    "${workspaceFolder}/testlib/**"
+    "${workspaceFolder}/include",
+    "${workspaceFolder}/testlib"
   ],
   "C_Cpp_Runner.includeSearch": [
     "*",
     "**/*",
-    "${workspaceFolder}/include/**",
-    "${workspaceFolder}/sources/**",
-    "${workspaceFolder}/testlib/**"
+    "${workspaceFolder}/include",
+    "${workspaceFolder}/testlib"
   ],
   "C_Cpp_Runner.excludeSearch": [
     "**/build",
