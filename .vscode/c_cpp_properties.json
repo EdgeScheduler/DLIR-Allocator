@@ -4,8 +4,8 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "${workspaceFolder}/include/**",
-                "${workspaceFolder}/testlib/**"
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/testlib"
             ],
             "defines": [],
             "compilerPath": "/usr/local/llvm/bin/clang"

@@ -13,8 +13,8 @@
 #include "Common/PathManager.h"
 #include "Random/UniformRandom.h"
 #include "Random/PossionRandom.h"
-#include "GPUAllocator/ModeCheck.h"
 #include "TaskGenerate.h"
+#include "GPUAllocator/ModeCheck.h"
 #include "GPUAllocator/ExecutorManager.h"
 
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
