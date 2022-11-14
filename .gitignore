@@ -1,9 +1,10 @@
 *.onnx
-data
+data/*
 Onnxs/*
 build
 !Onnxs/scripts
 !data/analyze
+!data/BenchMark
 onnxruntime-package
 tempCodeRunnerFile*
 __pycache__
