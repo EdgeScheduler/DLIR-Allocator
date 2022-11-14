@@ -1,7 +1,7 @@
 #include "GPUAllocator/TokenManager.h"
 #include "Common/DILException.h"
 #include <iostream>
-TokenManager::TokenManager() : flag(-1), runningLock(nullptr),closeTokenManager(false)
+TokenManager::TokenManager() : flag(-1), runningLock(nullptr), closeTokenManager(false)
 {
 }
 
@@ -27,18 +27,18 @@ void TokenManager::Expire()
 
 bool TokenManager::Grant(int token, bool enableSegmentation)
 {
-    if(token<1)
+    if (token < 1)
     {
-        std::cout<<"warning: send token "<<token<<std::endl;
+        std::cout << "warning: send token " << token << std::endl;
         return true;
     }
 
 #ifndef PARALLER_MODE
     std::unique_lock<std::mutex> lock(mutex);
     needNewToken.wait(lock, [this]() -> bool
-                      { return this->flag < 0|| closeTokenManager; });
+                      { return this->flag < 0 || closeTokenManager; });
 
-    if(closeTokenManager)
+    if (closeTokenManager)
     {
         lock.unlock();
         throw DILException::SYSTEM_CLOSE;
@@ -47,11 +47,11 @@ bool TokenManager::Grant(int token, bool enableSegmentation)
     this->runningLock = std::make_shared<std::unique_lock<std::mutex>>(runningMutex);
     if (enableSegmentation)
     {
-        this->flag = token<<1;
+        this->flag = token << 1;
     }
     else
     {
-        this->flag = (token<<1)+1;
+        this->flag = (token << 1) + 1;
     }
 
     lock.unlock();
@@ -87,7 +87,7 @@ void TokenManager::WaitFree()
 
 void TokenManager::CloseTokenManager()
 {
-    this->closeTokenManager=true;
+    this->closeTokenManager = true;
     this->needNewToken.notify_all();
     if (runningLock)
     {

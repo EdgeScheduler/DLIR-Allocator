@@ -2,7 +2,7 @@
 
 #include "GPUAllocator/Task.h"
 
-Task::Task(std::string modelName,float limitCost, std::shared_ptr<ModelInfo> modelInfo, std::string tag) : limitCost(limitCost),modelName(modelName), tag(tag), modelInfo(modelInfo) {}
+Task::Task(std::string modelName, float limitCost, std::shared_ptr<ModelInfo> modelInfo, std::string tag) : limitCost(limitCost), modelName(modelName), tag(tag), modelInfo(modelInfo) {}
 
 void Task::SetModelInfo(std::shared_ptr<ModelInfo> modelInfo)
 {
@@ -118,7 +118,7 @@ nlohmann::json Task::GetDescribe()
     obj["execute_cost"] = execute_cost;
 
     obj["wait_cost"] = this->TimeCost() - execute_cost;
-    obj["limit_cost_by_ms"]=this->limitCost;
+    obj["limit_cost_by_ms"] = this->limitCost;
 
     return obj;
 }

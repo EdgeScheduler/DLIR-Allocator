@@ -10,7 +10,7 @@ template <class T>
 class SafeQueue
 {
 public:
-    SafeQueue(int capacity = -1) : capacity(capacity), size(0),closeQueue(false)  {}
+    SafeQueue(int capacity = -1) : capacity(capacity), size(0), closeQueue(false) {}
     ~SafeQueue() {}
 
     /// @brief returns a read/write reference to the data at the front-element of the qeque.
@@ -40,8 +40,8 @@ public:
     void Close();
 
     /// @brief get reference of cout
-    /// @return 
-    const int& Size() const;
+    /// @return
+    const int &Size() const;
 
 private:
     /// @brief current item count of queue.
@@ -64,8 +64,8 @@ private:
     std::condition_variable m_notEmpty;
 };
 
-template<class T>
-const int& SafeQueue<T>::Size() const
+template <class T>
+const int &SafeQueue<T>::Size() const
 {
     return this->size;
 }
@@ -76,8 +76,8 @@ void SafeQueue<T>::Push(T &x)
     std::unique_lock<std::mutex> lock(mutex);
     m_notFull.wait(lock, [this]() -> bool
                    { return capacity < 0 || size < capacity || closeQueue; });
-    
-    if(closeQueue)
+
+    if (closeQueue)
     {
         lock.unlock();
         throw DILException::SYSTEM_CLOSE;
@@ -98,8 +98,8 @@ void SafeQueue<T>::Emplace(T &&x)
     std::unique_lock<std::mutex> lock(mutex);
     m_notFull.wait(lock, [this]() -> bool
                    { return capacity < 0 || size < capacity || closeQueue; });
-                   
-    if(closeQueue)
+
+    if (closeQueue)
     {
         lock.unlock();
         throw DILException::SYSTEM_CLOSE;
@@ -120,8 +120,8 @@ T SafeQueue<T>::Pop() noexcept(false)
     std::unique_lock<std::mutex> lock(mutex);
     m_notEmpty.wait(lock, [this]() -> bool
                     { return size > 0 || closeQueue; });
-                    
-    if(closeQueue)
+
+    if (closeQueue)
     {
         lock.unlock();
         throw DILException::SYSTEM_CLOSE;
@@ -145,8 +145,8 @@ T &SafeQueue<T>::front()
     std::unique_lock<std::mutex> lock(mutex);
     m_notEmpty.wait(lock, [this]() -> bool
                     { return size > 0 || closeQueue; });
-                    
-    if(closeQueue)
+
+    if (closeQueue)
     {
         lock.unlock();
         throw DILException::SYSTEM_CLOSE;
@@ -160,7 +160,7 @@ T &SafeQueue<T>::front()
 template <class T>
 bool SafeQueue<T>::Empty() const
 {
-    return size<1;
+    return size < 1;
 }
 
 template <class T>
@@ -173,7 +173,7 @@ bool SafeQueue<T>::Full() const
 template <class T>
 void SafeQueue<T>::Close()
 {
-    this->closeQueue=true;
+    this->closeQueue = true;
     m_notFull.notify_all();
     m_notEmpty.notify_all();
 }

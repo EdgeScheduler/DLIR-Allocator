@@ -93,7 +93,12 @@ int main(int argc, char *argv[])
         vector<Ort::Value> output_values = session.Run(Ort::RunOptions{nullptr}, input_labels.data(), input_values.data(), input_labels.size(), output_labels.data(), output_labels.size());
         cout << "run-" << i << "(" << setiosflags(ios::fixed) << setprecision(2) << (clock() - start) * 1000.0 / CLOCKS_PER_SEC << "ms)."
              << "=> [" << setprecision(6) << *output_values[0].GetTensorMutableData<float>() << " ...]" << endl;
-        output_values[0].release();
+
+        // release memory
+        for (auto &value : output_values)
+        {
+            Ort::OrtRelease(value.release());
+        }
     }
 
     // print with Ort::Value

@@ -1,8 +1,7 @@
 #include "Random/PossionRandom.h"
 
-PossionRandom::PossionRandom(unsigned int seed): engin(seed),uniform_creator(0,1)
+PossionRandom::PossionRandom(unsigned int seed) : engin(seed), uniform_creator(0, 1)
 {
-
 }
 
 float PossionRandom::Random(float lambda)
@@ -12,15 +11,15 @@ float PossionRandom::Random(float lambda)
     //     this->data[i] = (T)uniform_creator(engin);
     // }
 
-    float p=0.0F;
-    int k=0;
+    float p = 0.0F;
+    int k = 0;
 
-    while(p<lambda)
+    while (p < lambda)
     {
         k++;
-        float u=uniform_creator(engin);
-        p-=log(u);
+        float u = uniform_creator(engin);
+        p -= log(u);
     }
 
-    return k-1;
+    return k - 1;
 }

@@ -23,7 +23,7 @@ struct ExecutorDescribe
     std::shared_ptr<std::thread> resultGatherThread;
 };
 
-/// @brief 
+/// @brief
 class ExecutorManager
 {
 public:
@@ -57,10 +57,10 @@ public:
     void Join();
 
     /// @brief gather tasks from queue
-    void GatherTask(SafeQueue<std::shared_ptr<Task>>* taskQueue);
+    void GatherTask(SafeQueue<std::shared_ptr<Task>> *taskQueue);
 
     /// @brief returns a read/write reference Queue to the apply of all the request that have been finished.
-    SafeQueue<std::shared_ptr<Task>>& GetApplyQueue();
+    SafeQueue<std::shared_ptr<Task>> &GetApplyQueue();
 
     /// @brief close executor-manager safely
     void Close();

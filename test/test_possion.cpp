@@ -8,10 +8,10 @@ int main()
 {
     PossionRandom rand;
 
-    for(int i=0;i<10;i++)
+    for (int i = 0; i < 10; i++)
     {
         // lambda is 10
-        cout<<rand.Random(12)<<endl;
+        cout << rand.Random(12) << endl;
     }
     return 0;
 }

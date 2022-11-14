@@ -21,7 +21,7 @@ void ExecutorManager::Close()
 {
     this->taskRegistration.CloseRegistration();
 
-    for(auto& iter: this->executorMap)
+    for (auto &iter : this->executorMap)
     {
         iter.second->executor->CloseExecutor();
     }
@@ -35,15 +35,15 @@ void ExecutorManager::RunExecutor(std::string model_name)
     executorDescribe->executorID = executorCount;
     executorDescribe->modelName = model_name;
     executorDescribe->threadHandle = std::make_shared<std::thread>(&ModelExecutor::RunCycle, executorDescribe->executor);
-    executorDescribe->resultGatherThread=std::make_shared<std::thread>(&ExecutorManager::GatherTask,this,&(executorDescribe->executor->GetResultQueue()));
+    executorDescribe->resultGatherThread = std::make_shared<std::thread>(&ExecutorManager::GatherTask, this, &(executorDescribe->executor->GetResultQueue()));
     this->executorMap.insert(std::pair<std::string, std::shared_ptr<ExecutorDescribe>>(model_name, executorDescribe));
 }
 
-void ExecutorManager::GatherTask(SafeQueue<std::shared_ptr<Task>>* taskQueue)
+void ExecutorManager::GatherTask(SafeQueue<std::shared_ptr<Task>> *taskQueue)
 {
     try
     {
-        while(true)
+        while (true)
         {
             this->applyQueue.Emplace(taskQueue->Pop());
         }
@@ -72,9 +72,9 @@ void ExecutorManager::AddTask(std::string model_name, std::shared_ptr<std::map<s
             return;
         }
 
-        // add lock to ensure task in executor and 
+        // add lock to ensure task in executor and
         // std::unique_lock<std::mutex> lock(taskMutex);
-        this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime(),iter->second->executor->GetTaskQueue().Size());
+        this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime(), iter->second->executor->GetTaskQueue().Size());
         iter->second->executor->AddTask(datas, tag);
         // lock.unlock();
     }
@@ -139,7 +139,7 @@ bool ExecutorManager::Grant(int token, bool block)
     }
 }
 
-SafeQueue<std::shared_ptr<Task>>& ExecutorManager::GetApplyQueue()
+SafeQueue<std::shared_ptr<Task>> &ExecutorManager::GetApplyQueue()
 {
     return this->applyQueue;
 }

@@ -6,11 +6,6 @@
 
 TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr), closeRegistration(false), reduceTime(0.0F)
 {
-    // debug[0]=0;
-    // debug[1]=0;
-    // debug[2]=0;
-    // debug[3]=0;
-    // debug[4]=0;
 }
 
 void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount)

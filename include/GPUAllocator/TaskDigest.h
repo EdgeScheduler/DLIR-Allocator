@@ -43,7 +43,7 @@ public:
     int requiredToken;
     int requiredTokenCount;
     int childsCount;
-    const int& taskCount;
+    const int &taskCount;
 
 private:
     std::string name;

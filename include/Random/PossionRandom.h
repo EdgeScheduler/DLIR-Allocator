@@ -6,7 +6,7 @@
 class PossionRandom
 {
 public:
-    PossionRandom(unsigned int seed=0);
+    PossionRandom(unsigned int seed = 0);
     float Random(float lambda);
 
 private:

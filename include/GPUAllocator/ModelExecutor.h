@@ -24,7 +24,7 @@ public:
     void AddTask(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag = "");
 
     /// @brief record current task to the end.
-    void ToNext(bool toEnd=false);
+    void ToNext(bool toEnd = false);
 
     /// @brief Load task args, if not exist, it will come to block.
     void LoadTask();

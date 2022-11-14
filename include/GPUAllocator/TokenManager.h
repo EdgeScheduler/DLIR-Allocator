@@ -26,7 +26,7 @@ public:
     /// @brief block until flag<=0
     void WaitFree();
 
-    std::condition_variable& NeedNewToken();
+    std::condition_variable &NeedNewToken();
 
     void CloseTokenManager();
 
@@ -34,7 +34,7 @@ public:
 
 private:
     int flag; // 0: free 1~n: token_id
-    std::mutex mutex;  
+    std::mutex mutex;
     std::mutex runningMutex;
     std::shared_ptr<std::unique_lock<std::mutex>> runningLock;
     std::condition_variable needNewToken;
