@@ -1,6 +1,8 @@
 from load_from_csv import load_anff_from_csv
 import config
 import os
+import json
+import numpy as np
 
 def main():
     for bench_fold in config.BenchFoldNames:
@@ -15,7 +17,27 @@ def main():
                     kind_datas[data[1]]=[]
                 
                 kind_datas[data[1]].append(data)
+
+            cal_info={}
+            for model_name in kind_datas:
+                cal_info[model_name]={}
+                data=[v[2] for v in kind_datas[model_name]]
+                cal_info[model_name]["min"]=min(data)
+                cal_info[model_name]["avg"]=sum(data)/len(data)
+                cal_info[model_name]["max"]=max(data)
+                cal_info[model_name]["std"]=np.std(data,ddof=1)
+                
+
+            data=[v[2] for v in datas]
+            cal_info["total"]={}
+            cal_info["total"]["min"]=min(data)
+            cal_info["total"]["avg"]=sum(data)/len(data)
+            cal_info["total"]["max"]=max(data)
+            cal_info["total"]["std"]=np.std(data,ddof=1)
             
+            with open(os.path.join(config.AimFold,bench_fold,env,"statistic.json"),"w") as fp:
+                json.dump(cal_info,fp,indent=4)
+
             # counter with classification
             statistic_data={}
             max_length=0
