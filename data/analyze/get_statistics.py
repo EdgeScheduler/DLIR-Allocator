@@ -1,11 +1,11 @@
-from load_from_csv import load_from_csv
+from load_from_csv import load_anff_from_csv
 import config
 import os
 
 def main():
     for bench_fold in config.BenchFoldNames:
         for env in config.RunEnvs:
-            datas=load_from_csv(str(os.path.join(bench_fold, env, "radios.csv")), ignore_head=True)
+            datas=load_anff_from_csv(str(os.path.join(bench_fold, env, "radios.csv")), ignore_head=True)
             datas.sort(key=lambda value: value[2])
 
             # data classification
@@ -53,12 +53,12 @@ def main():
             os.makedirs(os.path.join(config.AimFold,bench_fold,env,"models","block"), exist_ok=True)
             for model_name in statistic_data:
                 with open(os.path.join(config.AimFold,bench_fold,env,"models","block",model_name+"_block.csv"), "w") as fp:
-                    print("id, count", file=fp)
+                    print("limit, count", file=fp)
                     for item in statistic_data[model_name]:
                         print(item[0],", ",item[1], file=fp)
 
             with open(os.path.join(config.AimFold,bench_fold,env,"total_block.csv"), "w") as fp:
-                print("id, count", file=fp)
+                print("limit, count", file=fp)
                 for item in total:
                     print(item[0],", ",item[1], file=fp)
             
@@ -66,14 +66,14 @@ def main():
             os.makedirs(os.path.join(config.AimFold,bench_fold,env,"models","accumulate"), exist_ok=True)
             for model_name in statistic_data:
                 with open(os.path.join(config.AimFold,bench_fold,env,"models","accumulate",model_name+"_accumulate.csv"), "w") as fp:
-                    print("id, count", file=fp)
+                    print("limit, count", file=fp)
                     sum_count=0
                     for item in statistic_data[model_name]:
                         sum_count+=item[1]
                         print(item[0],", ",sum_count, file=fp)
             
             with open(os.path.join(config.AimFold,bench_fold,env,"total_accumulate.csv"), "w") as fp:
-                print("id, count", file=fp)
+                print("limit, count", file=fp)
                 sum_count=0
                 for item in total:
                     sum_count+=item[1]
