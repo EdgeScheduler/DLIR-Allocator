@@ -78,6 +78,7 @@ private:
 
     std::shared_ptr<std::thread> tokenDespenseThread;
     std::map<std::string, std::shared_ptr<ExecutorDescribe>> executorMap;
+    std::map<std::string, std::shared_ptr<std::vector<const int*>>> tasksCountRecord;
 
     SafeQueue<std::shared_ptr<Task>> applyQueue;
 };

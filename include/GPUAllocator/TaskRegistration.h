@@ -19,7 +19,7 @@ public:
     /// @param requiredTokenCount
     /// @param modelExecuteTime
     /// @param taskCount
-    void RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount);
+    void RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, std::vector<const int *> &otherTaskCount);
 
     /// @brief dispense tokens to model-executors, need to run with sync.
     void TokenDispense();

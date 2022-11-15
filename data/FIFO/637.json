@@ -1,19 +1,19 @@
 {
     "child_model_execute_cost_by_ms": [
-        8.616999626159668
+        45.55799865722656
     ],
     "child_model_run_time": [
         [
-            20833277,
-            20841894
+            20987226,
+            21032784
         ]
     ],
-    "execute_cost": 8.616999626159668,
-    "finish_time": 20841900,
-    "limit_cost_by_ms": 7.042333126068115,
-    "model_name": "squeezenetv1",
-    "recv_time": 20787168,
+    "execute_cost": 45.55799865722656,
+    "finish_time": 21032788,
+    "limit_cost_by_ms": 46.4293327331543,
+    "model_name": "vgg19",
+    "recv_time": 20974877,
     "tag": "638",
-    "total_cost_by_ms": 54.731998443603516,
-    "wait_cost": 46.11499786376953
+    "total_cost_by_ms": 57.9109992980957,
+    "wait_cost": 12.35300064086914
 }

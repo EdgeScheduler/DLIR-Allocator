@@ -1,19 +1,19 @@
 {
     "child_model_execute_cost_by_ms": [
-        44.9379997253418
+        19.308000564575195
     ],
     "child_model_run_time": [
         [
-            28044526,
-            28089464
+            28198276,
+            28217584
         ]
     ],
-    "execute_cost": 44.9379997253418,
-    "finish_time": 28089470,
-    "limit_cost_by_ms": 46.51133346557617,
-    "model_name": "vgg19",
-    "recv_time": 28044379,
+    "execute_cost": 19.308000564575195,
+    "finish_time": 28217590,
+    "limit_cost_by_ms": 18.3973331451416,
+    "model_name": "resnet50",
+    "recv_time": 28198263,
     "tag": "976",
-    "total_cost_by_ms": 45.090999603271484,
-    "wait_cost": 0.1529998779296875
+    "total_cost_by_ms": 19.32699966430664,
+    "wait_cost": 0.018999099731445313
 }

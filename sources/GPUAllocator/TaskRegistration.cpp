@@ -8,9 +8,9 @@ TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_va
 {
 }
 
-void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount)
+void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, std::vector<const int *> &otherTaskCount)
 {
-    TaskDigest task(name, executeTime, requiredToken, requiredTokenCount, modelExecuteTime, taskCount);
+    TaskDigest task(name, executeTime, requiredToken, requiredTokenCount, modelExecuteTime, taskCount, otherTaskCount);
     std::unique_lock<std::mutex> lock(mutex);
 
     if (reduceTime > 0)
@@ -137,7 +137,7 @@ void TaskRegistration::TokenDispense()
             tokenManager->WaitFree();
             m = this->currentTask.load();
 
-            bool enableSegmentation = m->taskCount < 2;
+            bool enableSegmentation = m->SuggestRunSegmentation();
 
 #if (defined(FIFO_MODE) || defined(BNST_MODE))
             enableSegmentation = false;

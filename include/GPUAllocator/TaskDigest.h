@@ -15,7 +15,7 @@ public:
     /// @param requiredTokenCount how many child-models there is
     /// @param modelExecuteTime
     /// @param penaltyValue
-    TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, float penaltyValue = -1.0);
+    TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, std::vector<const int *> &otherTaskCount, float penaltyValue = -1.0);
 
 public:
     /// @brief calculate SLO-time(ms)
@@ -39,10 +39,15 @@ public:
     /// @return
     std::string GetInfo(int offset = 0);
 
+    /// @brief calculate whether it is suggested to run segmentation
+    /// @return true if ok, else false
+    bool SuggestRunSegmentation();
+
 public:
     int requiredToken;
     int requiredTokenCount;
     int childsCount;
+    std::vector<const int *> &otherTaskCount;
     const int &taskCount;
 
 private:

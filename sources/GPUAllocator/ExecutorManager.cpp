@@ -37,6 +37,21 @@ void ExecutorManager::RunExecutor(std::string model_name)
     executorDescribe->threadHandle = std::make_shared<std::thread>(&ModelExecutor::RunCycle, executorDescribe->executor);
     executorDescribe->resultGatherThread = std::make_shared<std::thread>(&ExecutorManager::GatherTask, this, &(executorDescribe->executor->GetResultQueue()));
     this->executorMap.insert(std::pair<std::string, std::shared_ptr<ExecutorDescribe>>(model_name, executorDescribe));
+
+    for(auto iter=this->tasksCountRecord.begin();iter!=this->tasksCountRecord.end();iter++)
+    {
+        iter->second->push_back(&(executorDescribe->executor->GetTaskQueue().Size()));
+    }
+
+    std::shared_ptr<std::vector<const int*>> tmp=std::make_shared<std::vector<const int*>>();
+    for(auto &item: this->executorMap)
+    {
+        if(item.first!=model_name)
+        {
+            tmp->push_back(&(item.second->executor->GetTaskQueue().Size()));
+        }
+    }
+    this->tasksCountRecord.insert(std::pair<std::string, std::shared_ptr<std::vector<const int*>>>(model_name, tmp));
 }
 
 void ExecutorManager::GatherTask(SafeQueue<std::shared_ptr<Task>> *taskQueue)
@@ -74,7 +89,7 @@ void ExecutorManager::AddTask(std::string model_name, std::shared_ptr<std::map<s
 
         // add lock to ensure task in executor and
         // std::unique_lock<std::mutex> lock(taskMutex);
-        this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime(), iter->second->executor->GetTaskQueue().Size());
+        this->taskRegistration.RegisteTask(model_name, iter->second->executor->GetExecuteTime(), iter->second->executor->GetTokenID(), iter->second->executor->GetChildModelCount(), iter->second->executor->GetModelExecuteTime(), iter->second->executor->GetTaskQueue().Size(),*(this->tasksCountRecord.find(model_name)->second.get()));
         iter->second->executor->AddTask(datas, tag);
         // lock.unlock();
     }

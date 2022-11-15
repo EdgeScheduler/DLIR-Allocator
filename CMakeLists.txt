@@ -24,7 +24,6 @@ set(BNST_MODE_BIN "BNST-Allocator")
 set(FIFO_MODE_BIN "FIFO-Allocator")
 set(PARALLER_MODE_BIN "PARALLER-Allocator")
 
-
 if(COMPILE_MODE AND (COMPILE_MODE STREQUAL "OYST_MODE"))
     add_definitions(-DOYST_MODE)
     set(target ${OYST_MODE_BIN})

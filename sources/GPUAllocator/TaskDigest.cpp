@@ -1,6 +1,6 @@
 #include "GPUAllocator/TaskDigest.h"
 
-TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, float penaltyValue) : executeTime(executeTime), requiredToken(requiredToken), requiredTokenCount(requiredTokenCount), limitRuntime(modelExecuteTime), leftRuntime(0.0F), name(name), childsRuntime(0.0F), childsCount(requiredTokenCount), taskCount(taskCount)
+TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> executeTime, int requiredToken, int requiredTokenCount, float &modelExecuteTime, const int &taskCount, std::vector<const int *> &otherTaskCount, float penaltyValue) : executeTime(executeTime), requiredToken(requiredToken), requiredTokenCount(requiredTokenCount), limitRuntime(modelExecuteTime), leftRuntime(0.0F), name(name), childsRuntime(0.0F), childsCount(requiredTokenCount), taskCount(taskCount), otherTaskCount(otherTaskCount)
 {
     this->startTime = clock();
     this->penaltyValue = penaltyValue;
@@ -11,6 +11,20 @@ TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> exe
     }
 
     this->childsRuntime = this->leftRuntime;
+}
+
+bool TaskDigest::SuggestRunSegmentation()
+{
+    // for(auto iter: this->otherTaskCount)
+    // {
+    //     if(*iter<1)
+    //     {
+    //         return true;
+    //     }
+    // }
+
+    // return false;
+    return this->taskCount<2;
 }
 
 float TaskDigest::GetSLO()

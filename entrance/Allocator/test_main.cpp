@@ -19,6 +19,7 @@
 
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
+// ./bin/release/DLIR-Allocator && ./bin/release/BNST-Allocator && ./bin/release/FIFO-Allocator && ./bin/release/PARALLER-Allocator && ./bin/release/OYST-Allocator
 int main(int argc, char *argv[])
 {
     std::string mode_name;

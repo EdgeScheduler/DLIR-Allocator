@@ -6,7 +6,7 @@
   <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-    <dc:date>2022-11-15T07:47:29.498925</dc:date>
+    <dc:date>2022-11-15T10:11:48.298554</dc:date>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>
@@ -40,53 +40,53 @@ z
    <g id="patch_3">
     <path d="M 73.832727 307.584 
 L 109.905455 307.584 
-L 109.905455 292.509808 
-L 73.832727 292.509808 
+L 109.905455 292.201047 
+L 73.832727 292.201047 
 z
-" clip-path="url(#pc0851b5eed)" style="fill: #ffa500"/>
+" clip-path="url(#p2c9ce311c9)" style="fill: #ffa500"/>
    </g>
    <g id="patch_4">
     <path d="M 145.978182 307.584 
 L 182.050909 307.584 
-L 182.050909 54.144 
-L 145.978182 54.144 
+L 182.050909 187.054505 
+L 145.978182 187.054505 
 z
-" clip-path="url(#pc0851b5eed)" style="fill: #ffa500"/>
+" clip-path="url(#p2c9ce311c9)" style="fill: #ffa500"/>
    </g>
    <g id="patch_5">
     <path d="M 218.123636 307.584 
 L 254.196364 307.584 
-L 254.196364 184.233422 
-L 218.123636 184.233422 
+L 254.196364 54.144 
+L 218.123636 54.144 
 z
-" clip-path="url(#pc0851b5eed)" style="fill: #ffa500"/>
+" clip-path="url(#p2c9ce311c9)" style="fill: #ffa500"/>
    </g>
    <g id="patch_6">
     <path d="M 290.269091 307.584 
 L 326.341818 307.584 
-L 326.341818 97.014752 
-L 290.269091 97.014752 
+L 326.341818 82.036844 
+L 290.269091 82.036844 
 z
-" clip-path="url(#pc0851b5eed)" style="fill: #ffa500"/>
+" clip-path="url(#p2c9ce311c9)" style="fill: #ffa500"/>
    </g>
    <g id="patch_7">
     <path d="M 362.414545 307.584 
 L 398.487273 307.584 
-L 398.487273 122.005794 
-L 362.414545 122.005794 
+L 398.487273 117.475916 
+L 362.414545 117.475916 
 z
-" clip-path="url(#pc0851b5eed)" style="fill: #ffa500"/>
+" clip-path="url(#p2c9ce311c9)" style="fill: #ffa500"/>
    </g>
    <g id="matplotlib.axis_1">
     <g id="xtick_1">
      <g id="line2d_1">
       <defs>
-       <path id="mf3ed4ae91f" d="M 0 0 
+       <path id="mfbe1db8082" d="M 0 0 
 L 0 3.5 
 " style="stroke: #000000; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#mf3ed4ae91f" x="91.869091" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mfbe1db8082" x="91.869091" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_1">
@@ -254,13 +254,72 @@ z
     <g id="xtick_2">
      <g id="line2d_2">
       <g>
-       <use xlink:href="#mf3ed4ae91f" x="164.014545" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mfbe1db8082" x="164.014545" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_2">
-      <!-- squeezenetv1 -->
-      <g transform="translate(134.014545 321.576187)scale(0.1 -0.1)">
+      <!-- resnet50 -->
+      <g transform="translate(144.014545 321.576187)scale(0.1 -0.1)">
        <defs>
+        <path id="FangSong-72" d="M 1250 2025 
+Q 1500 2425 1787 2637 
+Q 2075 2850 2375 2850 
+Q 2625 2850 2762 2737 
+Q 2900 2625 2900 2475 
+Q 2900 2350 2837 2275 
+Q 2775 2200 2650 2200 
+Q 2525 2200 2462 2275 
+Q 2400 2350 2425 2475 
+Q 2425 2550 2400 2600 
+Q 2375 2650 2250 2650 
+Q 2050 2650 1762 2400 
+Q 1475 2150 1250 1700 
+L 1250 350 
+Q 1250 250 1312 200 
+Q 1375 150 1475 150 
+L 2025 150 
+L 2025 0 
+L 175 0 
+L 175 150 
+L 675 150 
+Q 800 150 850 200 
+Q 900 250 900 350 
+L 900 2425 
+Q 900 2525 850 2587 
+Q 800 2650 675 2650 
+L 200 2650 
+L 200 2800 
+L 400 2800 
+Q 575 2800 812 2837 
+Q 1050 2875 1175 2925 
+L 1250 2925 
+L 1250 2025 
+z
+" transform="scale(0.015625)"/>
+        <path id="FangSong-65" d="M 2375 1550 
+Q 2400 2100 2187 2387 
+Q 1975 2675 1625 2675 
+Q 1250 2675 1012 2375 
+Q 775 2075 775 1550 
+L 2375 1550 
+z
+M 775 1400 
+Q 775 725 1037 437 
+Q 1300 150 1725 150 
+Q 2050 150 2275 337 
+Q 2500 525 2600 800 
+L 2725 750 
+Q 2650 475 2387 212 
+Q 2125 -50 1675 -50 
+Q 1100 -50 737 325 
+Q 375 700 375 1400 
+Q 375 2025 737 2437 
+Q 1100 2850 1625 2850 
+Q 2100 2850 2450 2525 
+Q 2800 2200 2800 1400 
+L 775 1400 
+z
+" transform="scale(0.015625)"/>
         <path id="FangSong-73" d="M 600 2075 
 Q 600 2450 887 2650 
 Q 1175 2850 1575 2850 
@@ -300,6 +359,147 @@ Q 800 1600 700 1750
 Q 600 1900 600 2075 
 z
 " transform="scale(0.015625)"/>
+        <path id="FangSong-6e" d="M 175 0 
+L 175 150 
+L 300 150 
+Q 425 150 475 200 
+Q 525 250 525 350 
+L 525 2500 
+Q 525 2575 500 2612 
+Q 475 2650 400 2650 
+L 200 2650 
+L 200 2800 
+L 375 2800 
+Q 500 2800 612 2825 
+Q 725 2850 825 2925 
+L 875 2925 
+L 875 2350 
+Q 1100 2600 1325 2725 
+Q 1550 2850 1800 2850 
+Q 2225 2850 2425 2625 
+Q 2625 2400 2625 1950 
+L 2625 350 
+Q 2625 250 2687 200 
+Q 2750 150 2850 150 
+L 2975 150 
+L 2975 0 
+L 1925 0 
+L 1925 150 
+L 2050 150 
+Q 2175 150 2225 200 
+Q 2275 250 2275 350 
+L 2275 2025 
+Q 2275 2325 2150 2487 
+Q 2025 2650 1775 2650 
+Q 1550 2650 1312 2500 
+Q 1075 2350 875 2075 
+L 875 350 
+Q 875 250 937 200 
+Q 1000 150 1100 150 
+L 1225 150 
+L 1225 0 
+L 175 0 
+z
+" transform="scale(0.015625)"/>
+        <path id="FangSong-74" d="M 1475 800 
+Q 1475 450 1600 325 
+Q 1725 200 1975 200 
+Q 2225 200 2375 362 
+Q 2525 525 2575 825 
+L 2700 775 
+Q 2650 425 2437 200 
+Q 2225 -25 1875 -25 
+Q 1500 -25 1312 200 
+Q 1125 425 1125 900 
+L 1125 2650 
+L 375 2650 
+L 375 2800 
+L 575 2800 
+Q 875 2800 1062 2987 
+Q 1250 3175 1300 3575 
+L 1325 3775 
+L 1475 3775 
+L 1475 2800 
+L 2475 2800 
+L 2475 2650 
+L 1475 2650 
+L 1475 800 
+z
+" transform="scale(0.015625)"/>
+        <path id="FangSong-35" d="M 1700 2750 
+Q 2175 2750 2475 2387 
+Q 2775 2025 2775 1425 
+Q 2775 750 2462 350 
+Q 2150 -50 1500 -50 
+Q 1050 -50 700 212 
+Q 350 475 350 850 
+Q 350 1000 437 1112 
+Q 525 1225 675 1225 
+Q 825 1225 875 1125 
+Q 925 1025 925 950 
+Q 925 800 850 712 
+Q 775 625 775 525 
+Q 775 325 1012 225 
+Q 1250 125 1525 125 
+Q 1925 125 2137 450 
+Q 2350 775 2350 1375 
+Q 2350 1875 2162 2187 
+Q 1975 2500 1600 2500 
+Q 1325 2500 1125 2400 
+Q 925 2300 750 1975 
+L 525 2000 
+L 650 4275 
+L 2700 4275 
+L 2625 3900 
+L 825 3900 
+L 725 2250 
+Q 975 2600 1212 2675 
+Q 1450 2750 1700 2750 
+z
+" transform="scale(0.015625)"/>
+        <path id="FangSong-30" d="M 1575 4125 
+Q 1225 4125 987 3587 
+Q 750 3050 750 2150 
+Q 750 1200 987 675 
+Q 1225 150 1575 150 
+Q 1950 150 2162 675 
+Q 2375 1200 2375 2150 
+Q 2375 3050 2175 3587 
+Q 1975 4125 1575 4125 
+z
+M 1575 -50 
+Q 1025 -50 650 525 
+Q 275 1100 275 2150 
+Q 275 3125 637 3725 
+Q 1000 4325 1575 4325 
+Q 2125 4325 2487 3750 
+Q 2850 3175 2850 2150 
+Q 2850 1125 2487 537 
+Q 2125 -50 1575 -50 
+z
+" transform="scale(0.015625)"/>
+       </defs>
+       <use xlink:href="#FangSong-72"/>
+       <use xlink:href="#FangSong-65" x="50"/>
+       <use xlink:href="#FangSong-73" x="100"/>
+       <use xlink:href="#FangSong-6e" x="150"/>
+       <use xlink:href="#FangSong-65" x="200"/>
+       <use xlink:href="#FangSong-74" x="250"/>
+       <use xlink:href="#FangSong-35" x="300"/>
+       <use xlink:href="#FangSong-30" x="350"/>
+      </g>
+     </g>
+    </g>
+    <g id="xtick_3">
+     <g id="line2d_3">
+      <g>
+       <use xlink:href="#mfbe1db8082" x="236.16" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_3">
+      <!-- squeezenetv1 -->
+      <g transform="translate(206.16 321.576187)scale(0.1 -0.1)">
+       <defs>
         <path id="FangSong-71" d="M 2250 2150 
 Q 2150 2375 1975 2512 
 Q 1800 2650 1550 2650 
@@ -375,30 +575,6 @@ Q 850 525 1000 375
 Q 1150 225 1425 225 
 z
 " transform="scale(0.015625)"/>
-        <path id="FangSong-65" d="M 2375 1550 
-Q 2400 2100 2187 2387 
-Q 1975 2675 1625 2675 
-Q 1250 2675 1012 2375 
-Q 775 2075 775 1550 
-L 2375 1550 
-z
-M 775 1400 
-Q 775 725 1037 437 
-Q 1300 150 1725 150 
-Q 2050 150 2275 337 
-Q 2500 525 2600 800 
-L 2725 750 
-Q 2650 475 2387 212 
-Q 2125 -50 1675 -50 
-Q 1100 -50 737 325 
-Q 375 700 375 1400 
-Q 375 2025 737 2437 
-Q 1100 2850 1625 2850 
-Q 2100 2850 2450 2525 
-Q 2800 2200 2800 1400 
-L 775 1400 
-z
-" transform="scale(0.015625)"/>
         <path id="FangSong-7a" d="M 2725 975 
 L 2550 0 
 L 400 0 
@@ -418,73 +594,6 @@ Q 2475 550 2575 1000
 L 2725 975 
 z
 " transform="scale(0.015625)"/>
-        <path id="FangSong-6e" d="M 175 0 
-L 175 150 
-L 300 150 
-Q 425 150 475 200 
-Q 525 250 525 350 
-L 525 2500 
-Q 525 2575 500 2612 
-Q 475 2650 400 2650 
-L 200 2650 
-L 200 2800 
-L 375 2800 
-Q 500 2800 612 2825 
-Q 725 2850 825 2925 
-L 875 2925 
-L 875 2350 
-Q 1100 2600 1325 2725 
-Q 1550 2850 1800 2850 
-Q 2225 2850 2425 2625 
-Q 2625 2400 2625 1950 
-L 2625 350 
-Q 2625 250 2687 200 
-Q 2750 150 2850 150 
-L 2975 150 
-L 2975 0 
-L 1925 0 
-L 1925 150 
-L 2050 150 
-Q 2175 150 2225 200 
-Q 2275 250 2275 350 
-L 2275 2025 
-Q 2275 2325 2150 2487 
-Q 2025 2650 1775 2650 
-Q 1550 2650 1312 2500 
-Q 1075 2350 875 2075 
-L 875 350 
-Q 875 250 937 200 
-Q 1000 150 1100 150 
-L 1225 150 
-L 1225 0 
-L 175 0 
-z
-" transform="scale(0.015625)"/>
-        <path id="FangSong-74" d="M 1475 800 
-Q 1475 450 1600 325 
-Q 1725 200 1975 200 
-Q 2225 200 2375 362 
-Q 2525 525 2575 825 
-L 2700 775 
-Q 2650 425 2437 200 
-Q 2225 -25 1875 -25 
-Q 1500 -25 1312 200 
-Q 1125 425 1125 900 
-L 1125 2650 
-L 375 2650 
-L 375 2800 
-L 575 2800 
-Q 875 2800 1062 2987 
-Q 1250 3175 1300 3575 
-L 1325 3775 
-L 1475 3775 
-L 1475 2800 
-L 2475 2800 
-L 2475 2650 
-L 1475 2650 
-L 1475 800 
-z
-" transform="scale(0.015625)"/>
        </defs>
        <use xlink:href="#FangSong-73"/>
        <use xlink:href="#FangSong-71" x="50"/>
@@ -501,119 +610,10 @@ z
       </g>
      </g>
     </g>
-    <g id="xtick_3">
-     <g id="line2d_3">
-      <g>
-       <use xlink:href="#mf3ed4ae91f" x="236.16" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
-      </g>
-     </g>
-     <g id="text_3">
-      <!-- resnet50 -->
-      <g transform="translate(216.16 321.576187)scale(0.1 -0.1)">
-       <defs>
-        <path id="FangSong-72" d="M 1250 2025 
-Q 1500 2425 1787 2637 
-Q 2075 2850 2375 2850 
-Q 2625 2850 2762 2737 
-Q 2900 2625 2900 2475 
-Q 2900 2350 2837 2275 
-Q 2775 2200 2650 2200 
-Q 2525 2200 2462 2275 
-Q 2400 2350 2425 2475 
-Q 2425 2550 2400 2600 
-Q 2375 2650 2250 2650 
-Q 2050 2650 1762 2400 
-Q 1475 2150 1250 1700 
-L 1250 350 
-Q 1250 250 1312 200 
-Q 1375 150 1475 150 
-L 2025 150 
-L 2025 0 
-L 175 0 
-L 175 150 
-L 675 150 
-Q 800 150 850 200 
-Q 900 250 900 350 
-L 900 2425 
-Q 900 2525 850 2587 
-Q 800 2650 675 2650 
-L 200 2650 
-L 200 2800 
-L 400 2800 
-Q 575 2800 812 2837 
-Q 1050 2875 1175 2925 
-L 1250 2925 
-L 1250 2025 
-z
-" transform="scale(0.015625)"/>
-        <path id="FangSong-35" d="M 1700 2750 
-Q 2175 2750 2475 2387 
-Q 2775 2025 2775 1425 
-Q 2775 750 2462 350 
-Q 2150 -50 1500 -50 
-Q 1050 -50 700 212 
-Q 350 475 350 850 
-Q 350 1000 437 1112 
-Q 525 1225 675 1225 
-Q 825 1225 875 1125 
-Q 925 1025 925 950 
-Q 925 800 850 712 
-Q 775 625 775 525 
-Q 775 325 1012 225 
-Q 1250 125 1525 125 
-Q 1925 125 2137 450 
-Q 2350 775 2350 1375 
-Q 2350 1875 2162 2187 
-Q 1975 2500 1600 2500 
-Q 1325 2500 1125 2400 
-Q 925 2300 750 1975 
-L 525 2000 
-L 650 4275 
-L 2700 4275 
-L 2625 3900 
-L 825 3900 
-L 725 2250 
-Q 975 2600 1212 2675 
-Q 1450 2750 1700 2750 
-z
-" transform="scale(0.015625)"/>
-        <path id="FangSong-30" d="M 1575 4125 
-Q 1225 4125 987 3587 
-Q 750 3050 750 2150 
-Q 750 1200 987 675 
-Q 1225 150 1575 150 
-Q 1950 150 2162 675 
-Q 2375 1200 2375 2150 
-Q 2375 3050 2175 3587 
-Q 1975 4125 1575 4125 
-z
-M 1575 -50 
-Q 1025 -50 650 525 
-Q 275 1100 275 2150 
-Q 275 3125 637 3725 
-Q 1000 4325 1575 4325 
-Q 2125 4325 2487 3750 
-Q 2850 3175 2850 2150 
-Q 2850 1125 2487 537 
-Q 2125 -50 1575 -50 
-z
-" transform="scale(0.015625)"/>
-       </defs>
-       <use xlink:href="#FangSong-72"/>
-       <use xlink:href="#FangSong-65" x="50"/>
-       <use xlink:href="#FangSong-73" x="100"/>
-       <use xlink:href="#FangSong-6e" x="150"/>
-       <use xlink:href="#FangSong-65" x="200"/>
-       <use xlink:href="#FangSong-74" x="250"/>
-       <use xlink:href="#FangSong-35" x="300"/>
-       <use xlink:href="#FangSong-30" x="350"/>
-      </g>
-     </g>
-    </g>
     <g id="xtick_4">
      <g id="line2d_4">
       <g>
-       <use xlink:href="#mf3ed4ae91f" x="308.305455" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mfbe1db8082" x="308.305455" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_4">
@@ -679,7 +679,7 @@ z
     <g id="xtick_5">
      <g id="line2d_5">
       <g>
-       <use xlink:href="#mf3ed4ae91f" x="380.450909" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#mfbe1db8082" x="380.450909" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_5">
@@ -741,12 +741,12 @@ z
     <g id="ytick_1">
      <g id="line2d_6">
       <defs>
-       <path id="m05b759d807" d="M 0 0 
+       <path id="m203cf5fce3" d="M 0 0 
 L -3.5 0 
 " style="stroke: #000000; stroke-width: 0.8"/>
       </defs>
       <g>
-       <use xlink:href="#m05b759d807" x="57.6" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m203cf5fce3" x="57.6" y="307.584" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_6">
@@ -774,12 +774,12 @@ z
     <g id="ytick_2">
      <g id="line2d_7">
       <g>
-       <use xlink:href="#m05b759d807" x="57.6" y="253.844486" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m203cf5fce3" x="57.6" y="254.959918" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_7">
       <!-- 0.5 -->
-      <g transform="translate(35.6 257.34058)scale(0.1 -0.1)">
+      <g transform="translate(35.6 258.456012)scale(0.1 -0.1)">
        <use xlink:href="#FangSong-30"/>
        <use xlink:href="#FangSong-2e" x="50"/>
        <use xlink:href="#FangSong-35" x="100"/>
@@ -789,12 +789,12 @@ z
     <g id="ytick_3">
      <g id="line2d_8">
       <g>
-       <use xlink:href="#m05b759d807" x="57.6" y="200.104973" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m203cf5fce3" x="57.6" y="202.335837" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_8">
       <!-- 1.0 -->
-      <g transform="translate(35.6 203.601066)scale(0.1 -0.1)">
+      <g transform="translate(35.6 205.83193)scale(0.1 -0.1)">
        <use xlink:href="#FangSong-31"/>
        <use xlink:href="#FangSong-2e" x="50"/>
        <use xlink:href="#FangSong-30" x="100"/>
@@ -804,12 +804,12 @@ z
     <g id="ytick_4">
      <g id="line2d_9">
       <g>
-       <use xlink:href="#m05b759d807" x="57.6" y="146.365459" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m203cf5fce3" x="57.6" y="149.711755" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_9">
       <!-- 1.5 -->
-      <g transform="translate(35.6 149.861553)scale(0.1 -0.1)">
+      <g transform="translate(35.6 153.207849)scale(0.1 -0.1)">
        <use xlink:href="#FangSong-31"/>
        <use xlink:href="#FangSong-2e" x="50"/>
        <use xlink:href="#FangSong-35" x="100"/>
@@ -819,12 +819,12 @@ z
     <g id="ytick_5">
      <g id="line2d_10">
       <g>
-       <use xlink:href="#m05b759d807" x="57.6" y="92.625945" style="stroke: #000000; stroke-width: 0.8"/>
+       <use xlink:href="#m203cf5fce3" x="57.6" y="97.087673" style="stroke: #000000; stroke-width: 0.8"/>
       </g>
      </g>
      <g id="text_10">
       <!-- 2.0 -->
-      <g transform="translate(35.6 96.122039)scale(0.1 -0.1)">
+      <g transform="translate(35.6 100.583767)scale(0.1 -0.1)">
        <defs>
         <path id="FangSong-32" d="M 2300 3225 
 Q 2300 3675 2100 3912 
@@ -865,7 +865,22 @@ z
       </g>
      </g>
     </g>
-    <g id="text_11">
+    <g id="ytick_6">
+     <g id="line2d_11">
+      <g>
+       <use xlink:href="#m203cf5fce3" x="57.6" y="44.463591" style="stroke: #000000; stroke-width: 0.8"/>
+      </g>
+     </g>
+     <g id="text_11">
+      <!-- 2.5 -->
+      <g transform="translate(35.6 47.959685)scale(0.1 -0.1)">
+       <use xlink:href="#FangSong-32"/>
+       <use xlink:href="#FangSong-2e" x="50"/>
+       <use xlink:href="#FangSong-35" x="100"/>
+      </g>
+     </g>
+    </g>
+    <g id="text_12">
      <!-- 响应比标准差 -->
      <g transform="translate(30.154688 204.528)rotate(-90)scale(0.1 -0.1)">
       <defs>
@@ -1246,10 +1261,10 @@ z
      </g>
     </g>
    </g>
-   <g id="line2d_11">
-    <path d="M 57.6 122.005794 
-L 414.72 122.005794 
-" clip-path="url(#pc0851b5eed)" style="fill: none; stroke-dasharray: 1.85,0.8; stroke-dashoffset: 0; stroke: #ff0000; stroke-width: 0.5"/>
+   <g id="line2d_12">
+    <path d="M 57.6 117.475916 
+L 414.72 117.475916 
+" clip-path="url(#p2c9ce311c9)" style="fill: none; stroke-dasharray: 1.85,0.8; stroke-dashoffset: 0; stroke: #ff0000; stroke-width: 0.5"/>
    </g>
    <g id="patch_8">
     <path d="M 57.6 307.584 
@@ -1274,7 +1289,7 @@ L 414.72 41.472
   </g>
  </g>
  <defs>
-  <clipPath id="pc0851b5eed">
+  <clipPath id="p2c9ce311c9">
    <rect x="57.6" y="41.472" width="357.12" height="266.112"/>
   </clipPath>
  </defs>
