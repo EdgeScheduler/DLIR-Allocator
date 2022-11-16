@@ -73,6 +73,7 @@ In order to eliminate the negative effects of fake-multi-threading mechanism of 
 * [C++ chinese manul](https://www.apiref.com/cpp-zh/cpp/filesystem/path.html)
 * [onnxruntime C++ API](https://onnxruntime.ai/docs/api/c/namespace_ort.html#details)
 * [nlohmann::json](https://github.com/nlohmann/json)
+* [cmdline](https://github.com/tanakh/cmdline)
 
 ## Contributors
 

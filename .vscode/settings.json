@@ -129,12 +129,14 @@
   },
   "clang.cflags": [
     "-std=c17",
-    "-I ${workspaceRoot}/include",
-    "-I ${workspaceRoot}/testlib"
+    "-I${workspaceRoot}/include",
+    "-I${workspaceRoot}/testlib",
+    "-I${workspaceRoot}/libs",
   ],
   "clang.cxxflags": [
     "-std=c++17",
     "-I${workspaceRoot}/include",
-    "-I${workspaceRoot}/testlib"
+    "-I${workspaceRoot}/testlib",
+    "-I${workspaceRoot}/libs",
   ]
 }

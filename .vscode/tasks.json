@@ -36,6 +36,8 @@
                 "${workspaceFolder}/include",
                 "-I",
                 "${workspaceFolder}/testlib",
+                "-I",
+                "${workspaceFolder}/libs",
                 "${workspaceFolder}/sources/*/*.cpp",
                 "${workspaceFolder}/testlib/*.cpp",
                 "-o",

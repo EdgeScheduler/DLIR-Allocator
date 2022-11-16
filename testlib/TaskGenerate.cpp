@@ -1,4 +1,5 @@
 #include "TaskGenerate.h"
+#include "Common/JsonSerializer.h"
 
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
@@ -45,7 +46,7 @@ void AddRequestInThread(std::mutex *mutex, std::condition_variable *condition, i
     std::cout<<"end send "<<creator->first<<", total: "<<i<<std::endl;
 }
 
-void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda)
+void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, std::vector<int> lambdas)
 {
     std::cout << "wait system to init..." << std::endl;
     std::this_thread::sleep_for(std::chrono::seconds(3));
@@ -58,7 +59,11 @@ void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std:
     std::mutex mutex;
     for(int i=0;i<inputCreators->size();i++)
     {
-        threads.push_back(std::make_shared<std::thread>(AddRequestInThread,&mutex,&condition,i,executorManager,inputCreators,count,lambda,&current_count));
+        if(lambdas[i]<=0)
+        {
+            continue;
+        }
+        threads.push_back(std::make_shared<std::thread>(AddRequestInThread,&mutex,&condition,i,executorManager,inputCreators,count,lambdas[i],&current_count));
     }
 
     for(auto thread: threads)
@@ -69,8 +74,21 @@ void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std:
     std::cout << "end send request." << std::endl;
 }
 
-void ReplyGather(ExecutorManager *executorManager, int count)
+void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> lambdas, std::vector<std::string> model_names)
 {
+    std::string fold="";
+    if(lambdas.size()>0)
+    {
+        fold=SaveHashFold(count,lambdas,model_names);
+    }
+
+    nlohmann::json catalogue;
+    
+    if(std::filesystem::exists(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json"))
+    {
+        catalogue=JsonSerializer::LoadJson(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json");
+    }
+
     std::cout << "run reply gather." << std::endl;
 #ifdef PARALLER_MODE
     std::filesystem::path saveFold = RootPathManager::GetRunRootFold() / "data" / "PARALLEL";
@@ -84,6 +102,20 @@ void ReplyGather(ExecutorManager *executorManager, int count)
     std::filesystem::path saveFold = RootPathManager::GetRunRootFold() / "data" / "DLIR";
 #endif
 
+    if(fold.size()>0)
+    {
+        saveFold/=fold;
+    }
+
+    nlohmann::json record;
+    record["count"]=count;
+    for(int i=0;i<lambdas.size();i++)
+    {
+        record[model_names[i]]=lambdas[i];
+    }
+    catalogue[fold]=record;
+    JsonSerializer::StoreJson(catalogue,RootPathManager::GetRunRootFold() / "data"/ "catalogue.json",true);
+    
     std::filesystem::remove_all(saveFold);
     std::filesystem::create_directories(saveFold);
     auto &applyQueue = executorManager->GetApplyQueue();
@@ -93,4 +125,21 @@ void ReplyGather(ExecutorManager *executorManager, int count)
         JsonSerializer::StoreJson(task->GetDescribe(), saveFold / (std::to_string(i) + ".json"));
     }
     std::cout << "all apply for " << count << " task received." << std::endl;
+}
+
+std::string SaveHashFold(int count, std::vector<int> lambdas, std::vector<std::string> model_names)
+{
+    std::string key=std::string("count=")+std::to_string(count);
+    for(int i=0;i<lambdas.size();i++)
+    {
+        key+=",";
+        key+=model_names[i];
+        key+="=";
+        key+=std::to_string(lambdas[i]);
+    }
+
+    std::hash<std::string> szHash;
+	size_t hashVal = szHash(key);
+    
+    return std::to_string(hashVal);
 }

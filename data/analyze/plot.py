@@ -68,6 +68,7 @@ def PlotAccumulates(benchs: list, envs: list):
             plt.ylabel('累计完成比例')
             plt.xlabel('响应比')
             plt.legend()
+            os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"accumulate.svg"), dpi=300,format="svg")
         
         plt.figure()
@@ -78,7 +79,8 @@ def PlotAccumulates(benchs: list, envs: list):
         plt.ylabel('累计完成比例')
         plt.xlabel('响应比')
         plt.legend()
-        plt.savefig(os.path.join(config.AimFold,env,"accumulate.svg"), dpi=300,format="svg")
+        os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
+        plt.savefig(os.path.join(config.AimFold,"total",env,"accumulate.svg"), dpi=300,format="svg")
 
 # [ [[""],["total"]], [["models/accumulate"], ["googlenet","resnet50","squeezenetv1","vgg19"]] ]
 def PlotRange(benchs: list, envs: list):
@@ -105,6 +107,7 @@ def PlotRange(benchs: list, envs: list):
 
             plt.ylabel('平均响应比-1')
             plt.legend()
+            os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"range.svg"), dpi=300,format="svg")
 
             plt.figure()
@@ -115,6 +118,7 @@ def PlotRange(benchs: list, envs: list):
             plt.xticks(np.arange(len(info)), list(info.keys()))
 
             plt.ylabel('响应比标准差')
+            os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"std.svg"), dpi=300,format="svg")
         
         plt.figure()
@@ -127,7 +131,8 @@ def PlotRange(benchs: list, envs: list):
         plt.xticks(np.arange(len(total_data)), list(total_data.keys()))
 
         plt.ylabel('平均响应比-1')
-        plt.savefig(os.path.join(config.AimFold,env,"total_avg.svg"), dpi=300,format="svg")
+        os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
+        plt.savefig(os.path.join(config.AimFold,"total",env,"total_avg.svg"), dpi=300,format="svg")
 
         plt.figure()
         # for idx,name in enumerate(total_data):
@@ -139,7 +144,8 @@ def PlotRange(benchs: list, envs: list):
         plt.xticks(np.arange(len(total_data)), list(total_data.keys()))
 
         plt.ylabel('响应比标准差')
-        plt.savefig(os.path.join(config.AimFold,env,"total_std.svg"), dpi=300,format="svg")
+        os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
+        plt.savefig(os.path.join(config.AimFold,"total",env,"total_std.svg"), dpi=300,format="svg")
 
 
 def main():

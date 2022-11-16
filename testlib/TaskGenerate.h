@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <thread>
 #include <mutex>
+#include <string>
 #include <condition_variable>
 #include <atomic>
 #include <ctime>
@@ -18,7 +19,8 @@
 #include "Random/UniformRandom.h"
 #include "Random/PossionRandom.h"
 
-void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda = 30);
-void ReplyGather(ExecutorManager *executorManager, int count);
+void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, std::vector<int> lambdas);
+void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> lambdas, std::vector<std::string> model_names);
+std::string SaveHashFold(int count, std::vector<int> lambdas, std::vector<std::string> model_names);
 
 #endif // __TASKGENERATE_H__

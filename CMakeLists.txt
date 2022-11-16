@@ -16,7 +16,7 @@ elseif(CMAKE_BUILD_TYPE AND (CMAKE_BUILD_TYPE STREQUAL "Release"))
     SET(EXECUTABLE_OUTPUT_PATH "${DLIR_ALLOCATOR_SOURCE_DIR}/bin/release")
 endif()
 
-include_directories("include" "testlib")
+include_directories("include" "testlib" "libs")
 
 SET(DLIR_Allocator_BIN "DLIR-Allocator")
 set(OYST_MODE_BIN "OYST-Allocator")
