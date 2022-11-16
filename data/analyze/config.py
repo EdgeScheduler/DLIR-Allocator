@@ -13,5 +13,6 @@ with open(os.path.join(DataPath,"catalogue.json"),"r") as fp:
     Catalogue=json.load(fp)
     RunEnvs=list(Catalogue.keys())
 
+    os.makedirs(AimFold,exist_ok=True)
     with open(os.path.join(AimFold,"catalogue.json"),"w") as fpw:
         json.dump(Catalogue,fpw,indent=4)

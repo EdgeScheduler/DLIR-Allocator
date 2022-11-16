@@ -70,6 +70,7 @@ def PlotAccumulates(benchs: list, envs: list):
             plt.legend()
             os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"accumulate.svg"), dpi=300,format="svg")
+            plt.close()
         
         plt.figure()
         for i in range(len(total_labels)):
@@ -81,6 +82,7 @@ def PlotAccumulates(benchs: list, envs: list):
         plt.legend()
         os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
         plt.savefig(os.path.join(config.AimFold,"total",env,"accumulate.svg"), dpi=300,format="svg")
+        plt.close()
 
 # [ [[""],["total"]], [["models/accumulate"], ["googlenet","resnet50","squeezenetv1","vgg19"]] ]
 def PlotRange(benchs: list, envs: list):
@@ -109,6 +111,7 @@ def PlotRange(benchs: list, envs: list):
             plt.legend()
             os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"range.svg"), dpi=300,format="svg")
+            plt.close()
 
             plt.figure()
             avgs=[info[key]["std"] for key in info]
@@ -120,6 +123,7 @@ def PlotRange(benchs: list, envs: list):
             plt.ylabel('响应比标准差')
             os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"std.svg"), dpi=300,format="svg")
+            plt.close()
         
         plt.figure()
         # for idx,name in enumerate(total_data):
@@ -133,6 +137,7 @@ def PlotRange(benchs: list, envs: list):
         plt.ylabel('平均响应比-1')
         os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
         plt.savefig(os.path.join(config.AimFold,"total",env,"total_avg.svg"), dpi=300,format="svg")
+        plt.close()
 
         plt.figure()
         # for idx,name in enumerate(total_data):
@@ -146,6 +151,7 @@ def PlotRange(benchs: list, envs: list):
         plt.ylabel('响应比标准差')
         os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
         plt.savefig(os.path.join(config.AimFold,"total",env,"total_std.svg"), dpi=300,format="svg")
+        plt.close()
 
 
 def main():
