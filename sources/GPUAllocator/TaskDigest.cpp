@@ -15,16 +15,16 @@ TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> exe
 
 bool TaskDigest::SuggestRunSegmentation()
 {
-    // for(auto iter: this->otherTaskCount)
-    // {
-    //     if(*iter<1)
-    //     {
-    //         return true;
-    //     }
-    // }
+    for(auto iter: this->otherTaskCount)
+    {
+        if(*iter<1)
+        {
+            return true;
+        }
+    }
 
-    // return false;
-    return this->taskCount<2;
+    return false;
+    //return this->taskCount<2;
 }
 
 float TaskDigest::GetSLO()
