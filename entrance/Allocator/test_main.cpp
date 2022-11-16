@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
 
     // ready to parse args
     cmdline::parser parser;
-    parser.set_program_name("DLIR-Allocator");
+    parser.set_program_name("Allocator-"+mode_name);
     parser.add<int>("count", 'c', "how many requests total to send [>0]", false, 1000);
     parser.add<int>("lambda", 'l', "default λ(ms) [>0]", false, 200);
     for(auto& model_name: models)
