@@ -12,11 +12,11 @@ if [ -f "$RootPath/data/catalogue.json" ];then
     mv $RootPath/data/catalogue.json $RootPath/abandon/$time/
 fi
 
-for mode in "OYST" "BNST" "FIFO" "PARALLER" "DLIR"
+for mode in "OYST" "BNST" "FIFO" "PARALLEL" "DLIR"
 do
     if [ -d "$RootPath/data/$mode" ];then
         mkdir -p $RootPath/abandon/$time
-        echo "$RootPath/data/$mode $RootPath/abandon/$time/"
+        echo "mv $RootPath/data/$mode $RootPath/abandon/$time/"
         mv $RootPath/data/$mode $RootPath/abandon/$time/
     fi
 done
