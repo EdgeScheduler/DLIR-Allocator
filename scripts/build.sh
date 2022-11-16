@@ -2,7 +2,6 @@
 
 SHELL_PATH=$(cd $(dirname $0) && pwd )
 
-echo $SHELL_PATH
 RootPath=$SHELL_PATH/../
 
 mkdir -p $RootPath/build
