@@ -22,9 +22,14 @@ public:
     /// @return
     float GetSLO();
 
-    /// @brief evaluate the score to the current wait-time, better choice face to higher score.
+    // /// @brief evaluate the score to the current wait-time, better choice face to higher score.
+    // /// @param waitTime how long the task still need to in-queue. (ms)
+    // /// @return score<=1.0. If score>1, it means this task had been finished before.
+    // float Evaluate(float waitTime);
+
+    /// @brief evaluate the score to the current wait-time, better choice face to lower score.
     /// @param waitTime how long the task still need to in-queue. (ms)
-    /// @return score<=1.0. If score>1, it means this task had been finished before.
+    /// @return score
     float Evaluate(float waitTime);
 
     float LeftRunTime();

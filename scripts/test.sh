@@ -17,6 +17,10 @@ Run()
             $RootPath/bin/release/$mode --count=$Count --lambda=$DefaultLambda  $args
         done
     done
+
+    python -u "/home/onceas/yutian/DLIR-Allocator/data/analyze/get_ratios.py"
+    python -u "/home/onceas/yutian/DLIR-Allocator/data/analyze/get_statistics.py"
+    python -u "/home/onceas/yutian/DLIR-Allocator/data/analyze/plot.py"
 }
 
 # for args in "" "--vgg19=150 --resnet50=300" "--vgg19=300 --resnet50=150 --googlenet=200 --squeezenetv1=200" "--vgg19=150 --resnet50=300 --googlenet=300 --squeezenetv1=150" "--vgg19=300 --resnet50=150 --googlenet=150 --squeezenetv1=300"

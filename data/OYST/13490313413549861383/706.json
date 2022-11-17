@@ -1,19 +1,24 @@
 {
     "child_model_execute_cost_by_ms": [
-        10.026000022888184
+        15.069999694824219,
+        8.779000282287598
     ],
     "child_model_run_time": [
         [
-            25226012,
-            25236038
+            25205548,
+            25220618
+        ],
+        [
+            25220706,
+            25229485
         ]
     ],
-    "execute_cost": 10.026000022888184,
-    "finish_time": 25236050,
-    "limit_cost_by_ms": 8.817333221435547,
-    "model_name": "googlenet",
-    "recv_time": 25219801,
-    "tag": "709",
-    "total_cost_by_ms": 16.249000549316406,
-    "wait_cost": 6.223000526428223
+    "execute_cost": 23.8489990234375,
+    "finish_time": 25229492,
+    "limit_cost_by_ms": 18.818666458129883,
+    "model_name": "resnet50",
+    "recv_time": 25184892,
+    "tag": "708",
+    "total_cost_by_ms": 44.599998474121094,
+    "wait_cost": 20.750999450683594
 }

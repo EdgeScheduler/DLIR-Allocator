@@ -1,19 +1,19 @@
 {
     "child_model_execute_cost_by_ms": [
-        8.215999603271484
+        20.725000381469727
     ],
     "child_model_run_time": [
         [
-            27909546,
-            27917762
+            27970362,
+            27991087
         ]
     ],
-    "execute_cost": 8.215999603271484,
-    "finish_time": 27917769,
-    "limit_cost_by_ms": 7.27133321762085,
-    "model_name": "squeezenetv1",
-    "recv_time": 27909461,
+    "execute_cost": 20.725000381469727,
+    "finish_time": 27991099,
+    "limit_cost_by_ms": 18.80900001525879,
+    "model_name": "resnet50",
+    "recv_time": 27965238,
     "tag": "993",
-    "total_cost_by_ms": 8.307999610900879,
-    "wait_cost": 0.09200000762939453
+    "total_cost_by_ms": 25.861000061035156,
+    "wait_cost": 5.13599967956543
 }

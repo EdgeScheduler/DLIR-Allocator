@@ -61,7 +61,13 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
             float iter_back = iter->Evaluate(total_wait + task.LeftRunTime());
 
             // if (new_task_back * iter_front > new_task_front * iter_back)
-            if ((new_task_back * iter_front > new_task_front * iter_back && (iter_front > 0 || new_task_front * iter_back > 0)) || (new_task_back * iter_front < 0 && ((new_task_front < 0 && iter_back < 0) || (new_task_front * iter_back < 0 && (std::min(new_task_front, iter_back) > std::min(new_task_back, iter_front))))))
+            // if ((new_task_back * iter_front > new_task_front * iter_back && (iter_front > 0 || new_task_front * iter_back > 0)) || (new_task_back * iter_front < 0 && ((new_task_front < 0 && iter_back < 0) || (new_task_front * iter_back < 0 && (std::min(new_task_front, iter_back) > std::min(new_task_back, iter_front))))))
+            // {
+            //     tasks.insert(iter, std::move(task));
+            //     goto SCHEDULE;
+            // }
+
+            if((new_task_front+iter_back)>(new_task_back+iter_front))
             {
                 tasks.insert(iter, std::move(task));
                 goto SCHEDULE;

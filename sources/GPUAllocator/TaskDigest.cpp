@@ -44,15 +44,15 @@ float TaskDigest::Evaluate(float waitTime)
 
     waitTime += (clock() - startTime) / CLOCKS_PER_SEC * 1000.0F + leftRuntime;
 
-    float slo = GetSLO();
-    float value = (-waitTime * waitTime + 2 * limitRuntime * waitTime + slo * slo - 2 * limitRuntime * slo) / (slo - limitRuntime) / (slo - limitRuntime);
+    // float slo = GetSLO();
+    // float value = (-waitTime * waitTime + 2 * limitRuntime * waitTime + slo * slo - 2 * limitRuntime * slo) / (slo - limitRuntime) / (slo - limitRuntime);
 
-    if (waitTime > slo)
-    {
-        value = 1.0 / (value + penaltyValue);
-    }
+    // if (waitTime > slo)
+    // {
+    //     value = 1.0 / (value + penaltyValue);
+    // }
 
-    return value;
+    return waitTime/limitRuntime;
 }
 
 int TaskDigest::GetToken(float &reduceTime, bool &enableSegmentation)

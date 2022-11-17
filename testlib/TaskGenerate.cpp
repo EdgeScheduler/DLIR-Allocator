@@ -82,7 +82,6 @@ std::filesystem::path SavePath(int count, std::vector<int> lambdas, std::vector<
         fold=SaveHashFold(count,lambdas,model_names);
     }
 
-    std::cout << "run reply gather." << std::endl;
 #ifdef PARALLER_MODE
     std::filesystem::path saveFold = RootPathManager::GetRunRootFold() / "data" / "PARALLEL";
 #elif OYST_MODE
@@ -105,6 +104,8 @@ std::filesystem::path SavePath(int count, std::vector<int> lambdas, std::vector<
 
 void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> lambdas, std::vector<std::string> model_names)
 {
+    std::cout << "run reply gather." << std::endl;
+    
     nlohmann::json catalogue;
     if(std::filesystem::exists(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json"))
     {
