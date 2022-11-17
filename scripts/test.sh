@@ -6,12 +6,14 @@ RootPath=$SHELL_PATH/..
 
 Run()
 {
+    
     echo "avg(λ)=$1"
     for args in "--vgg19=$1 --resnet50=$1 --googlenet=$1 --squeezenetv1=$1" "--vgg19=$(echo "scale=0;$1*1.25/1"|bc -l) --resnet50=$(echo "scale=0;$1*0.75/1"|bc -l) --googlenet=$1 --squeezenetv1=$1" "--vgg19=$(echo "scale=0;$1*0.75/1"|bc -l) --resnet50=$(echo "scale=0;$1*1.25/1"|bc -l) --googlenet=$1 --squeezenetv1=$1" "--vgg19=$(echo "scale=0;$1*0.75/1"|bc -l) --resnet50=$(echo "scale=0;$1*1.25/1"|bc -l) --googlenet=$(echo "scale=0;$1*1.25/1"|bc -l) --squeezenetv1=$(echo "scale=0;$1*0.75/1"|bc -l)" "--vgg19=$(echo "scale=0;$1*1.25/1"|bc -l) --resnet50=$(echo "scale=0;$1*0.75/1"|bc -l) --googlenet=$(echo "scale=0;$1*0.75/1"|bc -l) --squeezenetv1=$(echo "scale=0;$1*1.25/1"|bc -l)"  "--vgg19=$(echo "scale=0;$1*1.25/1"|bc -l) --resnet50=$(echo "scale=0;$1*1.25/1"|bc -l) --googlenet=$(echo "scale=0;$1*0.75/1"|bc -l) --squeezenetv1=$(echo "scale=0;$1*0.75/1"|bc -l)"  "--vgg19=$(echo "scale=0;$1*0.75/1"|bc -l) --resnet50=$(echo "scale=0;$1*0.75/1"|bc -l) --googlenet=$(echo "scale=0;$1*1.25/1"|bc -l) --squeezenetv1=$(echo "scale=0;$1*1.25/1"|bc -l)"
     do
         for mode in "DLIR-Allocator" "BNST-Allocator" "FIFO-Allocator" "PARALLER-Allocator" "OYST-Allocator"
         do
-            echo "run: $RootPath/bin/release/$mode --count=$Count --lambda=$1 $args"
+            echo ""
+            echo "run($(date)): $RootPath/bin/release/$mode --count=$Count --lambda=$1 $args"
             $RootPath/bin/release/$mode --count=$Count --lambda=$DefaultLambda  $args
         done
     done
@@ -35,3 +37,7 @@ for lambda in 100 150 200 250
 do
     Run $lambda
 done
+
+python -u "/home/onceas/yutian/DLIR-Allocator/data/analyze/get_ratios.py"
+python -u "/home/onceas/yutian/DLIR-Allocator/data/analyze/get_statistics.py"
+python -u "/home/onceas/yutian/DLIR-Allocator/data/analyze/plot.py"

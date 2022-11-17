@@ -74,19 +74,12 @@ void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std:
     std::cout << "end send request." << std::endl;
 }
 
-void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> lambdas, std::vector<std::string> model_names)
+std::filesystem::path SavePath(int count, std::vector<int> lambdas, std::vector<std::string> model_names)
 {
     std::string fold="";
     if(lambdas.size()>0)
     {
         fold=SaveHashFold(count,lambdas,model_names);
-    }
-
-    nlohmann::json catalogue;
-    
-    if(std::filesystem::exists(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json"))
-    {
-        catalogue=JsonSerializer::LoadJson(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json");
     }
 
     std::cout << "run reply gather." << std::endl;
@@ -107,6 +100,24 @@ void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> l
         saveFold/=fold;
     }
 
+    return saveFold;
+}
+
+void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> lambdas, std::vector<std::string> model_names)
+{
+    nlohmann::json catalogue;
+    if(std::filesystem::exists(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json"))
+    {
+        catalogue=JsonSerializer::LoadJson(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json");
+    }
+
+    std::string fold="";
+    if(lambdas.size()>0)
+    {
+        fold=SaveHashFold(count,lambdas,model_names);
+    }
+    std::filesystem::path saveFold=SavePath(count,lambdas,model_names);
+
     nlohmann::json record;
     record["count"]=count;
     for(int i=0;i<lambdas.size();i++)
@@ -114,6 +125,7 @@ void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> l
         record[model_names[i]]=lambdas[i];
     }
     catalogue[fold]=record;
+
     JsonSerializer::StoreJson(catalogue,RootPathManager::GetRunRootFold() / "data"/ "catalogue.json",true);
     
     std::filesystem::remove_all(saveFold);
@@ -142,4 +154,26 @@ std::string SaveHashFold(int count, std::vector<int> lambdas, std::vector<std::s
 	size_t hashVal = szHash(key);
     
     return std::to_string(hashVal);
+}
+
+bool CheckReady(int count, std::vector<int> lambdas, std::vector<std::string> model_names)
+{
+    if(!std::filesystem::exists(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json"))
+    {
+        return false;
+    }
+
+    nlohmann::json catalogue=JsonSerializer::LoadJson(RootPathManager::GetRunRootFold() / "data"/ "catalogue.json");
+    std::string foldName=SaveHashFold(count, lambdas,model_names);
+    if(!catalogue.contains(foldName))
+    {
+        return false;
+    }
+
+    if(!std::filesystem::exists(SavePath(count,lambdas,model_names)/(std::to_string(count-1)+".json")))
+    {
+        return false;
+    }
+
+    return true;
 }

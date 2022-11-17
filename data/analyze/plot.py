@@ -68,18 +68,20 @@ def PlotAccumulates(benchs: list, envs: list):
             plt.ylabel('累计完成比例')
             plt.xlabel('响应比')
             plt.legend()
+            plt.title(config.GetDescribe(env))
             os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"accumulate.svg"), dpi=300,format="svg")
             plt.close()
         
         plt.figure()
         for i in range(len(total_labels)):
-            plt.plot(xs,total_ys_list[i]+[total_ys_list[i][-1]]*(len(xs)-len(total_ys_list[i])), linewidth=(1.0 if labels[i]=="DLIR" else 0.5),color=mycolor(i),label=total_labels[i], linestyle=("-" if total_labels[i]=="DLIR" else "--"))
+            plt.plot(total_xs,total_ys_list[i]+[total_ys_list[i][-1]]*(len(total_xs)-len(total_ys_list[i])), linewidth=(1.0 if labels[i]=="DLIR" else 0.5),color=mycolor(i),label=total_labels[i], linestyle=("-" if total_labels[i]=="DLIR" else "--"))
 
         plt.gca().yaxis.set_major_formatter(FuncFormatter(ToPercent))
         plt.ylabel('累计完成比例')
         plt.xlabel('响应比')
         plt.legend()
+        plt.title(config.GetDescribe(env))
         os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
         plt.savefig(os.path.join(config.AimFold,"total",env,"accumulate.svg"), dpi=300,format="svg")
         plt.close()
@@ -109,6 +111,7 @@ def PlotRange(benchs: list, envs: list):
 
             plt.ylabel('平均响应比-1')
             plt.legend()
+            plt.title(config.GetDescribe(env))
             os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"range.svg"), dpi=300,format="svg")
             plt.close()
@@ -121,6 +124,7 @@ def PlotRange(benchs: list, envs: list):
             plt.xticks(np.arange(len(info)), list(info.keys()))
 
             plt.ylabel('响应比标准差')
+            plt.title(config.GetDescribe(env))
             os.makedirs(os.path.join(config.AimFold,bench,env),exist_ok=True)
             plt.savefig(os.path.join(config.AimFold,bench,env,"std.svg"), dpi=300,format="svg")
             plt.close()
@@ -135,6 +139,7 @@ def PlotRange(benchs: list, envs: list):
         plt.xticks(np.arange(len(total_data)), list(total_data.keys()))
 
         plt.ylabel('平均响应比-1')
+        plt.title(config.GetDescribe(env))
         os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
         plt.savefig(os.path.join(config.AimFold,"total",env,"total_avg.svg"), dpi=300,format="svg")
         plt.close()
@@ -149,6 +154,7 @@ def PlotRange(benchs: list, envs: list):
         plt.xticks(np.arange(len(total_data)), list(total_data.keys()))
 
         plt.ylabel('响应比标准差')
+        plt.title(config.GetDescribe(env))
         os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
         plt.savefig(os.path.join(config.AimFold,"total",env,"total_std.svg"), dpi=300,format="svg")
         plt.close()

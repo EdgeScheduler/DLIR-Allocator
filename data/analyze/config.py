@@ -16,3 +16,15 @@ with open(os.path.join(DataPath,"catalogue.json"),"r") as fp:
     os.makedirs(AimFold,exist_ok=True)
     with open(os.path.join(AimFold,"catalogue.json"),"w") as fpw:
         json.dump(Catalogue,fpw,indent=4)
+
+
+def GetDescribe(env: str)->str:
+    describe=""
+    for key,value in Catalogue[env].items():
+        describe+=", "
+        describe+=str(key)
+        describe+="="
+        describe+=str(value)
+
+    
+    return describe[2:]

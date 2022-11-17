@@ -22,5 +22,7 @@
 void ReqestGenerate(ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, std::vector<int> lambdas);
 void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> lambdas, std::vector<std::string> model_names);
 std::string SaveHashFold(int count, std::vector<int> lambdas, std::vector<std::string> model_names);
+std::filesystem::path SavePath(int count, std::vector<int> lambdas, std::vector<std::string> model_names);
+bool CheckReady(int count, std::vector<int> lambdas, std::vector<std::string> model_names);
 
 #endif // __TASKGENERATE_H__
