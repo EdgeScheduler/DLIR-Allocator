@@ -15,16 +15,24 @@ TaskDigest::TaskDigest(std::string name, std::shared_ptr<std::vector<float>> exe
 
 bool TaskDigest::SuggestRunSegmentation()
 {
-    for(auto iter: this->otherTaskCount)
+
+    // meet to many task, ban split to get lower cost
+    if (this->taskCount > 2)
     {
-        if(*iter<1)
+        return false;
+    }
+
+    // normal number of tasks, and other tasks may be preempted.
+    for (auto iter : this->otherTaskCount)
+    {
+        if (*iter < 1)
         {
             return true;
         }
     }
 
     return false;
-    //return this->taskCount<2;
+    // return this->taskCount<2;
 }
 
 float TaskDigest::GetSLO()
@@ -52,7 +60,7 @@ float TaskDigest::Evaluate(float waitTime)
     //     value = 1.0 / (value + penaltyValue);
     // }
 
-    return waitTime/limitRuntime;
+    return waitTime / limitRuntime;
 }
 
 int TaskDigest::GetToken(float &reduceTime, bool &enableSegmentation)

@@ -67,7 +67,7 @@ void TaskRegistration::RegisteTask(std::string name, std::shared_ptr<std::vector
             //     goto SCHEDULE;
             // }
 
-            if((new_task_front+iter_back)>(new_task_back+iter_front))
+            if ((new_task_front + iter_back) > (new_task_back + iter_front))
             {
                 tasks.insert(iter, std::move(task));
                 goto SCHEDULE;
