@@ -78,7 +78,7 @@
     "javascript": "node",
     "java": "cd $dir && javac $fileName && java $fileNameWithoutExt",
     "c": "cd $dir && gcc $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
-    "cpp": "cd $workspaceRoot &&  mkdir -p $workspaceRoot/bin/release/ && g++ -std=c++17 $dir$fileName -I $workspaceRoot/include -I $workspaceRoot/testlib $workspaceRoot/sources/*/*.cpp $workspaceRoot/testlib/*.cpp -o $workspaceRoot/bin/release/$fileNameWithoutExt -lstdc++fs -lonnxruntime -lpthread && $workspaceRoot/bin/release/$fileNameWithoutExt",
+    "cpp": "cd $workspaceRoot &&  mkdir -p $workspaceRoot/bin/release/ && g++ -std=c++17 $dir$fileName -I $workspaceRoot/include -I $workspaceRoot/testlib -I $workspaceRoot/libs $workspaceRoot/sources/*/*.cpp $workspaceRoot/testlib/*.cpp -o $workspaceRoot/bin/release/$fileNameWithoutExt -lstdc++fs -lonnxruntime -lpthread && $workspaceRoot/bin/release/$fileNameWithoutExt",
     "objective-c": "cd $dir && gcc -framework Cocoa $fileName -o $fileNameWithoutExt && $dir$fileNameWithoutExt",
     "php": "php",
     "python": "python -u",

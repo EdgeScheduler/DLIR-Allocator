@@ -1,5 +1,5 @@
 #include "GPUAllocator/TokenManager.h"
-#include "Common/DILException.h"
+#include "Common/DLIException.h"
 #include <iostream>
 TokenManager::TokenManager() : flag(-1), runningLock(nullptr), closeTokenManager(false)
 {
@@ -41,7 +41,7 @@ bool TokenManager::Grant(int token, bool enableSegmentation)
     if (closeTokenManager)
     {
         lock.unlock();
-        throw DILException::SYSTEM_CLOSE;
+        throw DLIException::SYSTEM_CLOSE;
     }
 
     this->runningLock = std::make_shared<std::unique_lock<std::mutex>>(runningMutex);

@@ -146,6 +146,21 @@ def PlotRange(benchs: list, envs: list):
 
         plt.figure()
         # for idx,name in enumerate(total_data):
+            # plt.bar(total_xs+total_bar_width*idx,[total_data[name]["max"],  total_data[name]["max"]], width=total_bar_width, label=name)
+        maxs=[total_data[key]["max"] for key in total_data]
+        plt.bar(np.arange(len(total_data)),np.array(maxs)-1, width=0.5, color="orange")
+        
+        plt.axhline(y=total_data["DLIR"]["max"]-1, color='r', linestyle='--', linewidth=0.5)
+        plt.xticks(np.arange(len(total_data)), list(total_data.keys()))
+
+        plt.ylabel('最大响应比-1')
+        plt.title(config.GetDescribe(env))
+        os.makedirs(os.path.join(config.AimFold,"total",env),exist_ok=True)
+        plt.savefig(os.path.join(config.AimFold,"total",env,"total_max.svg"), dpi=300,format="svg")
+        plt.close()
+        
+        plt.figure()
+        # for idx,name in enumerate(total_data):
             # plt.bar(total_xs+total_bar_width*idx,[total_data[name]["avg"],  total_data[name]["std"]], width=total_bar_width, label=name)
         avgs=[total_data[key]["std"] for key in total_data]
         plt.bar(np.arange(len(total_data)),avgs, width=0.5, color="orange")

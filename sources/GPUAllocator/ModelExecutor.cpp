@@ -2,7 +2,7 @@
 #include "Common/JsonSerializer.h"
 #include "Common/PathManager.h"
 #include "Tensor/ModelInputCreator.h"
-#include "Common/DILException.h"
+#include "Common/DLIException.h"
 #include <vector>
 #include <iostream>
 #include <ctime>
@@ -166,9 +166,9 @@ void ModelExecutor::ToNext(bool toEnd)
             this->current_task = nullptr;
         }
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             throw ex;
         }
@@ -193,9 +193,9 @@ void ModelExecutor::LoadTask()
         current_task->_input_labels = &this->inputLabels[this->todo];
         current_task->_output_labels = &this->outputLabels[this->todo];
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             throw ex;
         }
@@ -230,7 +230,7 @@ bool ModelExecutor::RunOnce()
         {
             this->tokenManager->Release();
         }
-        throw DILException::SYSTEM_CLOSE;
+        throw DLIException::SYSTEM_CLOSE;
     }
 
     // std::cout<<"recv token: "<<this->tokenManager->GetFlag()<<std::endl;
@@ -281,9 +281,9 @@ void ModelExecutor::AddTask(std::shared_ptr<std::map<std::string, std::shared_pt
         new_task->SetInputs(datas);
         this->task_queue.Push(new_task);
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             return;
         }
@@ -311,9 +311,9 @@ void ModelExecutor::RunCycle()
             }
         }
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             std::cout << this->modelName << " executor end sync." << std::endl;
             return;

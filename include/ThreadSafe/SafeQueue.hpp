@@ -5,7 +5,7 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include "Common/DILException.h"
+#include "Common/DLIException.h"
 template <class T>
 class SafeQueue
 {
@@ -80,7 +80,7 @@ void SafeQueue<T>::Push(T &x)
     if (closeQueue)
     {
         lock.unlock();
-        throw DILException::SYSTEM_CLOSE;
+        throw DLIException::SYSTEM_CLOSE;
     }
 
     dequeDatas.push_back(x);
@@ -102,7 +102,7 @@ void SafeQueue<T>::Emplace(T &&x)
     if (closeQueue)
     {
         lock.unlock();
-        throw DILException::SYSTEM_CLOSE;
+        throw DLIException::SYSTEM_CLOSE;
     }
 
     dequeDatas.emplace_back(std::move(x));
@@ -124,7 +124,7 @@ T SafeQueue<T>::Pop() noexcept(false)
     if (closeQueue)
     {
         lock.unlock();
-        throw DILException::SYSTEM_CLOSE;
+        throw DLIException::SYSTEM_CLOSE;
     }
 
     T front = std::move(dequeDatas.front());
@@ -149,7 +149,7 @@ T &SafeQueue<T>::front()
     if (closeQueue)
     {
         lock.unlock();
-        throw DILException::SYSTEM_CLOSE;
+        throw DLIException::SYSTEM_CLOSE;
     }
 
     lock.unlock();

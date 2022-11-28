@@ -63,9 +63,9 @@ void ExecutorManager::GatherTask(SafeQueue<std::shared_ptr<Task>> *taskQueue)
             this->applyQueue.Emplace(taskQueue->Pop());
         }
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             return;
         }
@@ -93,9 +93,9 @@ void ExecutorManager::AddTask(std::string model_name, std::shared_ptr<std::map<s
         iter->second->executor->AddTask(datas, tag);
         // lock.unlock();
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             return;
         }
@@ -140,9 +140,9 @@ bool ExecutorManager::Grant(int token, bool block)
         this->dealTask.notify_all();
         return flag;
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             return true;
         }

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <algorithm>
 #include <thread>
-#include "Common/DILException.h"
+#include "Common/DLIException.h"
 
 TaskRegistration::TaskRegistration(TokenManager *tokenManager, std::condition_variable *dealTask) : queueLength(0.0F), tokenManager(tokenManager), dealTask(dealTask), currentTask(nullptr), closeRegistration(false), reduceTime(0.0F)
 {
@@ -122,7 +122,7 @@ void TaskRegistration::TokenDispense()
                     if (closeRegistration)
                     {
                         lock.unlock();
-                        throw DILException::SYSTEM_CLOSE;
+                        throw DLIException::SYSTEM_CLOSE;
                     }
 
                     m = &tasks.back();
@@ -169,9 +169,9 @@ void TaskRegistration::TokenDispense()
             }
         }
     }
-    catch (DILException ex)
+    catch (DLIException ex)
     {
-        if (ex == DILException::SYSTEM_CLOSE)
+        if (ex == DLIException::SYSTEM_CLOSE)
         {
             std::cout << "end token dispense" << std::endl;
             return;
