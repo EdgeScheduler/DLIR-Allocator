@@ -138,5 +138,6 @@
     "-I${workspaceRoot}/include",
     "-I${workspaceRoot}/testlib",
     "-I${workspaceRoot}/libs",
-  ]
+  ],
+  "git.ignoreLimitWarning": true
 }
