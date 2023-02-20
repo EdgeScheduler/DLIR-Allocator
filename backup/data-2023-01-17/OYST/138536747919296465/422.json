@@ -1,0 +1,24 @@
+{
+    "child_model_execute_cost_by_ms": [
+        15.536999702453613,
+        9.371000289916992
+    ],
+    "child_model_run_time": [
+        [
+            19055643,
+            19071180
+        ],
+        [
+            19071305,
+            19080676
+        ]
+    ],
+    "execute_cost": 24.908000946044922,
+    "finish_time": 19080682,
+    "limit_cost_by_ms": 19.016332626342773,
+    "model_name": "resnet50",
+    "recv_time": 19040346,
+    "tag": "423",
+    "total_cost_by_ms": 40.33599853515625,
+    "wait_cost": 15.427997589111328
+}
