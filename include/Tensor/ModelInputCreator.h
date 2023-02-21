@@ -12,10 +12,10 @@ public:
 
     /// @brief create datas for model with map, return share_ptr
     /// @return
-    std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> CreateInput();
+    std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>> CreateInput();
 
 private:
-    std::map<std::string, TensorValue<float>> dataTemplate;
+    std::map<std::string, std::shared_ptr<TensorValueObject>> dataTemplate;
     TensorsInfo tensorsInfo;
 };
 

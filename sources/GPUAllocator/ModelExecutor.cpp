@@ -52,16 +52,37 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
         std::cout << "start to run " << modelName << " test." << std::endl;
         for (int i = 0; i < modelCount; i++)
         {
-            std::vector<TensorValue<float>> input_Tensors;
+            std::vector<std::shared_ptr<TensorValueObject>> input_tensors;
             std::vector<Ort::Value> input_values;
             for (auto &info : modelInfos[i].GetInput().GetAllTensors())
             {
-                input_Tensors.push_back(TensorValue(info, true));
+                switch (info.GetType())
+                {
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+                    input_tensors.push_back(std::make_shared<TensorValue<int8_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+                    input_tensors.push_back(std::make_shared<TensorValue<int16_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+                    input_tensors.push_back(std::make_shared<TensorValue<int32_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+                    input_tensors.push_back(std::make_shared<TensorValue<int64_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+                    input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+                    break;
+                default:
+                    input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+                }
+
+                //input_Tensors.push_back(TensorValue(info, true));
             }
 
-            for (auto &tensor : input_Tensors)
+            for (auto &tensor : input_tensors)
             {
-                input_values.push_back(tensor);
+                input_values.push_back(*tensor);
             }
 
             // run to skip cold-run
@@ -82,16 +103,35 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
         // test raw-model
         {
             // run to skip cold-run
-            std::vector<TensorValue<float>> raw_input_Tensors;
+            std::vector<std::shared_ptr<TensorValueObject>> raw_input_tensors;
             std::vector<Ort::Value> raw_input_values;
             for (auto &info : modelInfos[0].GetInput().GetAllTensors())
             {
-                raw_input_Tensors.push_back(TensorValue(info, true));
+                switch (info.GetType())
+                {
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+                    raw_input_tensors.push_back(std::make_shared<TensorValue<int8_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+                    raw_input_tensors.push_back(std::make_shared<TensorValue<int16_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+                    raw_input_tensors.push_back(std::make_shared<TensorValue<int32_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+                    raw_input_tensors.push_back(std::make_shared<TensorValue<int64_t>>(info, true));
+                    break;
+                case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+                    raw_input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+                    break;
+                default:
+                    raw_input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+                }
             }
 
-            for (auto &tensor : raw_input_Tensors)
+            for (auto &tensor : raw_input_tensors)
             {
-                raw_input_values.push_back(tensor);
+                raw_input_values.push_back(*tensor);
             }
 
             // skip cold-run
@@ -273,7 +313,7 @@ bool ModelExecutor::RunOnce()
     return false;
 }
 
-void ModelExecutor::AddTask(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag)
+void ModelExecutor::AddTask(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>> datas, std::string tag)
 {
     try
     {

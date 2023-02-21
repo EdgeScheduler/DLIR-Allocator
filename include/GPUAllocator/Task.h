@@ -24,19 +24,19 @@ public:
 
     /// @brief Set model-input-value (data)
     /// @param tensors
-    void SetInputs(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas);
+    void SetInputs(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>> datas);
 
     /// @brief Get model-input reference (data)
     /// @return
-    const std::vector<std::shared_ptr<TensorValue<float>>> &GetInputs();
+    const std::vector<std::shared_ptr<TensorValueObject>> &GetInputs();
 
-    /// @brief record model inference resul (model-output)
+    /// @brief record model inference result (model-output)
     /// @param tensors
     void SetOutputs(std::vector<Ort::Value> &tensors);
 
     /// @brief Get model-output reference
     /// @return
-    const std::vector<std::shared_ptr<TensorValue<float>>> &GetOutputs();
+    const std::vector<std::shared_ptr<TensorValueObject>> &GetOutputs();
 
     /// @brief record (start_time, end_time) for each child-module. (clock_t, us)
     /// @param cost
@@ -71,8 +71,8 @@ public:
     void PrintDescribe();
 
 public:
-    std::vector<std::shared_ptr<TensorValue<float>>> Inputs;
-    std::vector<std::shared_ptr<TensorValue<float>>> Outputs;
+    std::vector<std::shared_ptr<TensorValueObject>> Inputs;
+    std::vector<std::shared_ptr<TensorValueObject>> Outputs;
     std::vector<std::pair<clock_t, clock_t>> timeCosts;
 
     // runtime args

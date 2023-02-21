@@ -10,9 +10,53 @@
 #include <iostream>
 #include "ValueInfo.h"
 
+class TensorValueObject
+{
+public:
+    /// @brief deep-copy from Ort::value to TensorValue
+    /// @param value Ort::Value
+    virtual void RecordOrtValue(Ort::Value &value)=0;
+
+    /// @brief
+    /// @param value ignore raw shape, override shape with Ort::Value.
+    /// @param label if label=="---", will not delete raw label.
+    virtual void RecordOrtValueIgnoreShape(Ort::Value &value, std::string label = "---")=0;
+
+    /// @brief create random datas
+    /// @param min <= data[x]
+    /// @param max > data[x]
+    virtual void Random(int min = 0, int max = 1)=0;
+
+    /// @brief set label for tensor-info
+    /// @param label usually label-name in model.
+    virtual void SetLabel(std::string label = "")=0;
+
+    // // template member function is not allow to be virtual
+    // /// @brief get raw data
+    // /// @return std::vector<T> object
+    // // virtual const std::vector<T> &GetData() const=0;
+    // // virtual const std::vector<T> &GetData() const=0;
+
+    /// @brief bind to Ort::Value, it is similar to shallow-copy. if TensorValue change, Ort::value change together.
+    /// @return
+    virtual Ort::Value ToTensor() =0;
+
+    /// @brief get tensor-info
+    /// @return ValueInfo Info
+    virtual const ValueInfo &GetValueInfo() const =0;
+
+    /// @brief print Tensor-info
+    // template<typename ValueType=float>
+    void virtual Print(int64_t max_length = 30, bool print_tensor_info = true) const =0;
+
+    virtual operator Ort::Value()=0;
+
+    virtual ONNXTensorElementDataType GetDataElementType() =0;
+};
+
 /// @brief object to store tensor-info and datas
 template <class T = float>
-class TensorValue
+class TensorValue: public virtual TensorValueObject
 {
 public:
     /// @brief Init class and create random value.
@@ -26,21 +70,21 @@ public:
 
     /// @brief deep-copy from Ort::value to TensorValue
     /// @param value Ort::Value
-    void RecordOrtValue(Ort::Value &value);
+    virtual void RecordOrtValue(Ort::Value &value);
 
     /// @brief
     /// @param value ignore raw shape, override shape with Ort::Value.
     /// @param label if label=="---", will not delete raw label.
-    void RecordOrtValueIgnoreShape(Ort::Value &value, std::string label = "---");
+    virtual void RecordOrtValueIgnoreShape(Ort::Value &value, std::string label = "---");
 
     /// @brief create random datas
     /// @param min <= data[x]
     /// @param max > data[x]
-    void Random(int min = 0, int max = 1);
+    virtual void Random(int min = 0, int max = 1);
 
     /// @brief set label for tensor-info
     /// @param label usually label-name in model.
-    void SetLabel(std::string label = "");
+    virtual void SetLabel(std::string label = "");
 
     /// @brief get raw data
     /// @return std::vector<T> object
@@ -48,23 +92,26 @@ public:
 
     /// @brief bind to Ort::Value, it is similar to shallow-copy. if TensorValue change, Ort::value change together.
     /// @return
-    Ort::Value ToTensor();
+    virtual Ort::Value ToTensor();
 
     /// @brief get tensor-info
     /// @return ValueInfo Info
-    const ValueInfo &GetValueInfo() const;
+    virtual const ValueInfo &GetValueInfo() const;
 
     /// @brief print Tensor-info
     // template<typename ValueType=float>
-    void Print(int64_t max_length = 30, bool print_tensor_info = true) const;
+    virtual void Print(int64_t max_length = 30, bool print_tensor_info = true) const;
 
-    operator Ort::Value();
+    virtual operator Ort::Value();
+
+    virtual ONNXTensorElementDataType GetDataElementType();
 
 private:
     ValueInfo valueInfo;
     std::vector<T> data;
     OrtAllocatorType allocator;
     OrtMemType memType;
+    ONNXTensorElementDataType elementType;
 };
 
 template <class T>
@@ -79,6 +126,7 @@ TensorValue<T>::TensorValue(const ValueInfo &valueInfo, bool initByRandom, OrtAl
     this->valueInfo = valueInfo;
     this->allocator = allocator;
     this->memType = memType;
+    this->elementType = valueInfo.GetType();
 
     if (initByRandom)
     {
@@ -87,8 +135,29 @@ TensorValue<T>::TensorValue(const ValueInfo &valueInfo, bool initByRandom, OrtAl
 }
 
 template <class T>
+ONNXTensorElementDataType TensorValue<T>::GetDataElementType()
+{
+    return this->elementType;
+}
+
+template <class T>
 void TensorValue<T>::Random(int min, int max)
 {
+    switch (this->elementType)
+    {
+    case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:;
+    case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:;
+    case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:;
+    case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:;
+        if(max-min<10)
+        {
+            max=min+10;
+        }
+        break;
+    default:
+        break;
+    }
+
     static std::default_random_engine engin(time(NULL));
     std::uniform_real_distribution<double> uniform_creator(min, max);
 

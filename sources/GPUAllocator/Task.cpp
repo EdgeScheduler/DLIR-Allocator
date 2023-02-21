@@ -14,7 +14,7 @@ float Task::TimeCost()
     return double(endTime - startTime) / CLOCKS_PER_SEC * 1000.0;
 }
 
-void Task::SetInputs(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas)
+void Task::SetInputs(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>> datas)
 {
     for (const ValueInfo &info : this->modelInfo->GetInput().GetAllTensors())
     {
@@ -23,7 +23,26 @@ void Task::SetInputs(std::shared_ptr<std::map<std::string, std::shared_ptr<Tenso
 
     for (const ValueInfo &info : this->modelInfo->GetOutput().GetAllTensors())
     {
-        this->Outputs.push_back(std::make_shared<TensorValue<float>>(info, false));
+        switch (info.GetType())
+        {
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+            this->Outputs.push_back(std::make_shared<TensorValue<int8_t>>(info, false));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+            this->Outputs.push_back(std::make_shared<TensorValue<int16_t>>(info, false));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+            this->Outputs.push_back(std::make_shared<TensorValue<int32_t>>(info, false));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+            this->Outputs.push_back(std::make_shared<TensorValue<int64_t>>(info, false));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+            this->Outputs.push_back(std::make_shared<TensorValue<float>>(info, false));
+            break;
+        default:
+            this->Outputs.push_back(std::make_shared<TensorValue<float>>(info, false));
+        }
     }
 
     for (auto &value : this->Inputs)
@@ -43,12 +62,12 @@ void Task::SetOutputs(std::vector<Ort::Value> &tensors)
     }
 }
 
-const std::vector<std::shared_ptr<TensorValue<float>>> &Task::GetInputs()
+const std::vector<std::shared_ptr<TensorValueObject>> &Task::GetInputs()
 {
     return this->Inputs;
 }
 
-const std::vector<std::shared_ptr<TensorValue<float>>> &Task::GetOutputs()
+const std::vector<std::shared_ptr<TensorValueObject>> &Task::GetOutputs()
 {
     return this->Outputs;
 }

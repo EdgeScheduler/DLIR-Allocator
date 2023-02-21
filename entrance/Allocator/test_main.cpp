@@ -19,7 +19,7 @@
 #include "GPUAllocator/ExecutorManager.h"
 #include "cmdline.h"
 
-using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
+// using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
 static auto models = {"vgg19", "resnet50", "googlenet", "squeezenetv1"};
 

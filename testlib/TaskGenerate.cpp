@@ -1,7 +1,7 @@
 #include "TaskGenerate.h"
 #include "Common/JsonSerializer.h"
 
-using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
+using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>>;
 
 void AddRequestInThread(std::mutex *mutex, std::condition_variable *condition, int index, ExecutorManager *executorManager, std::vector<std::pair<std::string, ModelInputCreator>> *inputCreators, int count, float lambda, int *current_count)
 {

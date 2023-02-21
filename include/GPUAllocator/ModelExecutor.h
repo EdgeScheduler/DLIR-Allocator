@@ -21,7 +21,7 @@ public:
     /// @brief add new task to executor by share_ptr
     /// @param datas model inputs
     /// @param tag add some information to task
-    void AddTask(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag = "");
+    void AddTask(std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>> datas, std::string tag = "");
 
     /// @brief record current task to the end.
     void ToNext(bool toEnd = false);

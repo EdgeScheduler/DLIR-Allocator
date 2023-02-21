@@ -76,7 +76,7 @@ void ExecutorManager::GatherTask(SafeQueue<std::shared_ptr<Task>> *taskQueue)
     }
 }
 
-void ExecutorManager::AddTask(std::string model_name, std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag)
+void ExecutorManager::AddTask(std::string model_name, std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>> datas, std::string tag)
 {
     try
     {

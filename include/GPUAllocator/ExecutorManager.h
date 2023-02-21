@@ -41,7 +41,7 @@ public:
     /// @brief add task to executor
     /// @param model_name executor/model name
     /// @param datas model inputs data
-    void AddTask(std::string model_name, std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>> datas, std::string tag = "");
+    void AddTask(std::string model_name, std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>> datas, std::string tag = "");
 
     /// @brief get executor describes
     /// @return
