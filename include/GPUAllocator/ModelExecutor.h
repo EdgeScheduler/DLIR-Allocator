@@ -18,6 +18,9 @@ public:
     ModelExecutor(std::string model_name, Ort::SessionOptions *session_opt, Ort::Env *env, int token_id, TokenManager *token_manager, std::mutex *gpu_mutex, std::condition_variable *deal_task);
     ~ModelExecutor();
 
+    /// @brief re-test run-cost
+    void UpdateExecutorTime();
+
     /// @brief add new task to executor by share_ptr
     /// @param datas model inputs
     /// @param tag add some information to task

@@ -21,7 +21,7 @@
 
 // using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValue<float>>>>;
 
-static auto models = {"vgg19", "resnet50", "googlenet", "squeezenetv1"};
+static auto models = {"vgg19", "resnet50", "googlenet", "gpt128v2", "yolov2"};
 
 // ./bin/release/DLIR-Allocator && ./bin/release/BNST-Allocator && ./bin/release/FIFO-Allocator && ./bin/release/PARALLER-Allocator && ./bin/release/OYST-Allocator
 int main(int argc, char *argv[])
@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
         executorManager.RunExecutor(model_name);
         inputCreators.push_back(std::pair<std::string, ModelInputCreator>(model_name, creator));
     }
+
+   //  executorManager.RunExecutorReTest();
 
     std::thread reqestGenerateThread(ReqestGenerate, &executorManager, &inputCreators, dataCount, lambdas);
     ReplyGather(&executorManager, dataCount, lambdas, model_names);

@@ -7,6 +7,8 @@
 #include <iostream>
 #include <ctime>
 
+#define ErrorRange 1.05
+
 ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *session_opt, Ort::Env *env, int token_id, TokenManager *token_manager, std::mutex *gpu_mutex, std::condition_variable *deal_task) : modelName(model_name), sessionOption(session_opt), onnxruntimeEnv(env), todo(0), modelCount(0), tokenID(token_id), tokenManager(token_manager), gpuMutex(gpu_mutex), dealTask(deal_task), rawSession(nullptr), closeExecutor(false)
 {
     std::filesystem::path rawModelPath = OnnxPathManager::GetModelSavePath(modelName);
@@ -50,8 +52,10 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
     // test child-models
     {
         std::cout << "start to run " << modelName << " test." << std::endl;
+        clock_t sum_raw = 0.0;
         for (int i = 0; i < modelCount; i++)
         {
+            // child-model
             std::vector<std::shared_ptr<TensorValueObject>> input_tensors;
             std::vector<Ort::Value> input_values;
             for (auto &info : modelInfos[i].GetInput().GetAllTensors())
@@ -77,7 +81,7 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
                     input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
                 }
 
-                //input_Tensors.push_back(TensorValue(info, true));
+                // input_Tensors.push_back(TensorValue(info, true));
             }
 
             for (auto &tensor : input_tensors)
@@ -85,24 +89,7 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
                 input_values.push_back(*tensor);
             }
 
-            // run to skip cold-run
-            for (int k = 0; k < 3; k++)
-            {
-                this->sessions[i].Run(Ort::RunOptions{nullptr}, inputLabels[i].data(), input_values.data(), inputLabels[i].size(), outputLabels[i].data(), outputLabels[i].size());
-            }
-
-            // evaluate the time-cost
-            clock_t start = clock();
-            for (int k = 0; k < 3; k++)
-            {
-                this->sessions[i].Run(Ort::RunOptions{nullptr}, inputLabels[i].data(), input_values.data(), inputLabels[i].size(), outputLabels[i].data(), outputLabels[i].size());
-            }
-            this->executeTime->push_back((clock() - start) / 3.0 / CLOCKS_PER_SEC * 1000.0);
-            // test child-models end.
-        }
-        // test raw-model
-        {
-            // run to skip cold-run
+            // raw-model
             std::vector<std::shared_ptr<TensorValueObject>> raw_input_tensors;
             std::vector<Ort::Value> raw_input_values;
             for (auto &info : modelInfos[0].GetInput().GetAllTensors())
@@ -134,19 +121,98 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
                 raw_input_values.push_back(*tensor);
             }
 
-            // skip cold-run
+            // skip child cold-run
+            for (int k = 0; k < 3; k++)
+            {
+                this->sessions[i].Run(Ort::RunOptions{nullptr}, inputLabels[i].data(), input_values.data(), inputLabels[i].size(), outputLabels[i].data(), outputLabels[i].size());
+            }
+
+            // skip raw cold-run
             for (int k = 0; k < 3; k++)
             {
                 this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
             }
 
             // evaluate the time-cost
-            clock_t start_raw = clock();
+            clock_t sum_time = 0.0;
             for (int k = 0; k < 3; k++)
             {
-                this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
+                for (auto &tensor : input_tensors)
+                {
+                    tensor->Random();
+                }
+
+                for (auto &tensor : raw_input_tensors)
+                {
+                    tensor->Random();
+                }
+
+                clock_t start = clock();
+                auto result = this->sessions[i].Run(Ort::RunOptions{nullptr}, inputLabels[i].data(), input_values.data(), inputLabels[i].size(), outputLabels[i].data(), outputLabels[i].size());
+                sum_time += clock() - start;
+
+                clock_t raw_start = clock();
+                auto raw_result = this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
+                sum_raw += clock() - raw_start;
             }
-            this->modelExecuteTime = (clock() - start_raw) / 3.0 / CLOCKS_PER_SEC * 1000.0;
+            this->executeTime->push_back(sum_time / 3.0 / CLOCKS_PER_SEC * 1000.0);
+            // test child-models end.
+        }
+        this->modelExecuteTime = sum_raw / (3.0 * modelCount) / CLOCKS_PER_SEC * 1000.0;
+
+        // test raw-model
+        {
+            // // run to skip cold-run
+            // std::vector<std::shared_ptr<TensorValueObject>> raw_input_tensors;
+            // std::vector<Ort::Value> raw_input_values;
+            // for (auto &info : modelInfos[0].GetInput().GetAllTensors())
+            // {
+            //     switch (info.GetType())
+            //     {
+            //     case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+            //         raw_input_tensors.push_back(std::make_shared<TensorValue<int8_t>>(info, true));
+            //         break;
+            //     case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+            //         raw_input_tensors.push_back(std::make_shared<TensorValue<int16_t>>(info, true));
+            //         break;
+            //     case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+            //         raw_input_tensors.push_back(std::make_shared<TensorValue<int32_t>>(info, true));
+            //         break;
+            //     case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+            //         raw_input_tensors.push_back(std::make_shared<TensorValue<int64_t>>(info, true));
+            //         break;
+            //     case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+            //         raw_input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+            //         break;
+            //     default:
+            //         raw_input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+            //     }
+            // }
+
+            // for (auto &tensor : raw_input_tensors)
+            // {
+            //     raw_input_values.push_back(*tensor);
+            // }
+
+            // // skip cold-run
+            // for (int k = 0; k < 3; k++)
+            // {
+            //     this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
+            // }
+
+            // evaluate the time-cost
+            // clock_t sumt_raw = 0.0;
+            // for (int k = 0; k < 1; k++)
+            // {
+            //     for(auto &tensor: raw_input_tensors)
+            //     {
+            //         tensor->Random();
+            //     }
+            //     clock_t start = clock();
+            //     auto result=this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
+            //     sumt_raw+=clock() - start;
+            // }
+            // this->modelExecuteTime = sumt_raw / 1.0 / CLOCKS_PER_SEC * 1000.0;
 
             // test raw-model end.
         }
@@ -176,6 +242,97 @@ ModelExecutor::ModelExecutor(std::string model_name, Ort::SessionOptions *sessio
 
     // evaluate end
     std::cout << "run " << modelName << " test to end." << std::endl;
+}
+
+void ModelExecutor::UpdateExecutorTime()
+{
+    std::cout << "start to re-run " << modelName << " test." << std::endl;
+    this->executeTime->clear();
+
+    for (int i = 0; i < modelCount; i++)
+    {
+        // child-model
+        std::vector<std::shared_ptr<TensorValueObject>> input_tensors;
+        std::vector<Ort::Value> input_values;
+        for (auto &info : modelInfos[i].GetInput().GetAllTensors())
+        {
+            switch (info.GetType())
+            {
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+                input_tensors.push_back(std::make_shared<TensorValue<int8_t>>(info, true));
+                break;
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+                input_tensors.push_back(std::make_shared<TensorValue<int16_t>>(info, true));
+                break;
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+                input_tensors.push_back(std::make_shared<TensorValue<int32_t>>(info, true));
+                break;
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+                input_tensors.push_back(std::make_shared<TensorValue<int64_t>>(info, true));
+                break;
+            case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+                input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+                break;
+            default:
+                input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+            }
+
+            // input_Tensors.push_back(TensorValue(info, true));
+        }
+
+        for (auto &tensor : input_tensors)
+        {
+            input_values.push_back(*tensor);
+        }
+
+        // evaluate the time-cost
+
+        clock_t start = clock();
+        auto result = this->sessions[i].Run(Ort::RunOptions{nullptr}, inputLabels[i].data(), input_values.data(), inputLabels[i].size(), outputLabels[i].data(), outputLabels[i].size());
+
+        this->executeTime->push_back((clock() - start) / CLOCKS_PER_SEC * 1000.0);
+
+                // test child-models end.
+    }
+
+    // raw-model
+    std::vector<std::shared_ptr<TensorValueObject>> raw_input_tensors;
+    std::vector<Ort::Value> raw_input_values;
+    for (auto &info : modelInfos[0].GetInput().GetAllTensors())
+    {
+        switch (info.GetType())
+        {
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT8:
+            raw_input_tensors.push_back(std::make_shared<TensorValue<int8_t>>(info, true));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT16:
+            raw_input_tensors.push_back(std::make_shared<TensorValue<int16_t>>(info, true));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT32:
+            raw_input_tensors.push_back(std::make_shared<TensorValue<int32_t>>(info, true));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_INT64:
+            raw_input_tensors.push_back(std::make_shared<TensorValue<int64_t>>(info, true));
+            break;
+        case ONNXTensorElementDataType::ONNX_TENSOR_ELEMENT_DATA_TYPE_FLOAT:
+            raw_input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+            break;
+        default:
+            raw_input_tensors.push_back(std::make_shared<TensorValue<float>>(info, true));
+        }
+    }
+
+    for (auto &tensor : raw_input_tensors)
+    {
+        raw_input_values.push_back(*tensor);
+    }
+
+    clock_t raw_start = clock();
+    auto raw_result = this->rawSession->Run(Ort::RunOptions{nullptr}, inputLabels[0].data(), raw_input_values.data(), inputLabels[0].size(), outputLabels[modelCount - 1].data(), outputLabels[modelCount - 1].size());
+
+    //std::cout<<clock()<<"--"<<raw_start<<std::endl;
+    this->modelExecuteTime = (clock() - raw_start)* 1000.0 / CLOCKS_PER_SEC ;
+    //std::cout<<"=>"<<this->modelExecuteTime<<std::endl;
 }
 
 ModelExecutor::~ModelExecutor()

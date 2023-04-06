@@ -54,6 +54,16 @@ void ExecutorManager::RunExecutor(std::string model_name)
     this->tasksCountRecord.insert(std::pair<std::string, std::shared_ptr<std::vector<const int*>>>(model_name, tmp));
 }
 
+void ExecutorManager::RunExecutorReTest()
+{
+    for(auto& iter:this->executorMap)
+    {   
+        // iter.second->executor->UpdateExecutorTime();
+        auto th= std::thread(&ModelExecutor::UpdateExecutorTime, iter.second->executor);
+        th.join();
+    }
+}
+
 void ExecutorManager::GatherTask(SafeQueue<std::shared_ptr<Task>> *taskQueue)
 {
     try

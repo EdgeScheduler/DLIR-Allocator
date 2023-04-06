@@ -38,6 +38,9 @@ public:
     /// @param model_name
     void RunExecutor(std::string model_name);
 
+    /// @brief re-test model -executor time
+    void RunExecutorReTest();
+
     /// @brief add task to executor
     /// @param model_name executor/model name
     /// @param datas model inputs data
