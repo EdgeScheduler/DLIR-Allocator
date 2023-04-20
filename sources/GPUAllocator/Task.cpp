@@ -141,3 +141,12 @@ nlohmann::json Task::GetDescribe()
 
     return obj;
 }
+
+void Task::PrintOutputs()
+{
+    for(auto output: this->GetOutputs())
+    {
+        std::cout<<output->GetValueInfo().GetName()<<std::endl;
+        output->Print(30,false);
+    }
+}

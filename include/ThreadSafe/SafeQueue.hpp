@@ -12,6 +12,8 @@ class SafeQueue
 public:
     SafeQueue(int capacity = -1) : capacity(capacity), size(0), closeQueue(false) {}
     ~SafeQueue() {}
+    // SafeQueue operator=(const SafeQueue& queue);
+    // SafeQueue(const SafeQueue& queue);
 
     /// @brief returns a read/write reference to the data at the front-element of the qeque.
     /// @return
@@ -63,6 +65,22 @@ private:
     /// @brief add restrictions on consumer-threads
     std::condition_variable m_notEmpty;
 };
+
+// template <class T>
+// SafeQueue<T>::SafeQueue(const SafeQueue<T>& queue)
+// {
+//     this->size=queue.size;
+//     this->capacity=queue.capacity;
+//     this->dequeDatas=queue.dequeDatas;
+// }
+
+// template <class T>
+// SafeQueue<T> SafeQueue<T>::operator=(const SafeQueue<T>& queue)
+// {
+//     this->size=queue.size;
+//     this->capacity=queue.capacity;
+//     this->dequeDatas=queue.dequeDatas;
+// }
 
 template <class T>
 const int &SafeQueue<T>::Size() const

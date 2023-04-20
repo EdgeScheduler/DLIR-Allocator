@@ -65,6 +65,7 @@ public:
     /// @param allocator ort allocator
     /// @param memType memory type
     TensorValue(const ValueInfo &valueInfo, bool initByRandom = false, OrtAllocatorType allocator = OrtAllocatorType::OrtArenaAllocator, OrtMemType memType = OrtMemType::OrtMemTypeDefault);
+    TensorValue(const ValueInfo &valueInfo,const std::vector<T> input_data,bool &success, OrtAllocatorType allocator = OrtAllocatorType::OrtArenaAllocator, OrtMemType memType = OrtMemType::OrtMemTypeDefault);
     TensorValue(const TensorValue &value) = default;
     TensorValue() = delete;
 
@@ -131,6 +132,23 @@ TensorValue<T>::TensorValue(const ValueInfo &valueInfo, bool initByRandom, OrtAl
     if (initByRandom)
     {
         this->Random();
+    }
+}
+
+template <class T>
+TensorValue<T>::TensorValue(const ValueInfo &valueInfo,const std::vector<T> input_data,bool &success, OrtAllocatorType allocator, OrtMemType memType) : data(valueInfo.GetDataCount())
+{
+    success=false;
+    this->valueInfo = valueInfo;
+    this->allocator = allocator;
+    this->memType = memType;
+    this->elementType = valueInfo.GetType();
+
+    success=false;
+    if(input_data.size()==valueInfo.GetDataCount())
+    {
+        std::memcpy(this->data.data(), input_data.data(), sizeof(T) * this->valueInfo.GetDataCount());
+        success=true;
     }
 }
 

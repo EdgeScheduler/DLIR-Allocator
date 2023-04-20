@@ -1,5 +1,6 @@
 #include "TaskGenerate.h"
 #include "Common/JsonSerializer.h"
+#include "RPCResponse/GRPCInterface.h"
 
 using DatasType = std::shared_ptr<std::map<std::string, std::shared_ptr<TensorValueObject>>>;
 
@@ -104,6 +105,7 @@ std::filesystem::path SavePath(int count, std::vector<int> lambdas, std::vector<
 
 void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> lambdas, std::vector<std::string> model_names)
 {
+    static int i_total=0;
     std::cout << "run reply gather." << std::endl;
     
     nlohmann::json catalogue;
@@ -132,10 +134,24 @@ void ReplyGather(ExecutorManager *executorManager, int count, std::vector<int> l
     std::filesystem::remove_all(saveFold);
     std::filesystem::create_directories(saveFold);
     auto &applyQueue = executorManager->GetApplyQueue();
-    for (int i = 0; i < count; i++)
+
+    if(count<0)
     {
-        auto task = applyQueue.Pop();
-        JsonSerializer::StoreJson(task->GetDescribe(), saveFold / (std::to_string(i) + ".json"));
+        while(true)
+        {
+            auto task = applyQueue.Pop();
+            GRPCInterface::waitTasks[task->GetTag()]->Push(task);
+            JsonSerializer::StoreJson(task->GetDescribe(), saveFold / (std::to_string(i_total) + ".json"));  
+            i_total++;        
+        }
+    }
+    else
+    {
+        for(int i=0;i<count;i++)
+        {
+            auto task = applyQueue.Pop();
+            JsonSerializer::StoreJson(task->GetDescribe(), saveFold / (std::to_string(i) + ".json"));     
+        }
     }
     std::cout << "all apply for " << count << " task received." << std::endl;
 }

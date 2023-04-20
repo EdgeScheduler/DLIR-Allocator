@@ -68,7 +68,7 @@ public:
 
     nlohmann::json GetDescribe();
 
-    void PrintDescribe();
+    void PrintOutputs();
 
 public:
     std::vector<std::shared_ptr<TensorValueObject>> Inputs;
