@@ -69,7 +69,7 @@ you can get muti-version by give compiler-flag, `DLIR_MODE` (default), `BNST_MOD
 
 ## Relationship with [OnnxSplitRunner](https://github.com/EdgeScheduler/OnnxSplitRunner)
 
-In order to eliminate the negative effects of fake-multi-threading mechanism of `Python` course by `GIL`, we eventually decided to refactor the code in `C++`. Raw Project with Python can still be found at: https://github.com/EdgeScheduler/OnnxSplitRunner
+In order to eliminate the negative effects of fake-multi-threading mechanism of `Python` course by `GIL`, we eventually decided to refactor the code with `C++`. Raw Project with Python can still be found at: https://github.com/EdgeScheduler/OnnxSplitRunner
 
 ## Recommend
 * [C++ chinese manul](https://www.apiref.com/cpp-zh/cpp/filesystem/path.html)
