@@ -31,6 +31,12 @@ public:
     /// @return gRPC status
     virtual grpc::Status DoInference(::grpc::ServerContext *context, const RPCInterface::RequestInference *request, RPCInterface::ReplyInference *response) override;
 
+    /// @brief deal with gRPC request for `DoInference`
+    /// @param context 
+    /// @param request request info give by client
+    /// @param response response to reply to client
+    /// @return gRPC status
+    virtual ::grpc::Status GetIOShape(::grpc::ServerContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response) override;
 
     /// @brief deal with gRPC request for `GetService`
     /// @param context 

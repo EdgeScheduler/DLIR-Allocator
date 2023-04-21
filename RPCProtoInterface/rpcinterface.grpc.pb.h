@@ -43,6 +43,13 @@ class DLIRService final {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyInference>>(PrepareAsyncDoInferenceRaw(context, request, cq));
     }
     // 请求推理
+    virtual ::grpc::Status GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::RPCInterface::ReplyIOShape* response) = 0;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyIOShape>> AsyncGetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyIOShape>>(AsyncGetIOShapeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyIOShape>> PrepareAsyncGetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyIOShape>>(PrepareAsyncGetIOShapeRaw(context, request, cq));
+    }
     virtual ::grpc::Status GetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::RPCInterface::ReplyInfo* response) = 0;
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyInfo>> AsyncGetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyInfo>>(AsyncGetServiceRaw(context, request, cq));
@@ -57,6 +64,8 @@ class DLIRService final {
       virtual void DoInference(::grpc::ClientContext* context, const ::RPCInterface::RequestInference* request, ::RPCInterface::ReplyInference* response, std::function<void(::grpc::Status)>) = 0;
       virtual void DoInference(::grpc::ClientContext* context, const ::RPCInterface::RequestInference* request, ::RPCInterface::ReplyInference* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       // 请求推理
+      virtual void GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response, std::function<void(::grpc::Status)>) = 0;
+      virtual void GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       virtual void GetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo* request, ::RPCInterface::ReplyInfo* response, std::function<void(::grpc::Status)>) = 0;
       virtual void GetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo* request, ::RPCInterface::ReplyInfo* response, ::grpc::ClientUnaryReactor* reactor) = 0;
       // 查询部署的模型
@@ -67,6 +76,8 @@ class DLIRService final {
    private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyInference>* AsyncDoInferenceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInference& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyInference>* PrepareAsyncDoInferenceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInference& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyIOShape>* AsyncGetIOShapeRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyIOShape>* PrepareAsyncGetIOShapeRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyInfo>* AsyncGetServiceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::RPCInterface::ReplyInfo>* PrepareAsyncGetServiceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::grpc::CompletionQueue* cq) = 0;
   };
@@ -80,6 +91,13 @@ class DLIRService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInference>> PrepareAsyncDoInference(::grpc::ClientContext* context, const ::RPCInterface::RequestInference& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInference>>(PrepareAsyncDoInferenceRaw(context, request, cq));
     }
+    ::grpc::Status GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::RPCInterface::ReplyIOShape* response) override;
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>> AsyncGetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>>(AsyncGetIOShapeRaw(context, request, cq));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>> PrepareAsyncGetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>>(PrepareAsyncGetIOShapeRaw(context, request, cq));
+    }
     ::grpc::Status GetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::RPCInterface::ReplyInfo* response) override;
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInfo>> AsyncGetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInfo>>(AsyncGetServiceRaw(context, request, cq));
@@ -92,6 +110,8 @@ class DLIRService final {
      public:
       void DoInference(::grpc::ClientContext* context, const ::RPCInterface::RequestInference* request, ::RPCInterface::ReplyInference* response, std::function<void(::grpc::Status)>) override;
       void DoInference(::grpc::ClientContext* context, const ::RPCInterface::RequestInference* request, ::RPCInterface::ReplyInference* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response, std::function<void(::grpc::Status)>) override;
+      void GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response, ::grpc::ClientUnaryReactor* reactor) override;
       void GetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo* request, ::RPCInterface::ReplyInfo* response, std::function<void(::grpc::Status)>) override;
       void GetService(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo* request, ::RPCInterface::ReplyInfo* response, ::grpc::ClientUnaryReactor* reactor) override;
      private:
@@ -107,9 +127,12 @@ class DLIRService final {
     class async async_stub_{this};
     ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInference>* AsyncDoInferenceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInference& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInference>* PrepareAsyncDoInferenceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInference& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>* AsyncGetIOShapeRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>* PrepareAsyncGetIOShapeRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInfo>* AsyncGetServiceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInfo>* PrepareAsyncGetServiceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInfo& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_DoInference_;
+    const ::grpc::internal::RpcMethod rpcmethod_GetIOShape_;
     const ::grpc::internal::RpcMethod rpcmethod_GetService_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
@@ -120,6 +143,7 @@ class DLIRService final {
     virtual ~Service();
     virtual ::grpc::Status DoInference(::grpc::ServerContext* context, const ::RPCInterface::RequestInference* request, ::RPCInterface::ReplyInference* response);
     // 请求推理
+    virtual ::grpc::Status GetIOShape(::grpc::ServerContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response);
     virtual ::grpc::Status GetService(::grpc::ServerContext* context, const ::RPCInterface::RequestInfo* request, ::RPCInterface::ReplyInfo* response);
     // 查询部署的模型
   };
@@ -144,12 +168,32 @@ class DLIRService final {
     }
   };
   template <class BaseClass>
+  class WithAsyncMethod_GetIOShape : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_GetIOShape() {
+      ::grpc::Service::MarkMethodAsync(1);
+    }
+    ~WithAsyncMethod_GetIOShape() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetIOShape(::grpc::ServerContext* /*context*/, const ::RPCInterface::RequestIOShape* /*request*/, ::RPCInterface::ReplyIOShape* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestGetIOShape(::grpc::ServerContext* context, ::RPCInterface::RequestIOShape* request, ::grpc::ServerAsyncResponseWriter< ::RPCInterface::ReplyIOShape>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithAsyncMethod_GetService : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithAsyncMethod_GetService() {
-      ::grpc::Service::MarkMethodAsync(1);
+      ::grpc::Service::MarkMethodAsync(2);
     }
     ~WithAsyncMethod_GetService() override {
       BaseClassMustBeDerivedFromService(this);
@@ -160,10 +204,10 @@ class DLIRService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGetService(::grpc::ServerContext* context, ::RPCInterface::RequestInfo* request, ::grpc::ServerAsyncResponseWriter< ::RPCInterface::ReplyInfo>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_DoInference<WithAsyncMethod_GetService<Service > > AsyncService;
+  typedef WithAsyncMethod_DoInference<WithAsyncMethod_GetIOShape<WithAsyncMethod_GetService<Service > > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_DoInference : public BaseClass {
    private:
@@ -192,18 +236,45 @@ class DLIRService final {
       ::grpc::CallbackServerContext* /*context*/, const ::RPCInterface::RequestInference* /*request*/, ::RPCInterface::ReplyInference* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
+  class WithCallbackMethod_GetIOShape : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_GetIOShape() {
+      ::grpc::Service::MarkMethodCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response) { return this->GetIOShape(context, request, response); }));}
+    void SetMessageAllocatorFor_GetIOShape(
+        ::grpc::MessageAllocator< ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape>* allocator) {
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      static_cast<::grpc::internal::CallbackUnaryHandler< ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape>*>(handler)
+              ->SetMessageAllocator(allocator);
+    }
+    ~WithCallbackMethod_GetIOShape() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetIOShape(::grpc::ServerContext* /*context*/, const ::RPCInterface::RequestIOShape* /*request*/, ::RPCInterface::ReplyIOShape* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* GetIOShape(
+      ::grpc::CallbackServerContext* /*context*/, const ::RPCInterface::RequestIOShape* /*request*/, ::RPCInterface::ReplyIOShape* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
   class WithCallbackMethod_GetService : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithCallbackMethod_GetService() {
-      ::grpc::Service::MarkMethodCallback(1,
+      ::grpc::Service::MarkMethodCallback(2,
           new ::grpc::internal::CallbackUnaryHandler< ::RPCInterface::RequestInfo, ::RPCInterface::ReplyInfo>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::RPCInterface::RequestInfo* request, ::RPCInterface::ReplyInfo* response) { return this->GetService(context, request, response); }));}
     void SetMessageAllocatorFor_GetService(
         ::grpc::MessageAllocator< ::RPCInterface::RequestInfo, ::RPCInterface::ReplyInfo>* allocator) {
-      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(1);
+      ::grpc::internal::MethodHandler* const handler = ::grpc::Service::GetHandler(2);
       static_cast<::grpc::internal::CallbackUnaryHandler< ::RPCInterface::RequestInfo, ::RPCInterface::ReplyInfo>*>(handler)
               ->SetMessageAllocator(allocator);
     }
@@ -218,7 +289,7 @@ class DLIRService final {
     virtual ::grpc::ServerUnaryReactor* GetService(
       ::grpc::CallbackServerContext* /*context*/, const ::RPCInterface::RequestInfo* /*request*/, ::RPCInterface::ReplyInfo* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_DoInference<WithCallbackMethod_GetService<Service > > CallbackService;
+  typedef WithCallbackMethod_DoInference<WithCallbackMethod_GetIOShape<WithCallbackMethod_GetService<Service > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_DoInference : public BaseClass {
@@ -238,12 +309,29 @@ class DLIRService final {
     }
   };
   template <class BaseClass>
+  class WithGenericMethod_GetIOShape : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_GetIOShape() {
+      ::grpc::Service::MarkMethodGeneric(1);
+    }
+    ~WithGenericMethod_GetIOShape() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetIOShape(::grpc::ServerContext* /*context*/, const ::RPCInterface::RequestIOShape* /*request*/, ::RPCInterface::ReplyIOShape* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
   class WithGenericMethod_GetService : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithGenericMethod_GetService() {
-      ::grpc::Service::MarkMethodGeneric(1);
+      ::grpc::Service::MarkMethodGeneric(2);
     }
     ~WithGenericMethod_GetService() override {
       BaseClassMustBeDerivedFromService(this);
@@ -275,12 +363,32 @@ class DLIRService final {
     }
   };
   template <class BaseClass>
+  class WithRawMethod_GetIOShape : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_GetIOShape() {
+      ::grpc::Service::MarkMethodRaw(1);
+    }
+    ~WithRawMethod_GetIOShape() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetIOShape(::grpc::ServerContext* /*context*/, const ::RPCInterface::RequestIOShape* /*request*/, ::RPCInterface::ReplyIOShape* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestGetIOShape(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
   class WithRawMethod_GetService : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawMethod_GetService() {
-      ::grpc::Service::MarkMethodRaw(1);
+      ::grpc::Service::MarkMethodRaw(2);
     }
     ~WithRawMethod_GetService() override {
       BaseClassMustBeDerivedFromService(this);
@@ -291,7 +399,7 @@ class DLIRService final {
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
     void RequestGetService(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(1, context, request, response, new_call_cq, notification_cq, tag);
+      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -317,12 +425,34 @@ class DLIRService final {
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
   };
   template <class BaseClass>
+  class WithRawCallbackMethod_GetIOShape : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_GetIOShape() {
+      ::grpc::Service::MarkMethodRawCallback(1,
+          new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->GetIOShape(context, request, response); }));
+    }
+    ~WithRawCallbackMethod_GetIOShape() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status GetIOShape(::grpc::ServerContext* /*context*/, const ::RPCInterface::RequestIOShape* /*request*/, ::RPCInterface::ReplyIOShape* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerUnaryReactor* GetIOShape(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
   class WithRawCallbackMethod_GetService : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithRawCallbackMethod_GetService() {
-      ::grpc::Service::MarkMethodRawCallback(1,
+      ::grpc::Service::MarkMethodRawCallback(2,
           new ::grpc::internal::CallbackUnaryHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
             [this](
                    ::grpc::CallbackServerContext* context, const ::grpc::ByteBuffer* request, ::grpc::ByteBuffer* response) { return this->GetService(context, request, response); }));
@@ -366,12 +496,39 @@ class DLIRService final {
     virtual ::grpc::Status StreamedDoInference(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::RPCInterface::RequestInference,::RPCInterface::ReplyInference>* server_unary_streamer) = 0;
   };
   template <class BaseClass>
+  class WithStreamedUnaryMethod_GetIOShape : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithStreamedUnaryMethod_GetIOShape() {
+      ::grpc::Service::MarkMethodStreamed(1,
+        new ::grpc::internal::StreamedUnaryHandler<
+          ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerUnaryStreamer<
+                     ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape>* streamer) {
+                       return this->StreamedGetIOShape(context,
+                         streamer);
+                  }));
+    }
+    ~WithStreamedUnaryMethod_GetIOShape() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status GetIOShape(::grpc::ServerContext* /*context*/, const ::RPCInterface::RequestIOShape* /*request*/, ::RPCInterface::ReplyIOShape* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with streamed unary
+    virtual ::grpc::Status StreamedGetIOShape(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::RPCInterface::RequestIOShape,::RPCInterface::ReplyIOShape>* server_unary_streamer) = 0;
+  };
+  template <class BaseClass>
   class WithStreamedUnaryMethod_GetService : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
    public:
     WithStreamedUnaryMethod_GetService() {
-      ::grpc::Service::MarkMethodStreamed(1,
+      ::grpc::Service::MarkMethodStreamed(2,
         new ::grpc::internal::StreamedUnaryHandler<
           ::RPCInterface::RequestInfo, ::RPCInterface::ReplyInfo>(
             [this](::grpc::ServerContext* context,
@@ -392,9 +549,9 @@ class DLIRService final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedGetService(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::RPCInterface::RequestInfo,::RPCInterface::ReplyInfo>* server_unary_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_DoInference<WithStreamedUnaryMethod_GetService<Service > > StreamedUnaryService;
+  typedef WithStreamedUnaryMethod_DoInference<WithStreamedUnaryMethod_GetIOShape<WithStreamedUnaryMethod_GetService<Service > > > StreamedUnaryService;
   typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_DoInference<WithStreamedUnaryMethod_GetService<Service > > StreamedService;
+  typedef WithStreamedUnaryMethod_DoInference<WithStreamedUnaryMethod_GetIOShape<WithStreamedUnaryMethod_GetService<Service > > > StreamedService;
 };
 
 }  // namespace RPCInterface

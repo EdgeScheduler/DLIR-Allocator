@@ -52,12 +52,18 @@ struct TableStruct_rpcinterface_2eproto {
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable
     descriptor_table_rpcinterface_2eproto;
 namespace RPCInterface {
+class ReplyIOShape;
+struct ReplyIOShapeDefaultTypeInternal;
+extern ReplyIOShapeDefaultTypeInternal _ReplyIOShape_default_instance_;
 class ReplyInference;
 struct ReplyInferenceDefaultTypeInternal;
 extern ReplyInferenceDefaultTypeInternal _ReplyInference_default_instance_;
 class ReplyInfo;
 struct ReplyInfoDefaultTypeInternal;
 extern ReplyInfoDefaultTypeInternal _ReplyInfo_default_instance_;
+class RequestIOShape;
+struct RequestIOShapeDefaultTypeInternal;
+extern RequestIOShapeDefaultTypeInternal _RequestIOShape_default_instance_;
 class RequestInference;
 struct RequestInferenceDefaultTypeInternal;
 extern RequestInferenceDefaultTypeInternal _RequestInference_default_instance_;
@@ -67,9 +73,13 @@ extern RequestInfoDefaultTypeInternal _RequestInfo_default_instance_;
 }  // namespace RPCInterface
 PROTOBUF_NAMESPACE_OPEN
 template <>
+::RPCInterface::ReplyIOShape* Arena::CreateMaybeMessage<::RPCInterface::ReplyIOShape>(Arena*);
+template <>
 ::RPCInterface::ReplyInference* Arena::CreateMaybeMessage<::RPCInterface::ReplyInference>(Arena*);
 template <>
 ::RPCInterface::ReplyInfo* Arena::CreateMaybeMessage<::RPCInterface::ReplyInfo>(Arena*);
+template <>
+::RPCInterface::RequestIOShape* Arena::CreateMaybeMessage<::RPCInterface::RequestIOShape>(Arena*);
 template <>
 ::RPCInterface::RequestInference* Arena::CreateMaybeMessage<::RPCInterface::RequestInference>(Arena*);
 template <>
@@ -569,6 +579,342 @@ class RequestInfo final :
   friend struct ::TableStruct_rpcinterface_2eproto;
 };// -------------------------------------------------------------------
 
+class RequestIOShape final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:RPCInterface.RequestIOShape) */ {
+ public:
+  inline RequestIOShape() : RequestIOShape(nullptr) {}
+  ~RequestIOShape() override;
+  explicit PROTOBUF_CONSTEXPR RequestIOShape(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  RequestIOShape(const RequestIOShape& from);
+  RequestIOShape(RequestIOShape&& from) noexcept
+    : RequestIOShape() {
+    *this = ::std::move(from);
+  }
+
+  inline RequestIOShape& operator=(const RequestIOShape& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline RequestIOShape& operator=(RequestIOShape&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const RequestIOShape& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const RequestIOShape* internal_default_instance() {
+    return reinterpret_cast<const RequestIOShape*>(
+               &_RequestIOShape_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    3;
+
+  friend void swap(RequestIOShape& a, RequestIOShape& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(RequestIOShape* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(RequestIOShape* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  RequestIOShape* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<RequestIOShape>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const RequestIOShape& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const RequestIOShape& from) {
+    RequestIOShape::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(RequestIOShape* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "RPCInterface.RequestIOShape";
+  }
+  protected:
+  explicit RequestIOShape(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kModelnameFieldNumber = 1,
+  };
+  // string modelname = 1;
+  void clear_modelname() ;
+  const std::string& modelname() const;
+
+
+
+
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_modelname(Arg_&& arg, Args_... args);
+  std::string* mutable_modelname();
+  PROTOBUF_NODISCARD std::string* release_modelname();
+  void set_allocated_modelname(std::string* ptr);
+
+  private:
+  const std::string& _internal_modelname() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_modelname(
+      const std::string& value);
+  std::string* _internal_mutable_modelname();
+
+  public:
+  // @@protoc_insertion_point(class_scope:RPCInterface.RequestIOShape)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr modelname_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_rpcinterface_2eproto;
+};// -------------------------------------------------------------------
+
+class ReplyIOShape final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:RPCInterface.ReplyIOShape) */ {
+ public:
+  inline ReplyIOShape() : ReplyIOShape(nullptr) {}
+  ~ReplyIOShape() override;
+  explicit PROTOBUF_CONSTEXPR ReplyIOShape(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  ReplyIOShape(const ReplyIOShape& from);
+  ReplyIOShape(ReplyIOShape&& from) noexcept
+    : ReplyIOShape() {
+    *this = ::std::move(from);
+  }
+
+  inline ReplyIOShape& operator=(const ReplyIOShape& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline ReplyIOShape& operator=(ReplyIOShape&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const ReplyIOShape& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const ReplyIOShape* internal_default_instance() {
+    return reinterpret_cast<const ReplyIOShape*>(
+               &_ReplyIOShape_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    4;
+
+  friend void swap(ReplyIOShape& a, ReplyIOShape& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(ReplyIOShape* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(ReplyIOShape* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  ReplyIOShape* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<ReplyIOShape>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const ReplyIOShape& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const ReplyIOShape& from) {
+    ReplyIOShape::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(ReplyIOShape* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "RPCInterface.ReplyIOShape";
+  }
+  protected:
+  explicit ReplyIOShape(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kInputsFieldNumber = 1,
+    kOutputsFieldNumber = 2,
+  };
+  // string inputs = 1;
+  void clear_inputs() ;
+  const std::string& inputs() const;
+
+
+
+
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_inputs(Arg_&& arg, Args_... args);
+  std::string* mutable_inputs();
+  PROTOBUF_NODISCARD std::string* release_inputs();
+  void set_allocated_inputs(std::string* ptr);
+
+  private:
+  const std::string& _internal_inputs() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_inputs(
+      const std::string& value);
+  std::string* _internal_mutable_inputs();
+
+  public:
+  // string outputs = 2;
+  void clear_outputs() ;
+  const std::string& outputs() const;
+
+
+
+
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_outputs(Arg_&& arg, Args_... args);
+  std::string* mutable_outputs();
+  PROTOBUF_NODISCARD std::string* release_outputs();
+  void set_allocated_outputs(std::string* ptr);
+
+  private:
+  const std::string& _internal_outputs() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_outputs(
+      const std::string& value);
+  std::string* _internal_mutable_outputs();
+
+  public:
+  // @@protoc_insertion_point(class_scope:RPCInterface.ReplyIOShape)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr inputs_;
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr outputs_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_rpcinterface_2eproto;
+};// -------------------------------------------------------------------
+
 class ReplyInfo final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:RPCInterface.ReplyInfo) */ {
  public:
@@ -617,7 +963,7 @@ class ReplyInfo final :
                &_ReplyInfo_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    5;
 
   friend void swap(ReplyInfo& a, ReplyInfo& b) {
     a.Swap(&b);
@@ -999,6 +1345,155 @@ inline void ReplyInference::set_allocated_info(std::string* value) {
 // -------------------------------------------------------------------
 
 // RequestInfo
+
+// -------------------------------------------------------------------
+
+// RequestIOShape
+
+// string modelname = 1;
+inline void RequestIOShape::clear_modelname() {
+  _impl_.modelname_.ClearToEmpty();
+}
+inline const std::string& RequestIOShape::modelname() const {
+  // @@protoc_insertion_point(field_get:RPCInterface.RequestIOShape.modelname)
+  return _internal_modelname();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void RequestIOShape::set_modelname(Arg_&& arg,
+                                                     Args_... args) {
+  ;
+  _impl_.modelname_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:RPCInterface.RequestIOShape.modelname)
+}
+inline std::string* RequestIOShape::mutable_modelname() {
+  std::string* _s = _internal_mutable_modelname();
+  // @@protoc_insertion_point(field_mutable:RPCInterface.RequestIOShape.modelname)
+  return _s;
+}
+inline const std::string& RequestIOShape::_internal_modelname() const {
+  return _impl_.modelname_.Get();
+}
+inline void RequestIOShape::_internal_set_modelname(const std::string& value) {
+  ;
+
+
+  _impl_.modelname_.Set(value, GetArenaForAllocation());
+}
+inline std::string* RequestIOShape::_internal_mutable_modelname() {
+  ;
+  return _impl_.modelname_.Mutable( GetArenaForAllocation());
+}
+inline std::string* RequestIOShape::release_modelname() {
+  // @@protoc_insertion_point(field_release:RPCInterface.RequestIOShape.modelname)
+  return _impl_.modelname_.Release();
+}
+inline void RequestIOShape::set_allocated_modelname(std::string* value) {
+  _impl_.modelname_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.modelname_.IsDefault()) {
+          _impl_.modelname_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:RPCInterface.RequestIOShape.modelname)
+}
+
+// -------------------------------------------------------------------
+
+// ReplyIOShape
+
+// string inputs = 1;
+inline void ReplyIOShape::clear_inputs() {
+  _impl_.inputs_.ClearToEmpty();
+}
+inline const std::string& ReplyIOShape::inputs() const {
+  // @@protoc_insertion_point(field_get:RPCInterface.ReplyIOShape.inputs)
+  return _internal_inputs();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void ReplyIOShape::set_inputs(Arg_&& arg,
+                                                     Args_... args) {
+  ;
+  _impl_.inputs_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:RPCInterface.ReplyIOShape.inputs)
+}
+inline std::string* ReplyIOShape::mutable_inputs() {
+  std::string* _s = _internal_mutable_inputs();
+  // @@protoc_insertion_point(field_mutable:RPCInterface.ReplyIOShape.inputs)
+  return _s;
+}
+inline const std::string& ReplyIOShape::_internal_inputs() const {
+  return _impl_.inputs_.Get();
+}
+inline void ReplyIOShape::_internal_set_inputs(const std::string& value) {
+  ;
+
+
+  _impl_.inputs_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ReplyIOShape::_internal_mutable_inputs() {
+  ;
+  return _impl_.inputs_.Mutable( GetArenaForAllocation());
+}
+inline std::string* ReplyIOShape::release_inputs() {
+  // @@protoc_insertion_point(field_release:RPCInterface.ReplyIOShape.inputs)
+  return _impl_.inputs_.Release();
+}
+inline void ReplyIOShape::set_allocated_inputs(std::string* value) {
+  _impl_.inputs_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.inputs_.IsDefault()) {
+          _impl_.inputs_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:RPCInterface.ReplyIOShape.inputs)
+}
+
+// string outputs = 2;
+inline void ReplyIOShape::clear_outputs() {
+  _impl_.outputs_.ClearToEmpty();
+}
+inline const std::string& ReplyIOShape::outputs() const {
+  // @@protoc_insertion_point(field_get:RPCInterface.ReplyIOShape.outputs)
+  return _internal_outputs();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void ReplyIOShape::set_outputs(Arg_&& arg,
+                                                     Args_... args) {
+  ;
+  _impl_.outputs_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:RPCInterface.ReplyIOShape.outputs)
+}
+inline std::string* ReplyIOShape::mutable_outputs() {
+  std::string* _s = _internal_mutable_outputs();
+  // @@protoc_insertion_point(field_mutable:RPCInterface.ReplyIOShape.outputs)
+  return _s;
+}
+inline const std::string& ReplyIOShape::_internal_outputs() const {
+  return _impl_.outputs_.Get();
+}
+inline void ReplyIOShape::_internal_set_outputs(const std::string& value) {
+  ;
+
+
+  _impl_.outputs_.Set(value, GetArenaForAllocation());
+}
+inline std::string* ReplyIOShape::_internal_mutable_outputs() {
+  ;
+  return _impl_.outputs_.Mutable( GetArenaForAllocation());
+}
+inline std::string* ReplyIOShape::release_outputs() {
+  // @@protoc_insertion_point(field_release:RPCInterface.ReplyIOShape.outputs)
+  return _impl_.outputs_.Release();
+}
+inline void ReplyIOShape::set_allocated_outputs(std::string* value) {
+  _impl_.outputs_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.outputs_.IsDefault()) {
+          _impl_.outputs_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:RPCInterface.ReplyIOShape.outputs)
+}
 
 // -------------------------------------------------------------------
 

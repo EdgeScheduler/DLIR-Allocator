@@ -23,6 +23,7 @@ namespace RPCInterface {
 
 static const char* DLIRService_method_names[] = {
   "/RPCInterface.DLIRService/DoInference",
+  "/RPCInterface.DLIRService/GetIOShape",
   "/RPCInterface.DLIRService/GetService",
 };
 
@@ -34,7 +35,8 @@ std::unique_ptr< DLIRService::Stub> DLIRService::NewStub(const std::shared_ptr< 
 
 DLIRService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options)
   : channel_(channel), rpcmethod_DoInference_(DLIRService_method_names[0], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_GetService_(DLIRService_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetIOShape_(DLIRService_method_names[1], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_GetService_(DLIRService_method_names[2], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status DLIRService::Stub::DoInference(::grpc::ClientContext* context, const ::RPCInterface::RequestInference& request, ::RPCInterface::ReplyInference* response) {
@@ -56,6 +58,29 @@ void DLIRService::Stub::async::DoInference(::grpc::ClientContext* context, const
 ::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyInference>* DLIRService::Stub::AsyncDoInferenceRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestInference& request, ::grpc::CompletionQueue* cq) {
   auto* result =
     this->PrepareAsyncDoInferenceRaw(context, request, cq);
+  result->StartCall();
+  return result;
+}
+
+::grpc::Status DLIRService::Stub::GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::RPCInterface::ReplyIOShape* response) {
+  return ::grpc::internal::BlockingUnaryCall< ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), rpcmethod_GetIOShape_, context, request, response);
+}
+
+void DLIRService::Stub::async::GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response, std::function<void(::grpc::Status)> f) {
+  ::grpc::internal::CallbackUnaryCall< ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetIOShape_, context, request, response, std::move(f));
+}
+
+void DLIRService::Stub::async::GetIOShape(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response, ::grpc::ClientUnaryReactor* reactor) {
+  ::grpc::internal::ClientCallbackUnaryFactory::Create< ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(stub_->channel_.get(), stub_->rpcmethod_GetIOShape_, context, request, response, reactor);
+}
+
+::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>* DLIRService::Stub::PrepareAsyncGetIOShapeRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncResponseReaderHelper::Create< ::RPCInterface::ReplyIOShape, ::RPCInterface::RequestIOShape, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(channel_.get(), cq, rpcmethod_GetIOShape_, context, request);
+}
+
+::grpc::ClientAsyncResponseReader< ::RPCInterface::ReplyIOShape>* DLIRService::Stub::AsyncGetIOShapeRaw(::grpc::ClientContext* context, const ::RPCInterface::RequestIOShape& request, ::grpc::CompletionQueue* cq) {
+  auto* result =
+    this->PrepareAsyncGetIOShapeRaw(context, request, cq);
   result->StartCall();
   return result;
 }
@@ -97,6 +122,16 @@ DLIRService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       DLIRService_method_names[1],
       ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< DLIRService::Service, ::RPCInterface::RequestIOShape, ::RPCInterface::ReplyIOShape, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
+          [](DLIRService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::RPCInterface::RequestIOShape* req,
+             ::RPCInterface::ReplyIOShape* resp) {
+               return service->GetIOShape(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      DLIRService_method_names[2],
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
       new ::grpc::internal::RpcMethodHandler< DLIRService::Service, ::RPCInterface::RequestInfo, ::RPCInterface::ReplyInfo, ::grpc::protobuf::MessageLite, ::grpc::protobuf::MessageLite>(
           [](DLIRService::Service* service,
              ::grpc::ServerContext* ctx,
@@ -110,6 +145,13 @@ DLIRService::Service::~Service() {
 }
 
 ::grpc::Status DLIRService::Service::DoInference(::grpc::ServerContext* context, const ::RPCInterface::RequestInference* request, ::RPCInterface::ReplyInference* response) {
+  (void) context;
+  (void) request;
+  (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status DLIRService::Service::GetIOShape(::grpc::ServerContext* context, const ::RPCInterface::RequestIOShape* request, ::RPCInterface::ReplyIOShape* response) {
   (void) context;
   (void) request;
   (void) response;

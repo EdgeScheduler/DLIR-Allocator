@@ -75,6 +75,44 @@ struct RequestInfoDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RequestInfoDefaultTypeInternal _RequestInfo_default_instance_;
+PROTOBUF_CONSTEXPR RequestIOShape::RequestIOShape(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.modelname_)*/ {
+    &::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized {}
+  }
+
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct RequestIOShapeDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR RequestIOShapeDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~RequestIOShapeDefaultTypeInternal() {}
+  union {
+    RequestIOShape _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 RequestIOShapeDefaultTypeInternal _RequestIOShape_default_instance_;
+PROTOBUF_CONSTEXPR ReplyIOShape::ReplyIOShape(
+    ::_pbi::ConstantInitialized): _impl_{
+    /*decltype(_impl_.inputs_)*/ {
+    &::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized {}
+  }
+
+  , /*decltype(_impl_.outputs_)*/ {
+    &::_pbi::fixed_address_empty_string, ::_pbi::ConstantInitialized {}
+  }
+
+  , /*decltype(_impl_._cached_size_)*/{}} {}
+struct ReplyIOShapeDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR ReplyIOShapeDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~ReplyIOShapeDefaultTypeInternal() {}
+  union {
+    ReplyIOShape _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ReplyIOShapeDefaultTypeInternal _ReplyIOShape_default_instance_;
 PROTOBUF_CONSTEXPR ReplyInfo::ReplyInfo(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.modelnames_)*/{}
@@ -96,7 +134,7 @@ struct ReplyInfoDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ReplyInfoDefaultTypeInternal _ReplyInfo_default_instance_;
 }  // namespace RPCInterface
-static ::_pb::Metadata file_level_metadata_rpcinterface_2eproto[4];
+static ::_pb::Metadata file_level_metadata_rpcinterface_2eproto[6];
 static constexpr const ::_pb::EnumDescriptor**
     file_level_enum_descriptors_rpcinterface_2eproto = nullptr;
 static constexpr const ::_pb::ServiceDescriptor**
@@ -133,6 +171,25 @@ const ::uint32_t TableStruct_rpcinterface_2eproto::offsets[] PROTOBUF_SECTION_VA
     ~0u,  // no _split_
     ~0u,  // no sizeof(Split)
     ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::RPCInterface::RequestIOShape, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::RPCInterface::RequestIOShape, _impl_.modelname_),
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::RPCInterface::ReplyIOShape, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::RPCInterface::ReplyIOShape, _impl_.inputs_),
+    PROTOBUF_FIELD_OFFSET(::RPCInterface::ReplyIOShape, _impl_.outputs_),
+    ~0u,  // no _has_bits_
     PROTOBUF_FIELD_OFFSET(::RPCInterface::ReplyInfo, _internal_metadata_),
     ~0u,  // no _extensions_
     ~0u,  // no _oneof_case_
@@ -150,13 +207,17 @@ static const ::_pbi::MigrationSchema
         { 0, -1, -1, sizeof(::RPCInterface::RequestInference)},
         { 10, -1, -1, sizeof(::RPCInterface::ReplyInference)},
         { 21, -1, -1, sizeof(::RPCInterface::RequestInfo)},
-        { 29, -1, -1, sizeof(::RPCInterface::ReplyInfo)},
+        { 29, -1, -1, sizeof(::RPCInterface::RequestIOShape)},
+        { 38, -1, -1, sizeof(::RPCInterface::ReplyIOShape)},
+        { 48, -1, -1, sizeof(::RPCInterface::ReplyInfo)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
     &::RPCInterface::_RequestInference_default_instance_._instance,
     &::RPCInterface::_ReplyInference_default_instance_._instance,
     &::RPCInterface::_RequestInfo_default_instance_._instance,
+    &::RPCInterface::_RequestIOShape_default_instance_._instance,
+    &::RPCInterface::_ReplyIOShape_default_instance_._instance,
     &::RPCInterface::_ReplyInfo_default_instance_._instance,
 };
 const char descriptor_table_protodef_rpcinterface_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
@@ -164,24 +225,28 @@ const char descriptor_table_protodef_rpcinterface_2eproto[] PROTOBUF_SECTION_VAR
     "questInference\022\021\n\tmodelname\030\001 \001(\t\022\014\n\004dat"
     "a\030\002 \001(\t\">\n\016ReplyInference\022\016\n\006status\030\001 \001("
     "\005\022\016\n\006result\030\002 \001(\t\022\014\n\004info\030\003 \001(\t\"\r\n\013Reque"
-    "stInfo\"9\n\tReplyInfo\022\n\n\002ip\030\001 \001(\t\022\014\n\004port\030"
-    "\002 \001(\005\022\022\n\nmodelnames\030\003 \003(\t2\234\001\n\013DLIRServic"
-    "e\022K\n\013DoInference\022\036.RPCInterface.RequestI"
-    "nference\032\034.RPCInterface.ReplyInference\022@"
-    "\n\nGetService\022\031.RPCInterface.RequestInfo\032"
-    "\027.RPCInterface.ReplyInfob\006proto3"
+    "stInfo\"#\n\016RequestIOShape\022\021\n\tmodelname\030\001 "
+    "\001(\t\"/\n\014ReplyIOShape\022\016\n\006inputs\030\001 \001(\t\022\017\n\007o"
+    "utputs\030\002 \001(\t\"9\n\tReplyInfo\022\n\n\002ip\030\001 \001(\t\022\014\n"
+    "\004port\030\002 \001(\005\022\022\n\nmodelnames\030\003 \003(\t2\344\001\n\013DLIR"
+    "Service\022K\n\013DoInference\022\036.RPCInterface.Re"
+    "questInference\032\034.RPCInterface.ReplyInfer"
+    "ence\022F\n\nGetIOShape\022\034.RPCInterface.Reques"
+    "tIOShape\032\032.RPCInterface.ReplyIOShape\022@\n\n"
+    "GetService\022\031.RPCInterface.RequestInfo\032\027."
+    "RPCInterface.ReplyInfob\006proto3"
 };
 static ::absl::once_flag descriptor_table_rpcinterface_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_rpcinterface_2eproto = {
     false,
     false,
-    392,
+    550,
     descriptor_table_protodef_rpcinterface_2eproto,
     "rpcinterface.proto",
     &descriptor_table_rpcinterface_2eproto_once,
     nullptr,
     0,
-    4,
+    6,
     schemas,
     file_default_instances,
     TableStruct_rpcinterface_2eproto::offsets,
@@ -767,6 +832,445 @@ const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RequestInfo::GetClassData() co
 }
 // ===================================================================
 
+class RequestIOShape::_Internal {
+ public:
+};
+
+RequestIOShape::RequestIOShape(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:RPCInterface.RequestIOShape)
+}
+RequestIOShape::RequestIOShape(const RequestIOShape& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  RequestIOShape* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.modelname_) {}
+
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.modelname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.modelname_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_modelname().empty()) {
+    _this->_impl_.modelname_.Set(from._internal_modelname(), _this->GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:RPCInterface.RequestIOShape)
+}
+
+inline void RequestIOShape::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.modelname_) {}
+
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.modelname_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.modelname_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+RequestIOShape::~RequestIOShape() {
+  // @@protoc_insertion_point(destructor:RPCInterface.RequestIOShape)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void RequestIOShape::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.modelname_.Destroy();
+}
+
+void RequestIOShape::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void RequestIOShape::Clear() {
+// @@protoc_insertion_point(message_clear_start:RPCInterface.RequestIOShape)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.modelname_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* RequestIOShape::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string modelname = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_modelname();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "RPCInterface.RequestIOShape.modelname"));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::uint8_t* RequestIOShape::_InternalSerialize(
+    ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:RPCInterface.RequestIOShape)
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string modelname = 1;
+  if (!this->_internal_modelname().empty()) {
+    const std::string& _s = this->_internal_modelname();
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE, "RPCInterface.RequestIOShape.modelname");
+    target = stream->WriteStringMaybeAliased(1, _s, target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:RPCInterface.RequestIOShape)
+  return target;
+}
+
+::size_t RequestIOShape::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:RPCInterface.RequestIOShape)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string modelname = 1;
+  if (!this->_internal_modelname().empty()) {
+    total_size += 1 + ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+                                    this->_internal_modelname());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData RequestIOShape::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    RequestIOShape::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*RequestIOShape::GetClassData() const { return &_class_data_; }
+
+
+void RequestIOShape::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<RequestIOShape*>(&to_msg);
+  auto& from = static_cast<const RequestIOShape&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:RPCInterface.RequestIOShape)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_modelname().empty()) {
+    _this->_internal_set_modelname(from._internal_modelname());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void RequestIOShape::CopyFrom(const RequestIOShape& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:RPCInterface.RequestIOShape)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool RequestIOShape::IsInitialized() const {
+  return true;
+}
+
+void RequestIOShape::InternalSwap(RequestIOShape* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.modelname_, lhs_arena,
+                                       &other->_impl_.modelname_, rhs_arena);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata RequestIOShape::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_rpcinterface_2eproto_getter, &descriptor_table_rpcinterface_2eproto_once,
+      file_level_metadata_rpcinterface_2eproto[3]);
+}
+// ===================================================================
+
+class ReplyIOShape::_Internal {
+ public:
+};
+
+ReplyIOShape::ReplyIOShape(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:RPCInterface.ReplyIOShape)
+}
+ReplyIOShape::ReplyIOShape(const ReplyIOShape& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  ReplyIOShape* const _this = this; (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.inputs_) {}
+
+    , decltype(_impl_.outputs_) {}
+
+    , /*decltype(_impl_._cached_size_)*/{}};
+
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  _impl_.inputs_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.inputs_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_inputs().empty()) {
+    _this->_impl_.inputs_.Set(from._internal_inputs(), _this->GetArenaForAllocation());
+  }
+  _impl_.outputs_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.outputs_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_outputs().empty()) {
+    _this->_impl_.outputs_.Set(from._internal_outputs(), _this->GetArenaForAllocation());
+  }
+  // @@protoc_insertion_point(copy_constructor:RPCInterface.ReplyIOShape)
+}
+
+inline void ReplyIOShape::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.inputs_) {}
+
+    , decltype(_impl_.outputs_) {}
+
+    , /*decltype(_impl_._cached_size_)*/{}
+  };
+  _impl_.inputs_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.inputs_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.outputs_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.outputs_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+
+ReplyIOShape::~ReplyIOShape() {
+  // @@protoc_insertion_point(destructor:RPCInterface.ReplyIOShape)
+  if (auto *arena = _internal_metadata_.DeleteReturnArena<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>()) {
+  (void)arena;
+    return;
+  }
+  SharedDtor();
+}
+
+inline void ReplyIOShape::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.inputs_.Destroy();
+  _impl_.outputs_.Destroy();
+}
+
+void ReplyIOShape::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+void ReplyIOShape::Clear() {
+// @@protoc_insertion_point(message_clear_start:RPCInterface.ReplyIOShape)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _impl_.inputs_.ClearToEmpty();
+  _impl_.outputs_.ClearToEmpty();
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* ReplyIOShape::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::uint32_t tag;
+    ptr = ::_pbi::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // string inputs = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 10)) {
+          auto str = _internal_mutable_inputs();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "RPCInterface.ReplyIOShape.inputs"));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      // string outputs = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::uint8_t>(tag) == 18)) {
+          auto str = _internal_mutable_outputs();
+          ptr = ::_pbi::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+          CHK_(::_pbi::VerifyUTF8(str, "RPCInterface.ReplyIOShape.outputs"));
+        } else {
+          goto handle_unusual;
+        }
+        continue;
+      default:
+        goto handle_unusual;
+    }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
+  }  // while
+message_done:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto message_done;
+#undef CHK_
+}
+
+::uint8_t* ReplyIOShape::_InternalSerialize(
+    ::uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:RPCInterface.ReplyIOShape)
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string inputs = 1;
+  if (!this->_internal_inputs().empty()) {
+    const std::string& _s = this->_internal_inputs();
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE, "RPCInterface.ReplyIOShape.inputs");
+    target = stream->WriteStringMaybeAliased(1, _s, target);
+  }
+
+  // string outputs = 2;
+  if (!this->_internal_outputs().empty()) {
+    const std::string& _s = this->_internal_outputs();
+    ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE, "RPCInterface.ReplyIOShape.outputs");
+    target = stream->WriteStringMaybeAliased(2, _s, target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:RPCInterface.ReplyIOShape)
+  return target;
+}
+
+::size_t ReplyIOShape::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:RPCInterface.ReplyIOShape)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // string inputs = 1;
+  if (!this->_internal_inputs().empty()) {
+    total_size += 1 + ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+                                    this->_internal_inputs());
+  }
+
+  // string outputs = 2;
+  if (!this->_internal_outputs().empty()) {
+    total_size += 1 + ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
+                                    this->_internal_outputs());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData ReplyIOShape::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSourceCheck,
+    ReplyIOShape::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*ReplyIOShape::GetClassData() const { return &_class_data_; }
+
+
+void ReplyIOShape::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg) {
+  auto* const _this = static_cast<ReplyIOShape*>(&to_msg);
+  auto& from = static_cast<const ReplyIOShape&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:RPCInterface.ReplyIOShape)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from._internal_inputs().empty()) {
+    _this->_internal_set_inputs(from._internal_inputs());
+  }
+  if (!from._internal_outputs().empty()) {
+    _this->_internal_set_outputs(from._internal_outputs());
+  }
+  _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void ReplyIOShape::CopyFrom(const ReplyIOShape& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:RPCInterface.ReplyIOShape)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool ReplyIOShape::IsInitialized() const {
+  return true;
+}
+
+void ReplyIOShape::InternalSwap(ReplyIOShape* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.inputs_, lhs_arena,
+                                       &other->_impl_.inputs_, rhs_arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.outputs_, lhs_arena,
+                                       &other->_impl_.outputs_, rhs_arena);
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata ReplyIOShape::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_rpcinterface_2eproto_getter, &descriptor_table_rpcinterface_2eproto_once,
+      file_level_metadata_rpcinterface_2eproto[4]);
+}
+// ===================================================================
+
 class ReplyInfo::_Internal {
  public:
 };
@@ -1028,7 +1532,7 @@ void ReplyInfo::InternalSwap(ReplyInfo* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata ReplyInfo::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_rpcinterface_2eproto_getter, &descriptor_table_rpcinterface_2eproto_once,
-      file_level_metadata_rpcinterface_2eproto[3]);
+      file_level_metadata_rpcinterface_2eproto[5]);
 }
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace RPCInterface
@@ -1044,6 +1548,14 @@ Arena::CreateMaybeMessage< ::RPCInterface::ReplyInference >(Arena* arena) {
 template<> PROTOBUF_NOINLINE ::RPCInterface::RequestInfo*
 Arena::CreateMaybeMessage< ::RPCInterface::RequestInfo >(Arena* arena) {
   return Arena::CreateMessageInternal< ::RPCInterface::RequestInfo >(arena);
+}
+template<> PROTOBUF_NOINLINE ::RPCInterface::RequestIOShape*
+Arena::CreateMaybeMessage< ::RPCInterface::RequestIOShape >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::RPCInterface::RequestIOShape >(arena);
+}
+template<> PROTOBUF_NOINLINE ::RPCInterface::ReplyIOShape*
+Arena::CreateMaybeMessage< ::RPCInterface::ReplyIOShape >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::RPCInterface::ReplyIOShape >(arena);
 }
 template<> PROTOBUF_NOINLINE ::RPCInterface::ReplyInfo*
 Arena::CreateMaybeMessage< ::RPCInterface::ReplyInfo >(Arena* arena) {

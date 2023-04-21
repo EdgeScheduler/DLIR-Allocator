@@ -16,6 +16,15 @@ message ReplyInference {
 
 message RequestInfo {}
 
+message RequestIOShape {
+    string modelname=1;                 // 模型名称
+}
+
+message ReplyIOShape {
+    string inputs=1;                    // 输入数据描述
+    string outputs=2;                   // 输出数据描述
+}
+
 message ReplyInfo {
     string ip = 1;                      // 调用IP
     int32 port=2;                       // 调用端口
@@ -24,5 +33,6 @@ message ReplyInfo {
 
 service DLIRService {
     rpc DoInference (RequestInference) returns (ReplyInference);    // 请求推理
+    rpc GetIOShape (RequestIOShape) returns (ReplyIOShape);
     rpc GetService (RequestInfo) returns (ReplyInfo);               // 查询部署的模型
 }

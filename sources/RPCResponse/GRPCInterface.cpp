@@ -140,16 +140,45 @@ grpc::Status GRPCInterface::DoInference(grpc::ServerContext *context, const RPCI
     }
 }
 
+grpc::Status GRPCInterface::GetIOShape(::grpc::ServerContext *context, const ::RPCInterface::RequestIOShape *request, ::RPCInterface::ReplyIOShape *response)
+{
+    try
+    {
+        auto iter = this->modelInfos->find(request->modelname());
+        if (iter == this->modelInfos->end())
+        {
+            return grpc::Status(grpc::StatusCode::UNKNOWN, "The model you invoked has not been deployed.");
+        }
+        response->set_inputs(iter->second.GetInput().ToJson().dump());
+        response->set_outputs(iter->second.GetOutput().ToJson().dump());
+        return ::grpc::Status::OK;
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "error happened while get io shapes: " << e.what() << '\n';
+        return grpc::Status(grpc::StatusCode::UNKNOWN, "some error happened while deal with your request.");
+    }
+    
+}
+
 // 请求推理
 grpc::Status GRPCInterface::GetService(grpc::ServerContext *context, const RPCInterface::RequestInfo *request, RPCInterface::ReplyInfo *response)
 {
-    response->set_ip(GetLocalIPs());
-    response->set_port(this->serverPort);
-    for (auto name : this->modelNames)
+    try
     {
-        response->add_modelnames(name);
+        response->set_ip(GetLocalIPs());
+        response->set_port(this->serverPort);
+        for (auto name : this->modelNames)
+        {
+            response->add_modelnames(name);
+        }
+        return grpc::Status::OK;
     }
-    return grpc::Status::OK;
+    catch (const std::exception &e)
+    {
+        std::cerr << "error happened while get services describe: " << e.what() << '\n';
+        return grpc::Status(grpc::StatusCode::UNKNOWN, "some error happened while deal with your request.");
+    }
 }
 
 std::map<std::string, std::shared_ptr<SafeQueue<std::shared_ptr<Task>>>> GRPCInterface::waitTasks;
