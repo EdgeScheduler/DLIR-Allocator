@@ -32,17 +32,17 @@ you can get muti-version by give compiler-flag, `DLIR_MODE` (default), `BNST_MOD
 * `PARALLER_MODE`: run all kinds of task in muti-process.
 * `FIFO_MODE`: run task with FIFO.
 
-1. compile `BNST_MODE` as an example:
+1. compile `DLIR_MODE` as an example:
 
   ```shell
   git clone git@github.com:EdgeScheduler/DLIR-Allocator.git
 
   cd DLIR-Allocator
   mkdir -p build && cd build
-  cmake ../ -DCOMPILE_MODE="BNST_MODE"
+  cmake ../ -DCOMPILE_MODE="DLIR_MODE"
   make
 
-  # you can get binary in DLIR-Allocator/bin/release/BNST-Allocator
+  # you can get binary in DLIR-Allocator/bin/release/DLIR-Allocator
   ```
 
 2. Also, you can compile to all version by run script directly:
