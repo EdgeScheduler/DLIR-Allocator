@@ -10,6 +10,8 @@ We find that many types of computing-resources (such as CUDA-GPU and FPGA) have 
 
 > we test our program with `GTX-2080Ti with 10-core GPU`
 * `gcc/g++` with `v8.4.0`
+* `grpc` with github commit version `8f6ae3599f247c3e0de604b5321538b99f3d68a3`
+* `protobuf` with `3.22.2` (install by grpc source code)
 * `onnxruntime-gpu` with `v1.12.1`
 * C++ compiler param support:
   * `-std=c++17`
